@@ -1,0 +1,19 @@
+# Compilados do Java 
+*.class
+*.log
+*.jar
+*.war
+
+# Pastas de saída 
+/out/
+/bin/
+/target/
+
+# Configurações do IntelliJ
+.idea/
+*.iml
+*.iws
+
+# Arquivos de sistema
+.DS_Store
+Thumbs.db
