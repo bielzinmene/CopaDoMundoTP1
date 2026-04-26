@@ -29,7 +29,24 @@ public class MenuPrincipalView extends JFrame {
         JButton btnRelatorios = new JButton("Relatórios");
         JButton btnSair = new JButton("Sair / Logout");
 
-        btnSelecoes.addActionListener(e -> new GerenciarSelecaoView().setVisible(true));
+        btnUsuarios.addActionListener(e -> {
+            new GerenciarUsuariosView().setVisible(true);
+            dispose();
+        });
+
+        btnSelecoes.addActionListener(e -> {
+            new GerenciarSelecaoView().setVisible(true);
+            dispose();
+        });
+
+        btnJogadores.addActionListener(e -> {
+            new GerenciarJogadorView().setVisible(true);
+            dispose();
+        });
+
+        btnRelatorios.addActionListener(e -> {
+            JOptionPane.showMessageDialog(this, "Relatórios em desenvolvimento (Etapa 2)");
+        });
 
         btnSair.addActionListener(e -> {
             new LoginView().setVisible(true);
