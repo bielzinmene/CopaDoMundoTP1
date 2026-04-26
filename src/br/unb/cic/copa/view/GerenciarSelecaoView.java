@@ -38,7 +38,15 @@ public class GerenciarSelecaoView extends JFrame {
         JButton btnSalvar = new JButton("Salvar");
         JButton btnCancelar = new JButton("Cancelar");
 
-        btnCancelar.addActionListener(e -> dispose());
+        btnCancelar.addActionListener(e ->{
+            new MenuPrincipalView().setVisible(true);
+            dispose();
+        });
+
+        btnSalvar.addActionListener(e -> {
+            new MenuPrincipalView().setVisible(true);
+            dispose();
+        });
 
         painelInputs.add(btnSalvar);
         painelInputs.add(btnCancelar);

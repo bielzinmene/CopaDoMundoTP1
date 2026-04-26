@@ -30,7 +30,14 @@ public class GerenciarArbitroView extends JFrame {
         JButton botaoSalvar = new JButton("Salvar");
         JButton botaoCancelar = new JButton("Cancelar");
 
-        botaoCancelar.addActionListener(e -> dispose());
+        botaoCancelar.addActionListener(e ->{
+            new MenuPrincipalView().setVisible(true);
+            dispose();
+        });
+        botaoSalvar.addActionListener(e -> {
+            new MenuPrincipalView().setVisible(true);
+            dispose();
+        });
 
         add(botaoSalvar);
         add(botaoCancelar);
