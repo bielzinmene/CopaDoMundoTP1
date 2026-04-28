@@ -2,11 +2,11 @@ package br.unb.cic.copa.model;
 
 public class Ingresso {
     private int id;
-    private Partida partida;
+    //private Partida partida;
     private CategoriaIngresso categoria;
     private double preco;
     private boolean vendido;
-
+/*
     public Ingresso(int id, Partida partida, CategoriaIngresso categoria) {
         this.id = id;
         this.partida = partida;
@@ -14,15 +14,16 @@ public class Ingresso {
         this.preco = categoria.getPreco();
         this.vendido = false;
     }
-
+*/
     public int getId() {
         return id;
     }
 
+/*
     public Partida getPartida() {
         return partida;
     }
-
+*/
     public CategoriaIngresso getCategoria() {
         return categoria;
     }
