@@ -1,5 +1,8 @@
 package br.unb.cic.copa.view;
 
+import br.unb.cic.copa.view.aluno2.GerenciarJogadorView;
+import br.unb.cic.copa.view.aluno2.GerenciarSelecaoView;
+
 import javax.swing.*;
 import java.awt.*;
 

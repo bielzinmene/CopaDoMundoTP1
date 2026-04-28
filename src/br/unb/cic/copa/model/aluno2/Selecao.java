@@ -1,4 +1,4 @@
-package br.unb.cic.copa.model;
+package br.unb.cic.copa.model.aluno2;
 
 import java.util.ArrayList;
 import java.util.List;
