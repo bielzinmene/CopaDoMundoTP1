@@ -89,6 +89,8 @@ public class MenuPrincipalView extends JFrame {
         painelBotoes.add(btnArbitros);
         painelBotoes.add(btnEstadios);
         painelBotoes.add(btnJogadores);
+        painelBotoes.add(btnPartida);
+        painelBotoes.add(btnIngresso);
         painelBotoes.add(btnRelatorios);
         painelBotoes.add(new JLabel(""));
         painelBotoes.add(btnSair);
