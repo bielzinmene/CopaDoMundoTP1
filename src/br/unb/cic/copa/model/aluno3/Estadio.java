@@ -1,4 +1,4 @@
-package br.unb.cic.copa.model;
+package br.unb.cic.copa.model.aluno3;
 
 public class Estadio {
 

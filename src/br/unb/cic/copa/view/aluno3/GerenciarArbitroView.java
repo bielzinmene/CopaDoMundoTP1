@@ -1,4 +1,6 @@
-package br.unb.cic.copa.view;
+package br.unb.cic.copa.view.aluno3;
+import br.unb.cic.copa.view.aluno1.MenuPrincipalView;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -30,7 +32,14 @@ public class GerenciarArbitroView extends JFrame {
         JButton botaoSalvar = new JButton("Salvar");
         JButton botaoCancelar = new JButton("Cancelar");
 
-        botaoCancelar.addActionListener(e -> dispose());
+        botaoCancelar.addActionListener(e ->{
+            new MenuPrincipalView().setVisible(true);
+            dispose();
+        });
+        botaoSalvar.addActionListener(e -> {
+            new MenuPrincipalView().setVisible(true);
+            dispose();
+        });
 
         add(botaoSalvar);
         add(botaoCancelar);

@@ -1,7 +1,6 @@
-package br.unb.cic.copa.testes;
+package br.unb.cic.copa.testes.aluno3;
 
-import br.unb.cic.copa.view.GerenciarArbitroView;
-import br.unb.cic.copa.view.GerenciarEstadioView;
+import br.unb.cic.copa.view.aluno3.GerenciarEstadioView;
 
 import javax.swing.*;
 
