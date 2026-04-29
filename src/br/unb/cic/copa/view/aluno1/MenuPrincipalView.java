@@ -4,6 +4,8 @@ import br.unb.cic.copa.view.aluno2.GerenciarJogadorView;
 import br.unb.cic.copa.view.aluno2.GerenciarSelecaoView;
 import br.unb.cic.copa.view.aluno3.GerenciarArbitroView;
 import br.unb.cic.copa.view.aluno3.GerenciarEstadioView;
+import br.unb.cic.copa.view.aluno4.PartidaView;
+import br.unb.cic.copa.view.aluno5.VendaIngressoView;
 
 import javax.swing.*;
 import java.awt.*;
@@ -33,6 +35,8 @@ public class MenuPrincipalView extends JFrame {
         JButton btnArbitros = new JButton("Gerenciar Arbitros");
         JButton btnEstadios = new JButton("Gerenciar Estádios");
         JButton btnJogadores = new JButton("Gerenciar Jogadores");
+        JButton btnPartida = new JButton("Gerenciar Partida");
+        JButton btnIngresso = new JButton("Gerenciar Ingressos");
         JButton btnRelatorios = new JButton("Relatórios");
         JButton btnSair = new JButton("Sair / Logout");
 
@@ -58,6 +62,16 @@ public class MenuPrincipalView extends JFrame {
 
         btnJogadores.addActionListener(e -> {
             new GerenciarJogadorView().setVisible(true);
+            dispose();
+        });
+
+        btnPartida.addActionListener(e -> {
+            new PartidaView().setVisible(true);
+            dispose();
+        });
+
+        btnIngresso.addActionListener(e -> {
+            new VendaIngressoView().setVisible(true);
             dispose();
         });
 
