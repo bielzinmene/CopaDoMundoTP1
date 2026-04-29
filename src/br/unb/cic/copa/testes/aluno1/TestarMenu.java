@@ -1,6 +1,6 @@
-package br.unb.cic.copa.testes;
+package br.unb.cic.copa.testes.aluno1;
 
-import br.unb.cic.copa.view.MenuPrincipalView;
+import br.unb.cic.copa.view.aluno1.MenuPrincipalView;
 import javax.swing.*;
 
 public class TestarMenu {

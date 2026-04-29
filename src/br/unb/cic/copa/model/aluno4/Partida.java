@@ -1,4 +1,4 @@
-package CopaDoMundoTP1.src.br.unb.cic.copa.model;
+package br.unb.cic.copa.model.aluno4;
 
 public class Partida {
     private String selecao1;

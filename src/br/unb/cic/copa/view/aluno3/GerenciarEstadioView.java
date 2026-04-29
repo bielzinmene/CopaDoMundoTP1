@@ -1,4 +1,6 @@
-package br.unb.cic.copa.view;
+package br.unb.cic.copa.view.aluno3;
+
+import br.unb.cic.copa.view.aluno1.MenuPrincipalView;
 
 import javax.swing.*;
 import java.awt.*;

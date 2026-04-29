@@ -1,6 +1,6 @@
-package CopaDoMundoTP1.src.br.unb.cic.copa.testes;
+package br.unb.cic.copa.testes.aluno4;
 
-import CopaDoMundoTP1.src.br.unb.cic.copa.view.PartidaView;
+import br.unb.cic.copa.view.aluno4.PartidaView;
 
 import javax.swing.SwingUtilities;
 

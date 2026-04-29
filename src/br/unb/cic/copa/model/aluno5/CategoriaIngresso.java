@@ -1,4 +1,4 @@
-package br.unb.cic.copa.model;
+package br.unb.cic.copa.model.aluno5;
 
 public enum CategoriaIngresso {
     VIP(300.0),

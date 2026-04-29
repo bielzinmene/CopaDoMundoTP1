@@ -1,7 +1,9 @@
-package br.unb.cic.copa.view;
+package br.unb.cic.copa.view.aluno1;
 
 import br.unb.cic.copa.view.aluno2.GerenciarJogadorView;
 import br.unb.cic.copa.view.aluno2.GerenciarSelecaoView;
+import br.unb.cic.copa.view.aluno3.GerenciarArbitroView;
+import br.unb.cic.copa.view.aluno3.GerenciarEstadioView;
 
 import javax.swing.*;
 import java.awt.*;

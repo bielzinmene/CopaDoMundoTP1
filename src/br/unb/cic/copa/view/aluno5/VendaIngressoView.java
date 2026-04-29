@@ -1,4 +1,4 @@
-package br.unb.cic.copa.view;
+package br.unb.cic.copa.view.aluno5;
 
 import javax.swing.*;
 import java.awt.*;

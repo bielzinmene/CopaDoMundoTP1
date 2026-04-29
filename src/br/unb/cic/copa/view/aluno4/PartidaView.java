@@ -1,4 +1,4 @@
-package CopaDoMundoTP1.src.br.unb.cic.copa.view;
+package br.unb.cic.copa.view.aluno4;
 
 import javax.swing.*;
 import java.awt.*;

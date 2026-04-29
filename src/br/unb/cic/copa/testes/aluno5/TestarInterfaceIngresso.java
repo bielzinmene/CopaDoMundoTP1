@@ -1,6 +1,6 @@
-package br.unb.cic.copa.testes;
+package br.unb.cic.copa.testes.aluno5;
 
-import br.unb.cic.copa.view.VendaIngressoView;
+import br.unb.cic.copa.view.aluno5.VendaIngressoView;
 
 import javax.swing.*;
 

@@ -1,4 +1,4 @@
-package br.unb.cic.copa.model;
+package br.unb.cic.copa.model.aluno1;
 
 public abstract class Usuario {
     protected String nome;
