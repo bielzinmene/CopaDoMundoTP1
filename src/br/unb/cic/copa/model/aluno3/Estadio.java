@@ -7,11 +7,11 @@ import br.unb.cic.copa.model.aluno4.Partida;
 public class Estadio {
 
     private String nome;
-    private String localizacao;
+    private Localizacao localizacao;
     private int capacidade;
     private List<Partida> partidasSediadas;
 
-    public Estadio(String nome, String localizacao, int capacidade) {
+    public Estadio(String nome, Localizacao localizacao, int capacidade) {
         this.nome = nome;
         this.localizacao = localizacao;
         this.capacidade = capacidade;
@@ -26,11 +26,11 @@ public class Estadio {
         this.nome = nome;
     }
 
-    public String getLocalizacao() {
+    public Localizacao getLocalizacao() {
         return localizacao;
     }
 
-    public void setLocalizacao(String localizacao){
+    public void setLocalizacao(Localizacao localizacao){
         this.localizacao = localizacao;
     }
 
