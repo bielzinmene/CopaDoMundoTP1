@@ -1,11 +1,12 @@
 package br.unb.cic.copa.model.aluno1;
 
 public abstract class Usuario {
+    protected int id;
     protected String nome;
     protected String email;
     protected String login;
     protected String senha;
-    protected String identificacao;
+    protected String cpf;
     protected String pais;
     protected String funcao;
     protected String status;
@@ -21,29 +22,5 @@ public abstract class Usuario {
         this.status = "Ativo";
     }
 
-    public String getNome() {
-        return nome;
-    }
-    public String getEmail() {
-        return email;
-    }
-    public String getLogin() {
-        return login;
-    }
-    public String getSenha() {
-        return senha;
-    }
-    public String getIdentificacao() {
-        return identificacao;
-    }
-    public String getPais() {
-        return pais;
-    }
-    public String getFuncao() {
-        return funcao;
-    }
-    public String getStatus() {
-        return status;
-    }
-
+    
 }
