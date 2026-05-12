@@ -6,13 +6,15 @@ import br.unb.cic.copa.model.aluno4.Partida;
 
 public class Arbitro {
     //atributos
+    private int id;
     private String nome;
     private String nacionalidade;
     private int experiencia;
     private List<Partida> partidasDesignadas;
 
         //Construtor
-    public Arbitro(String nome, String nacionalidade, int experiencia) {
+    public Arbitro(int id, String nome, String nacionalidade, int experiencia) {
+        this.id = id;
         this.nome = nome;
         this.nacionalidade = nacionalidade;
         this.experiencia = experiencia;
@@ -26,6 +28,8 @@ public class Arbitro {
     public void setNome(String nome){
         this.nome = nome;
     }
+    public int getId() {
+        return id; }
 
     public String getNacionalidade() {
         return nacionalidade;
