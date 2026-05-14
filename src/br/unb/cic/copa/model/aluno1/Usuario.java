@@ -1,15 +1,15 @@
 package br.unb.cic.copa.model.aluno1;
 
 public abstract class Usuario {
-    private int id;
-    private String nome;
-    private String email;
-    private String login;
-    private String senha;
-    private String cpf;
-    private String pais;
-    private String funcao;
-    private String status;
+    protected int id;
+    protected String nome;
+    protected String email;
+    protected String login;
+    protected String senha;
+    protected String cpf;
+    protected String pais;
+    protected String funcao;
+    protected String status;
 
     public Usuario(int id, String nome, String email, String login, String senha, String cpf, String pais, String funcao) {
         this.id = id;
