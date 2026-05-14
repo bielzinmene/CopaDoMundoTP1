@@ -16,6 +16,13 @@ public class Selecao {
         this.jogadores = new ArrayList<>();
     }
 
+    public void adicionarJogador(Jogador jogador) {
+        if (this.jogadores.size() < 25) { //num max num time
+            this.jogadores.add(jogador);
+            jogador.setSelecao(this); //o jogador sabe que pertence a essa selecao
+        }
+    }
+
     public void setNome(String nome) {
         this.nome = nome;
     }
