@@ -1,16 +1,27 @@
 package br.unb.cic.copa.model.aluno3;
 
+import java.util.ArrayList;
+import java.util.List;
+import br.unb.cic.copa.model.aluno4.Partida;
+
 public class Estadio {
 
+    private int id;
     private String nome;
-    private String localizacao;
+    private Localizacao localizacao;
     private int capacidade;
+    private List<Partida> partidasSediadas;
 
-    public Estadio(String nome, String localizacao, int capacidade) {
+    public Estadio(int id, String nome, Localizacao localizacao, int capacidade) {
+        this.id = id;
         this.nome = nome;
         this.localizacao = localizacao;
         this.capacidade = capacidade;
+        this.partidasSediadas = new ArrayList<>();
     }
+
+    public int getId() {
+        return id; }
 
     public String getNome() {
         return nome;
@@ -20,11 +31,11 @@ public class Estadio {
         this.nome = nome;
     }
 
-    public String getLocalizacao() {
+    public Localizacao getLocalizacao() {
         return localizacao;
     }
 
-    public void setLocalizacao(String localizacao){
+    public void setLocalizacao(Localizacao localizacao){
         this.localizacao = localizacao;
     }
 
@@ -35,4 +46,24 @@ public class Estadio {
     public void setCapacidade(int capacidade){
         this.capacidade = capacidade;
     }
+
+    public List<Partida> getPartidasSediadas(){
+        return partidasSediadas;
+    }
+
+    /* public boolean verificarDisponibilidade(String data){
+        for (Partida p: partidasSediadas){
+            if (p.getData().equals(data)){
+                return false;
+            }
+        }
+        return true;
+    } */
+
+    /* public void adicionarPartida(Partida partida){
+        if (verificarDisponibilidade(partida.getData())){
+            this.partidasSediadas.add(partida);
+        }
+    } */
+
 }

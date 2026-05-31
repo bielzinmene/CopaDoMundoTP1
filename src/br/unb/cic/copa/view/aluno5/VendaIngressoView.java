@@ -1,5 +1,7 @@
 package br.unb.cic.copa.view.aluno5;
 
+import br.unb.cic.copa.view.aluno1.MenuPrincipalView;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -25,19 +27,12 @@ public class VendaIngressoView extends JFrame {
 
         // Partida (depois eu vou fazer algo para preencher isso de acordo  com o cadastro das partidas)
         add(new JLabel("Partida:"));
-        cbPartida = new JComboBox<>(new String[] {
-                "Brasil x Argentina",
-                "França x Alemanha"
-        });
+        cbPartida = new JComboBox<>(new String[]{"Brasil x Argentina", "França x Alemanha"});
         add(cbPartida);
 
         // Categorias
         add(new JLabel("Categoria:"));
-        cbCategoria = new JComboBox<>(new String[] {
-                "VIP",
-                "Padrão",
-                "Meia"
-        });
+        cbCategoria = new JComboBox<>(new String[]{"VIP", "Padrão", "Meia"});
         add(cbCategoria);
 
         // Quantidade
@@ -49,12 +44,23 @@ public class VendaIngressoView extends JFrame {
         JButton botaoVender = new JButton("Vender");
         JButton botaoCancelar = new JButton("Cancelar");
 
-        botaoCancelar.addActionListener(e -> dispose());
+        botaoCancelar.addActionListener(e -> {
+            new MenuPrincipalView().setVisible(true);
+            dispose();
+        });
+
+        botaoVender.addActionListener(e -> {
+            new MenuPrincipalView().setVisible(true);
+            dispose();
+        });
 
         add(botaoVender);
         add(botaoCancelar);
 
-        // Ação do botão vender (simples por enquanto. Em breve a lógica vai ser implementada)
+    }
+}
+
+/*      Ação do botão vender (simples por enquanto. Em breve a lógica vai ser implementada)
         botaoVender.addActionListener(e -> venderIngresso());
     }
 
@@ -81,4 +87,5 @@ public class VendaIngressoView extends JFrame {
             );
         }
     }
-}
+
+*/
