@@ -1,33 +1,35 @@
 package br.unb.cic.copa.model.aluno2;
 
-public class Jogador {
+import br.unb.cic.copa.model.aluno2.exception.NumeroCamisaInvalidoException;
+
+import java.io.Serializable;
+
+public class Jogador implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private String nome;
     private int numeracao;
     private Posicao posicao;
     private Selecao selecao;
     private boolean titular;
+    private StatusJogador status;
 
-    public Jogador(String nome, int numeracao, Posicao posicao, boolean titular) {
+    //construtor sem seleçao para nao criar um jogador com uma seleção já, pois pode ser trocada posteriormente
+    public Jogador(String nome, int numeracao, Posicao posicao, boolean titular) throws NumeroCamisaInvalidoException {
         this.nome = nome;
         this.posicao = posicao;
         this.titular = titular;
+        this.status = StatusJogador.ATIVO;//padrão
         setNumeracao((numeracao));//pra n correr o risco de construir um objeto com numeracao invalida
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public void setNumeracao(int numeracao) {
+    public void setNumeracao(int numeracao) throws NumeroCamisaInvalidoException {
         if (numeracao < 1 || numeracao > 26) {//valida se o numero esta no intervalo de 1 a 26
-            System.out.println("Erro: a numeração " + numeracao + " é inválida de acordo com as regras da FIFA.");
-            return;
+            throw new NumeroCamisaInvalidoException("Numeração " + numeracao + " inválida. Deve ser entre 1 e 26.");
         }
-        if(numeracao == 1 && !(this.getPosicao() == Posicao.GOLEIRO)){//o numero 1 é exclusivamente pra GOLEIRO
-            System.out.println("Erro: a numeração >1< é reservada para a posição GOLEIRO.");
-            return;
+        if(numeracao == 1 && this.posicao != Posicao.GOLEIRO){//o numero 1 é exclusivamente pra GOLEIRO
+            throw new NumeroCamisaInvalidoException("A numeração 1 é reservada para a posição GOLEIRO.");
         }
-
         this.numeracao = numeracao;
     }
 
@@ -37,36 +39,23 @@ public class Jogador {
         String nomeSelecao = (selecao != null) ? selecao.getNome() : "Sem seleção";
         return String.format("Jogador: %s (%d) | Posição: %s | Seleção: %s", nome, numeracao, posicao, nomeSelecao);
     }
-
-    public void setPosicao(Posicao posicao) {
-        this.posicao = posicao;
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
-    public void setSelecao(Selecao selecao) {
-        this.selecao = selecao;
-    }
+    public void setPosicao(Posicao posicao) {this.posicao = posicao;}
 
-    public void setTitular(boolean titular) {
-        this.titular = titular;
-    }
+    public void setSelecao(Selecao selecao) {this.selecao = selecao;}
 
-    public String getNome() {
-        return nome;
-    }
+    public void setTitular(boolean titular) {this.titular = titular;}
 
-    public int getNumeracao() {
-        return numeracao;
-    }
+    public String getNome() {return nome;}
 
-    public Posicao getPosicao() {
-        return posicao;
-    }
+    public int getNumeracao() {return numeracao;}
 
-    public Selecao getSelecao() {
-        return selecao;
-    }
+    public Posicao getPosicao() {return posicao;}
 
-    public boolean isTitular() {
-        return titular;
-    }
+    public Selecao getSelecao() {return selecao;}
+
+    public boolean isTitular() {return titular;}
 }
