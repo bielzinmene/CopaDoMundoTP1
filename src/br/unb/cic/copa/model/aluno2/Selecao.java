@@ -16,7 +16,7 @@ public class Selecao {
         this.jogadores = new ArrayList<>();
     }
 
-    public boolean numeroJaExiste(int numeracao) {
+    public boolean numeroJaExiste(int numeracao) {//verifica se a numeracao passada ja existe
         for (Jogador j : jogadores) {
             if (j.getNumeracao() == numeracao) {
                 return true;
@@ -78,7 +78,6 @@ public class Selecao {
             if (!j.isTitular()) System.out.println(j);
         }
     }
-
 
     public void setNome(String nome) {
         this.nome = nome;
