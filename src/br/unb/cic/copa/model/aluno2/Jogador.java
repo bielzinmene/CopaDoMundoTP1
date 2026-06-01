@@ -58,4 +58,8 @@ public class Jogador implements Serializable {
     public Selecao getSelecao() {return selecao;}
 
     public boolean isTitular() {return titular;}
+
+    public StatusJogador getStatus() {
+        return status;
+    }
 }

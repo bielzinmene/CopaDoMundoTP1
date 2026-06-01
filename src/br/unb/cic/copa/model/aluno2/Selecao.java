@@ -2,8 +2,15 @@ package br.unb.cic.copa.model.aluno2;
 
 import java.util.ArrayList;
 import java.util.List;
+import br.unb.cic.copa.model.aluno2.exception.*;
+import java.io.Serializable;
+import java.util.stream.Collectors;
 
-public class Selecao {
+public class Selecao implements Serializable {
+    private static final long serialVersionUID = 1L;
+    private static final int MIN_JOGADORES = 18;
+    private static final int MAX_JOGADORES = 26;
+
     private String nome;
     private String grupo;
     private String tecnico;
@@ -16,59 +23,101 @@ public class Selecao {
         this.jogadores = new ArrayList<>();
     }
 
-    public boolean numeroJaExiste(int numeracao) {//verifica se a numeracao passada ja existe
-        for (Jogador j : jogadores) {
-            if (j.getNumeracao() == numeracao) {
-                return true;
-            }
-        }
-        return false;
+    public boolean numeroJaExiste(int numeracao) {
+        return jogadores.stream().anyMatch(j -> j.getNumeracao() == numeracao);
     }
 
-    public void adicionarJogador(Jogador novoJogador) {
-        if(this.jogadores.size() >= 26) {//percorre a lista de jogadores e ve se tem mais de 26
-            System.out.println("Erro: A seleção " + this.nome + " atingiu o máximo de jogadores.");
-            return;
+    public void adicionarJogador(Jogador novoJogador) throws LimiteJogadoresException, JogadorDuplicadoException {
+        if(jogadores.size() >= MAX_JOGADORES) {//percorre a lista de jogadores e ve se tem mais de 26
+            throw new LimiteJogadoresException("A seleção " + nome + "já atingiu o limite máximo de " + MAX_JOGADORES + " jogadores.");
         }
 
-        if(numeroJaExiste(novoJogador.getNumeracao())) {
-            System.out.println("Erro: A numeração " + novoJogador.getNumeracao() + " já está sendo usada.");
-            return;
+        if (numeroJaExiste(novoJogador.getNumeracao())) {
+            throw new JogadorDuplicadoException("A numeração " + novoJogador.getNumeracao() + " já está sendo usada na seleção " + nome);
         }
 
         this.jogadores.add(novoJogador);//adiciona o jogador na lista de jogadores - deu certo
         novoJogador.setSelecao(this); //o jogador sabe que pertence a essa selecao - adiciona o jogador a respectiva selecao
     }//end adicionar jogador
 
-    public boolean ehEscalacaoValida(){
+    public void removerJogador(Jogador jogador) {
+        jogadores.remove(jogador);//remove o jogador da lista de jogadores
+        if (jogador.getSelecao() == this) {//se a seleção do jogador for a mesma da instancia
+            jogador.setSelecao(null);//seta como nula a seleção do mesmo
+        }
+    }
+
+    public void removerJogadorPorNome(String nome) {
+        Jogador remover = null;
+        for (Jogador j : jogadores) {
+            if (j.getNome().equalsIgnoreCase(nome)) {
+                remover = j;
+                break;
+            }
+        }
+        if (remover != null) {
+            removerJogador(remover);
+        }
+    }
+
+    //valida a escalação antes da partida contando com status do jogador - nao pode lesionado nem suspenso
+    public boolean ehEscalacaoValida() throws StatusJogadorInvalidoException{
         int contTitular = 0;
         boolean temGoleiro = false;
 
-        for(Jogador j : this.jogadores){//percorre a lista de jogadores
+        for(Jogador j : jogadores){//percorre a lista de jogadores
             if(j.isTitular()){
-                contTitular++;//verifica os titulares na lista de jogadores
+                if(j.getStatus() != StatusJogador.ATIVO){
+                    throw new StatusJogadorInvalidoException("Jogador " + j.getNome() + " está " + j.getStatus() + " e não pode ser titular.");
+                }
+                contTitular++;//contabiliza os titulares na lista de jogadores
             }
-            if(j.getPosicao() == Posicao.GOLEIRO) {//verifica se tem pelo menos um goleiro
+            if(j.getPosicao() == Posicao.GOLEIRO && j.isTitular()) {//verifica se tem pelo menos um goleiro e titular
                 temGoleiro = true;
             }
         }
         if(contTitular != 11) {
-            System.out.println("Erro na escalação da " + this.nome + ": Uma equipe precisa de exatamente 11 titulares (atualmente tem " + contTitular + ").");
+            System.out.println("Erro na escalação da " + nome + ": Apenas " + contTitular + " titulares (necessário 11).");
             return false;
         }
 
         if (!temGoleiro) {
-            System.out.println("Erro na escalação da " + this.nome + ": É obrigatório ter pelo menos 1 GOLEIRO entre os titulares.");
+            System.out.println("Erro na escalação da " + nome + ": Nenhum goleiro entre os titulares.");
             return false;
         }
 
-        System.out.println("A seleção " + this.nome + " está apta e escalada corretamente para a partida!");
+        System.out.println("A seleção " + nome + " está apta e escalada corretamente para a partida!");
         return true;
     }//end ehEscalacaoValida
 
+    // Verifica se a seleção tem o número mínimo de jogadores (18)
+    public boolean isElencoCompleto() {
+        return jogadores.size() >= MIN_JOGADORES;
+    }
+
+    // Consultas por critérios
+    public List<Jogador> buscarJogadoresPorPosicao(Posicao posicao) {
+        return jogadores.stream()
+                .filter(j -> j.getPosicao() == posicao)
+                .collect(Collectors.toList());
+    }
+
+    public List<Jogador> buscarJogadoresPorStatus(StatusJogador status) {
+        return jogadores.stream()
+                .filter(j -> j.getStatus() == status)
+                .collect(Collectors.toList());
+    }
+
+    public List<Jogador> buscarJogadoresPorNome(String parteNome) {
+        return jogadores.stream()
+                .filter(j -> j.getNome().toLowerCase().contains(parteNome.toLowerCase()))
+                .collect(Collectors.toList());
+    }
+
     public void exibirIntegrantes() {
-        System.out.println("=== Integrantes da Seleção: " + this.nome + " ===");
-        System.out.println("Técnico: " + this.tecnico);
+        System.out.println("=== Seleção: " + nome + " (Grupo " + grupo + ") ===");
+        System.out.println("Técnico: " + tecnico);
+        System.out.println("Total de jogadores: " + jogadores.size());
         System.out.println("--- Titulares ---");
         for (Jogador j : jogadores) {
             if (j.isTitular()) System.out.println(j); // Aciona o toString
