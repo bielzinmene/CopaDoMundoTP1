@@ -11,7 +11,7 @@ public class Jogador {
         this.nome = nome;
         this.posicao = posicao;
         this.titular = titular;
-        setNumeracao((numeracao));
+        setNumeracao((numeracao));//pra n correr o risco de construir um objeto com numeracao invalida
     }
 
     public void setNome(String nome) {
@@ -23,7 +23,7 @@ public class Jogador {
             System.out.println("Erro: a numeração " + numeracao + " é inválida de acordo com as regras da FIFA.");
             return;
         }
-        if(numeracao == 1 && !(this.getPosicao() == Posicao.GOLEIRO)){
+        if(numeracao == 1 && !(this.getPosicao() == Posicao.GOLEIRO)){//o numero 1 é exclusivamente pra GOLEIRO
             System.out.println("Erro: a numeração >1< é reservada para a posição GOLEIRO.");
             return;
         }
@@ -33,7 +33,7 @@ public class Jogador {
 
 
     @Override
-    public String toString() {
+    public String toString() {//formatar para exibir de acordo com o q quero
         String nomeSelecao = (selecao != null) ? selecao.getNome() : "Sem seleção";
         return String.format("Jogador: %s (%d) | Posição: %s | Seleção: %s", nome, numeracao, posicao, nomeSelecao);
     }
