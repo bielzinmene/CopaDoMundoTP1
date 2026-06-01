@@ -3,11 +3,9 @@ package br.unb.cic.copa.model.aluno2;
 import java.util.ArrayList;
 import java.util.List;
 import br.unb.cic.copa.model.aluno2.exception.*;
-import java.io.Serializable;
-import java.util.stream.Collectors;
+import java.io.*;
 
-public class Selecao implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class Selecao {
     private static final int MIN_JOGADORES = 18;
     private static final int MAX_JOGADORES = 26;
 
@@ -95,23 +93,35 @@ public class Selecao implements Serializable {
         return jogadores.size() >= MIN_JOGADORES;
     }
 
-    // Consultas por critérios
     public List<Jogador> buscarJogadoresPorPosicao(Posicao posicao) {
-        return jogadores.stream()
-                .filter(j -> j.getPosicao() == posicao)
-                .collect(Collectors.toList());
+        List<Jogador> resultado = new ArrayList<>();
+        for (Jogador j : jogadores) {
+            if (j.getPosicao() == posicao) {
+                resultado.add(j);
+            }
+        }
+        return resultado;
     }
 
     public List<Jogador> buscarJogadoresPorStatus(StatusJogador status) {
-        return jogadores.stream()
-                .filter(j -> j.getStatus() == status)
-                .collect(Collectors.toList());
+        List<Jogador> resultado = new ArrayList<>();
+        for (Jogador j : jogadores) {
+            if (j.getStatus() == status) {
+                resultado.add(j);
+            }
+        }
+        return resultado;
     }
 
     public List<Jogador> buscarJogadoresPorNome(String parteNome) {
-        return jogadores.stream()
-                .filter(j -> j.getNome().toLowerCase().contains(parteNome.toLowerCase()))
-                .collect(Collectors.toList());
+        List<Jogador> resultado = new ArrayList<>();
+        String parteLower = parteNome.toLowerCase();
+        for (Jogador j : jogadores) {
+            if (j.getNome().toLowerCase().contains(parteLower)) {
+                resultado.add(j);
+            }
+        }
+        return resultado;
     }
 
     public void exibirIntegrantes() {
@@ -127,6 +137,87 @@ public class Selecao implements Serializable {
             if (!j.isTitular()) System.out.println(j);
         }
     }
+
+    // ========== PERSISTÊNCIA EM TXT ==========
+
+    /**
+     * Salva todas as seleções (e seus jogadores) em um arquivo texto.
+     * Formato:
+     * S;nome;grupo;tecnico
+     * J;nome;numero;posicao;titular;status;nomeSelecao
+     * ...
+     */
+
+    public static void salvarTodas(List<Selecao> selecoes) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter("selecoes.txt"))) {
+            for (Selecao s : selecoes) {
+                writer.println("S;" + s.getNome() + ";" + s.getGrupo() + ";" + s.getTecnico());
+                for (Jogador j : s.getJogadores()) {
+                    writer.println("J;" + j.getNome() + ";" + j.getNumeracao() + ";"
+                            + j.getPosicao().name() + ";" + j.isTitular() + ";"
+                            + j.getStatus().name() + ";" + s.getNome());
+                }
+            }
+            System.out.println("Dados salvos com sucesso em 'selecoes.txt'.");
+        } catch (IOException e) {
+            System.err.println("Erro ao salvar: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Carrega todas as seleções a partir do arquivo texto.
+     * Se o arquivo não existir, retorna lista vazia.
+     * Jogadores inválidos (ex: número duplicado, limite excedido) são ignorados.
+     */
+
+    public static List<Selecao> carregarTodas() {
+        List<Selecao> selecoes = new ArrayList<>();
+        File arquivo = new File("selecoes.txt");
+        if (!arquivo.exists()) {
+            return selecoes; // arquivo ainda não existe
+        }
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(arquivo))) {
+            String linha;
+            Selecao selecaoAtual = null;
+            while ((linha = reader.readLine()) != null) {
+                String[] partes = linha.split(";");
+                if (partes.length == 0) continue;
+
+                if (partes[0].equals("S")) {
+                    // Criar nova seleção
+                    String nome = partes[1];
+                    String grupo = partes[2];
+                    String tecnico = partes[3];
+                    selecaoAtual = new Selecao(nome, grupo, tecnico);
+                    selecoes.add(selecaoAtual);
+                }
+                else if (partes[0].equals("J") && selecaoAtual != null) {
+                    try {
+                        String nomeJ = partes[1];
+                        int num = Integer.parseInt(partes[2]);
+                        Posicao pos = Posicao.valueOf(partes[3].toUpperCase());
+                        boolean titular = Boolean.parseBoolean(partes[4]);
+                        StatusJogador status = StatusJogador.valueOf(partes[5].toUpperCase());
+                        // O campo "selecao" será preenchido dentro de adicionarJogador()
+                        Jogador j = new Jogador(nomeJ, num, pos, titular);
+                        j.setStatus(status);
+                        // tenta adicionar à seleção; se violar regra, ignora o jogador
+                        selecaoAtual.adicionarJogador(j);
+                    } catch (Exception e) {
+                        // Exceções podem ser: IllegalArgumentException do construtor do Jogador,
+                        // LimiteJogadoresException, JogadorDuplicadoException, etc.
+                        System.err.println("Ignorando jogador inválido no arquivo: " + e.getMessage());
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Erro ao carregar dados: " + e.getMessage());
+        }
+        return selecoes;
+    }
+
+    // ========== GETTERS E SETTERS ==========
 
     public void setNome(String nome) {
         this.nome = nome;
