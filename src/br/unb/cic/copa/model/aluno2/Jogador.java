@@ -7,12 +7,11 @@ public class Jogador {
     private Selecao selecao;
     private boolean titular;
 
-    public Jogador(String nome, int numeracao, Posicao posicao, Selecao selecao, boolean titular) {
+    public Jogador(String nome, int numeracao, Posicao posicao, boolean titular) {
         this.nome = nome;
-        this.numeracao = numeracao;
         this.posicao = posicao;
-        this.selecao = selecao;
         this.titular = titular;
+        setNumeracao((numeracao));
     }
 
     public void setNome(String nome) {
@@ -20,16 +19,23 @@ public class Jogador {
     }
 
     public void setNumeracao(int numeracao) {
-        if (numeracao > 0 && numeracao <= 26) {
-            this.numeracao = numeracao;
-        } else {
-            System.out.println("Numeração inválida para a Copa de acordo com as regras da FIFA.");
+        if (numeracao < 1 || numeracao > 26) {//valida se o numero esta no intervalo de 1 a 26
+            System.out.println("Erro: a numeração " + numeracao + " é inválida de acordo com as regras da FIFA.");
+            return;
         }
+        if(numeracao == 1 && !(this.getPosicao() == Posicao.GOLEIRO)){
+            System.out.println("Erro: a numeração >1< é reservada para a posição GOLEIRO.");
+            return;
+        }
+
+        this.numeracao = numeracao;
     }
+
 
     @Override
     public String toString() {
-        return String.format("Jogador: %s (%d) | Posição: %s | Seleção: %s", nome, numeracao, posicao, selecao.getNome());
+        String nomeSelecao = (selecao != null) ? selecao.getNome() : "Sem seleção";
+        return String.format("Jogador: %s (%d) | Posição: %s | Seleção: %s", nome, numeracao, posicao, nomeSelecao);
     }
 
     public void setPosicao(Posicao posicao) {
