@@ -4,9 +4,7 @@ import br.unb.cic.copa.model.aluno2.exception.NumeroCamisaInvalidoException;
 
 import java.io.Serializable;
 
-public class Jogador implements Serializable {
-    private static final long serialVersionUID = 1L;
-
+public class Jogador {
     private String nome;
     private int numeracao;
     private Posicao posicao;
@@ -32,7 +30,6 @@ public class Jogador implements Serializable {
         }
         this.numeracao = numeracao;
     }
-
 
     @Override
     public String toString() {//formatar para exibir de acordo com o q quero
@@ -61,5 +58,8 @@ public class Jogador implements Serializable {
 
     public StatusJogador getStatus() {
         return status;
+    }
+
+    public void setStatus(StatusJogador status) {
     }
 }
