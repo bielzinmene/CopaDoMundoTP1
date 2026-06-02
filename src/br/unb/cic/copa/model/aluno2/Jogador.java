@@ -1,57 +1,60 @@
 package br.unb.cic.copa.model.aluno2;
 
+import br.unb.cic.copa.model.aluno2.exception.NumeroCamisaInvalidoException;
+
 public class Jogador {
     private String nome;
     private int numeracao;
-    private String posicao;
-    private String selecao;
+    private Posicao posicao;
+    private Selecao selecao;
     private boolean titular;
+    private StatusJogador status;
 
-    public Jogador(String nome, int numeracao, String posicao, String selecao, boolean titular) {
+    //construtor sem seleçao para nao criar um jogador com uma seleção já, pois pode ser trocada posteriormente
+    public Jogador(String nome, int numeracao, Posicao posicao, boolean titular) throws NumeroCamisaInvalidoException {
         this.nome = nome;
-        this.numeracao = numeracao;
         this.posicao = posicao;
-        this.selecao = selecao;
         this.titular = titular;
+        this.status = StatusJogador.ATIVO;//padrão
+        setNumeracao((numeracao));//pra n correr o risco de construir um objeto com numeracao invalida
     }
 
+    public void setNumeracao(int numeracao) throws NumeroCamisaInvalidoException {
+        if (numeracao < 1 || numeracao > 26) {//valida se o numero esta no intervalo de 1 a 26
+            throw new NumeroCamisaInvalidoException("Numeração " + numeracao + " inválida. Deve ser entre 1 e 26.");
+        }
+        if(numeracao == 1 && this.posicao != Posicao.GOLEIRO){//o numero 1 é exclusivamente pra GOLEIRO
+            throw new NumeroCamisaInvalidoException("A numeração 1 é reservada para a posição GOLEIRO.");
+        }
+        this.numeracao = numeracao;
+    }
+
+    @Override
+    public String toString() {//formatar para exibir de acordo com o q quero
+        String nomeSelecao = (selecao != null) ? selecao.getNome() : "Sem seleção";
+        return String.format("Jogador: %s (%d) | Posição: %s | Seleção: %s", nome, numeracao, posicao, nomeSelecao);
+    }
     public void setNome(String nome) {
         this.nome = nome;
     }
 
-    public void setNumeracao(int numeracao) {
-        this.numeracao = numeracao;
-    }
+    public void setPosicao(Posicao posicao) {this.posicao = posicao;}
 
-    public void setPosicao(String posicao) {
-        this.posicao = posicao;
-    }
+    public void setSelecao(Selecao selecao) {this.selecao = selecao;}
 
-    public void setSelecao(String selecao) {
-        this.selecao = selecao;
-    }
+    public void setTitular(boolean titular) {this.titular = titular;}
 
-    public void setTitular(boolean titular) {
-        this.titular = titular;
-    }
+    public String getNome() {return nome;}
 
-    public String getNome() {
-        return nome;
-    }
+    public int getNumeracao() {return numeracao;}
 
-    public int getNumeracao() {
-        return numeracao;
-    }
+    public Posicao getPosicao() {return posicao;}
 
-    public String getPosicao() {
-        return posicao;
-    }
+    public Selecao getSelecao() {return selecao;}
 
-    public String getSelecao() {
-        return selecao;
-    }
+    public boolean isTitular() {return titular;}
 
-    public boolean isTitular() {
-        return titular;
-    }
+    public StatusJogador getStatus() {return status;}
+
+    public void setStatus(StatusJogador status) {this.status = status;}
 }

@@ -6,17 +6,22 @@ import br.unb.cic.copa.model.aluno4.Partida;
 
 public class Estadio {
 
+    private int id;
     private String nome;
     private Localizacao localizacao;
     private int capacidade;
     private List<Partida> partidasSediadas;
 
-    public Estadio(String nome, Localizacao localizacao, int capacidade) {
+    public Estadio(int id, String nome, Localizacao localizacao, int capacidade) {
+        this.id = id;
         this.nome = nome;
         this.localizacao = localizacao;
         this.capacidade = capacidade;
         this.partidasSediadas = new ArrayList<>();
     }
+
+    public int getId() {
+        return id; }
 
     public String getNome() {
         return nome;

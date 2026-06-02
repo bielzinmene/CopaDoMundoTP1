@@ -35,7 +35,7 @@ public class MenuPrincipalView extends JFrame {
         JButton btnArbitros = new JButton("Gerenciar Arbitros");
         JButton btnEstadios = new JButton("Gerenciar Estádios");
         JButton btnJogadores = new JButton("Gerenciar Jogadores");
-        JButton btnPartida = new JButton("Gerenciar Partida");
+        JButton btnPartida = new JButton("Gerenciar Partidas");
         JButton btnIngresso = new JButton("Gerenciar Ingressos");
         JButton btnRelatorios = new JButton("Relatórios");
         JButton btnSair = new JButton("Sair / Logout");
