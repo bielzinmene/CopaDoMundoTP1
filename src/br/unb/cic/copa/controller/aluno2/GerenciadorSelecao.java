@@ -73,6 +73,9 @@ public class GerenciadorSelecao {
     public void adicionarJogador(String nomeSelecao, Jogador j) throws CopaException {
         Selecao s = buscarSelecaoPorNome(nomeSelecao);
         if (s == null) throw new CopaException("Seleção não encontrada");
+        if (j.getSelecao() != null) {
+            throw new CopaException("Jogador já pertence a outra seleção.");
+        }
         s.adicionarJogador(j);
         salvar();
     }
