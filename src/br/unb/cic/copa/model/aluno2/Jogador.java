@@ -56,10 +56,7 @@ public class Jogador {
 
     public boolean isTitular() {return titular;}
 
-    public StatusJogador getStatus() {
-        return status;
-    }
+    public StatusJogador getStatus() {return status;}
 
-    public void setStatus(StatusJogador status) {
-    }
+    public void setStatus(StatusJogador status) {this.status = status;}
 }
