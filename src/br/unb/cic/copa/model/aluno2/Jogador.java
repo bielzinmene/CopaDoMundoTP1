@@ -2,8 +2,6 @@ package br.unb.cic.copa.model.aluno2;
 
 import br.unb.cic.copa.model.aluno2.exception.NumeroCamisaInvalidoException;
 
-import java.io.Serializable;
-
 public class Jogador {
     private String nome;
     private int numeracao;
