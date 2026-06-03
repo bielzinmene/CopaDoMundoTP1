@@ -19,6 +19,10 @@ public class Jogador {
         setNumeracao((numeracao));//pra n correr o risco de construir um objeto com numeracao invalida
     }
 
+    public Jogador() {
+        this.status = StatusJogador.ATIVO;
+    }
+
     public void setNumeracao(int numeracao) throws NumeroCamisaInvalidoException {
         if (numeracao < 1 || numeracao > 26) {//valida se o numero esta no intervalo de 1 a 26
             throw new NumeroCamisaInvalidoException("Numeração " + numeracao + " inválida. Deve ser entre 1 e 26.");
