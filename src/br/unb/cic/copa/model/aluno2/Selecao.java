@@ -31,18 +31,7 @@ public class Selecao {
         this.id = 0;
     }
 
-    // Método estático para sincronizar o contador com o maior ID carregado
-    public static void setUltimoId(int ultimoId) {
-        contadorID = ultimoId;
-    }
-
-    // (Opcional) Se precisar obter o valor atual do contador
-    public static int getUltimoId() {
-        return contadorID;
-    }
-
-    // ---------- Demais métodos (numeroJaExiste, adicionarJogador, etc.) ----------
-    // Eles permanecem exatamente iguais aos que você já tem
+    // ----------métodos (numeroJaExiste, adicionarJogador, etc.) ----------
     public boolean numeroJaExiste(int numeracao) {
         return jogadores.stream().anyMatch(j -> j.getNumeracao() == numeracao);
     }
@@ -159,6 +148,17 @@ public class Selecao {
     }
 
     // ========== GETTERS E SETTERS ==========
+
+    // Método estático para sincronizar o contador com o maior ID carregado
+    public static void setUltimoId(int ultimoId) {
+        contadorID = ultimoId;
+    }
+
+    //Se precisar obter o valor atual do contador
+    public static int getUltimoId() {
+        return contadorID;
+    }
+
     public int getId() {
         return id;
     }
