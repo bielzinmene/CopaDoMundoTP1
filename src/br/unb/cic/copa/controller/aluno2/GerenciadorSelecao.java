@@ -2,26 +2,41 @@ package br.unb.cic.copa.controller.aluno2;
 
 import br.unb.cic.copa.model.aluno2.*;
 import br.unb.cic.copa.model.aluno2.exception.*;
-import br.unb.cic.copa.persistence.aluno2.SelecaoDAO;
+import br.unb.cic.copa.model.aluno2.repository.SelecaoRepository;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class GerenciadorSelecao {
     private List<Selecao> selecoes;
+    private final SelecaoRepository repositorio;
 
     public GerenciadorSelecao() {
-        selecoes = SelecaoDAO.carregarTodas();
+        this.repositorio = new SelecaoRepository("src/dados/selecoes.json");
+        try {
+            selecoes = repositorio.carregarTodas();
+            // Atualiza o contador de IDs da classe Selecao
+            int maxId = selecoes.stream().mapToInt(Selecao::getId).max().orElse(0);
+            Selecao.setUltimoId(maxId);
+        } catch (IOException e) {
+            selecoes = new ArrayList<>();
+            System.err.println("Erro ao carregar seleções: " + e.getMessage());
+        }
     }
 
-    private void salvar() {
-        SelecaoDAO.salvarTodas(selecoes);
+    private void salvar() throws CopaException {
+        try {
+            repositorio.salvarTodas(selecoes);
+        } catch (IOException e) {
+            throw new CopaException("Erro ao salvar dados: " + e.getMessage());
+        }
     }
 
     // ------ CRUD Seleção ------
-    public void adicionarSelecao(Selecao s) {
+    public void adicionarSelecao(Selecao s) throws CopaException {
         if (buscarSelecaoPorNome(s.getNome()) != null) {
-            throw new IllegalArgumentException("Já existe seleção com o nome " + s.getNome());
+            throw new CopaException("Já existe seleção com o nome " + s.getNome());
         }
         selecoes.add(s);
         salvar();
@@ -30,7 +45,7 @@ public class GerenciadorSelecao {
     public void removerSelecao(String nome) throws CopaException {
         Selecao s = buscarSelecaoPorNome(nome);
         if (s == null) throw new CopaException("Seleção não encontrada: " + nome);
-        // desassociar jogadores (opcional)
+        // Desassociar jogadores
         for (Jogador j : s.getJogadores()) {
             j.setSelecao(null);
         }
@@ -55,8 +70,9 @@ public class GerenciadorSelecao {
     }
 
     public Selecao buscarSelecaoPorNome(String nome) {
+        if (nome == null || selecoes == null) return null;
         for (Selecao s : selecoes) {
-            if (s.getNome().equalsIgnoreCase(nome)) return s;
+            if (s != null && nome.equalsIgnoreCase(s.getNome())) return s;
         }
         return null;
     }
