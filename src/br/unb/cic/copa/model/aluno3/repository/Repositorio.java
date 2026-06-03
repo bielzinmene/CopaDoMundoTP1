@@ -13,4 +13,6 @@ public interface Repositorio<T> {
     List<T> listarTodos() throws IOException;
 
     void remover(int id) throws IOException;
+
+
 }

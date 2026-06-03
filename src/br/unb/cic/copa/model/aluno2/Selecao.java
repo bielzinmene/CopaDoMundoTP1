@@ -9,39 +9,61 @@ public class Selecao {
     private static final int MIN_JOGADORES = 18;
     private static final int MAX_JOGADORES = 26;
 
+    private int id;
+    private static int contadorID = 0;
     private String nome;
     private String grupo;
     private String tecnico;
     private List<Jogador> jogadores;
 
+    // Construtor para nova seleção (gera ID automaticamente)
     public Selecao(String nome, String grupo, String tecnico) {
+        this.id = ++contadorID;  // incrementa antes de atribuir (garante que comece em 1)
         this.nome = nome;
         this.grupo = grupo;
         this.tecnico = tecnico;
         this.jogadores = new ArrayList<>();
     }
 
+    // Construtor vazio para uso do JSON (ID será setado manualmente)
+    public Selecao() {
+        this.jogadores = new ArrayList<>();
+        this.id = 0;
+    }
+
+    // Método estático para sincronizar o contador com o maior ID carregado
+    public static void setUltimoId(int ultimoId) {
+        contadorID = ultimoId;
+    }
+
+    // (Opcional) Se precisar obter o valor atual do contador
+    public static int getUltimoId() {
+        return contadorID;
+    }
+
+    // ---------- Demais métodos (numeroJaExiste, adicionarJogador, etc.) ----------
+    // Eles permanecem exatamente iguais aos que você já tem
     public boolean numeroJaExiste(int numeracao) {
         return jogadores.stream().anyMatch(j -> j.getNumeracao() == numeracao);
     }
 
     public void adicionarJogador(Jogador novoJogador) throws LimiteJogadoresException, JogadorDuplicadoException {
-        if(jogadores.size() >= MAX_JOGADORES) {//percorre a lista de jogadores e ve se tem mais de 26
-            throw new LimiteJogadoresException("A seleção " + nome + "já atingiu o limite máximo de " + MAX_JOGADORES + " jogadores.");
+        if(jogadores.size() >= MAX_JOGADORES) {
+            throw new LimiteJogadoresException("A seleção " + nome + " já atingiu o limite máximo de " + MAX_JOGADORES + " jogadores.");
         }
 
         if (numeroJaExiste(novoJogador.getNumeracao())) {
             throw new JogadorDuplicadoException("A numeração " + novoJogador.getNumeracao() + " já está sendo usada na seleção " + nome);
         }
 
-        this.jogadores.add(novoJogador);//adiciona o jogador na lista de jogadores - deu certo
-        novoJogador.setSelecao(this); //o jogador sabe que pertence a essa selecao - adiciona o jogador a respectiva selecao
-    }//end adicionar jogador
+        this.jogadores.add(novoJogador);
+        novoJogador.setSelecao(this);
+    }
 
     public void removerJogador(Jogador jogador) {
-        jogadores.remove(jogador);//remove o jogador da lista de jogadores
-        if (jogador.getSelecao() == this) {//se a seleção do jogador for a mesma da instancia
-            jogador.setSelecao(null);//seta como nula a seleção do mesmo
+        jogadores.remove(jogador);
+        if (jogador.getSelecao() == this) {
+            jogador.setSelecao(null);
         }
     }
 
@@ -58,19 +80,18 @@ public class Selecao {
         }
     }
 
-    //valida a escalação antes da partida contando com status do jogador - nao pode lesionado nem suspenso
-    public boolean ehEscalacaoValida() throws StatusJogadorInvalidoException{
+    public boolean ehEscalacaoValida() throws StatusJogadorInvalidoException {
         int contTitular = 0;
         boolean temGoleiro = false;
 
-        for(Jogador j : jogadores){//percorre a lista de jogadores
+        for(Jogador j : jogadores) {
             if(j.isTitular()){
                 if(j.getStatus() != StatusJogador.ATIVO){
                     throw new StatusJogadorInvalidoException("Jogador " + j.getNome() + " está " + j.getStatus() + " e não pode ser titular.");
                 }
-                contTitular++;//contabiliza os titulares na lista de jogadores
+                contTitular++;
             }
-            if(j.getPosicao() == Posicao.GOLEIRO && j.isTitular()) {//verifica se tem pelo menos um goleiro e titular
+            if(j.getPosicao() == Posicao.GOLEIRO && j.isTitular()) {
                 temGoleiro = true;
             }
         }
@@ -86,9 +107,8 @@ public class Selecao {
 
         System.out.println("A seleção " + nome + " está apta e escalada corretamente para a partida!");
         return true;
-    }//end ehEscalacaoValida
+    }
 
-    // Verifica se a seleção tem o número mínimo de jogadores (18)
     public boolean isElencoCompleto() {
         return jogadores.size() >= MIN_JOGADORES;
     }
@@ -130,7 +150,7 @@ public class Selecao {
         System.out.println("Total de jogadores: " + jogadores.size());
         System.out.println("--- Titulares ---");
         for (Jogador j : jogadores) {
-            if (j.isTitular()) System.out.println(j); // Aciona o toString
+            if (j.isTitular()) System.out.println(j);
         }
         System.out.println("--- Reservas ---");
         for (Jogador j : jogadores) {
@@ -139,6 +159,13 @@ public class Selecao {
     }
 
     // ========== GETTERS E SETTERS ==========
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public void setNome(String nome) {
         this.nome = nome;
