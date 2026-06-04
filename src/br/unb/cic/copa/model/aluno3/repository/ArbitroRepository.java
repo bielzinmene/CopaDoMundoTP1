@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 // Persiste árbitros em arquivo JSON
-public class ArbitroRepository implements Repositorio<Arbitro> {
+public class  ArbitroRepository implements Repositorio<Arbitro> {
 
     private final String caminhoArquivo;
 
