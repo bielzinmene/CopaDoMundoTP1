@@ -24,7 +24,7 @@ public class TestarInterfaceArbitro {
     // Deve criar árbitro sem erros
     private static void testarCriacaoValida() {
         try {
-            Arbitro a = new Arbitro(1, "Carlos Silva", "Brasileira", 10);
+            Arbitro a = new Arbitro(1, "Carlos Silva", "carlos@copa.com", "carlos", "Senha123", "111.111.111-11", "Brasil", "Brasileira", 10);
             System.out.println("[OK] Árbitro criado: " + a);
         } catch (ExperienciaInvalidaException e) {
             System.out.println("[FALHA] " + e.getMessage());
@@ -34,7 +34,7 @@ public class TestarInterfaceArbitro {
     // Deve lançar ExperienciaInvalidaException
     private static void testarExperienciaInvalida() {
         try {
-            new Arbitro(2, "João Lima", "Argentina", -5);
+            new Arbitro(2, "João Lima", "joao@copa.com", "joao", "Senha123", "222.222.222-22", "Argentina", "Argentina", -5);
             System.out.println("[FALHA] Deveria ter lançado ExperienciaInvalidaException.");
         } catch (ExperienciaInvalidaException e) {
             System.out.println("[OK] ExperienciaInvalidaException lançada: " + e.getMessage());
@@ -44,7 +44,7 @@ public class TestarInterfaceArbitro {
     // Árbitro com nacionalidade diferente das seleções deve ser designado com sucesso
     private static void testarDesignacaoValida() {
         try {
-            Arbitro arbitro = new Arbitro(3, "Pierre Dupont", "Francesa", 8);
+            Arbitro arbitro = new Arbitro(3, "Pierre Dupont", "pierre@copa.com", "pierre", "Senha123", "333.333.333-33", "França", "Francesa", 8);
             Partida partida = criarPartida("Brasil", "Argentina");
             arbitro.designarParaPartida(partida);
             System.out.println("[OK] Árbitro designado com sucesso para a partida.");
@@ -56,7 +56,7 @@ public class TestarInterfaceArbitro {
     // Deve lançar ArbitroNacionalidadeException pois árbitro é brasileiro
     private static void testarDesignacaoNacionalidadeInvalida() {
         try {
-            Arbitro arbitro = new Arbitro(4, "Marcos Souza", "Brasil", 5);
+            Arbitro arbitro = new Arbitro(4, "Marcos Souza", "marcos@copa.com", "marcos", "Senha123", "444.444.444-44", "Brasil", "Brasil", 5);
             Partida partida = criarPartida("Brasil", "Argentina");
             arbitro.designarParaPartida(partida);
             System.out.println("[FALHA] Deveria ter lançado ArbitroNacionalidadeException.");
@@ -70,7 +70,7 @@ public class TestarInterfaceArbitro {
     // Deve listar as partidas designadas ao árbitro
     private static void testarConsultarEscala() {
         try {
-            Arbitro arbitro = new Arbitro(5, "Hans Müller", "Alemanha", 12);
+            Arbitro arbitro = new Arbitro(5, "Hans Müller", "hans@copa.com", "hans", "Senha123", "555.555.555-55", "Alemanha", "Alemanha", 12);
             arbitro.designarParaPartida(criarPartida("Brasil", "Argentina"));
             arbitro.designarParaPartida(criarPartida("França", "Espanha"));
             System.out.println("[OK] Escala do árbitro (" + arbitro.consultarEscala().size() + " partidas):");
@@ -86,8 +86,8 @@ public class TestarInterfaceArbitro {
     private static Partida criarPartida(String nomeSelecao1, String nomeSelecao2) throws CapacidadeInvalidaException {
         Selecao s1 = new Selecao(nomeSelecao1, "A", "Técnico1");
         Selecao s2 = new Selecao(nomeSelecao2, "A", "Técnico2");
-        Localizacao loc = new Localizacao("Miami", "Florida", PaisSede.ESTADOS_UNIDOS, "Av. Atlântica, 1000");
-        Estadio estadio = new Estadio(1, "Nu Stadium", loc, 78000);
+        Localizacao loc = new Localizacao("Rio de Janeiro", "RJ", PaisSede.MEXICO, "Av. Atlântica, 1000");
+        Estadio estadio = new Estadio(1, "Maracanã", loc, 78000);
         return new Partida(s1, s2, "2026-06-15", estadio);
     }
 }

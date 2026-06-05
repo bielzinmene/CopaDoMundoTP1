@@ -14,15 +14,6 @@ import br.unb.cic.copa.view.aluno3.ConsultarEscalaArbitroView;
 import javax.swing.*;
 import java.io.IOException;
 
-/**
- * Teste manual da tela ConsultarEscalaArbitroView.
- *
- * O que este teste faz:
- *  1. Cria um árbitro com duas partidas designadas e salva no JSON
- *  2. Abre a tela gráfica
- *  3. Para verificar: digite o ID 99 no campo e clique Buscar —
- *     deve aparecer 2 partidas na tabela
- */
 public class TestarConsultarEscalaArbitroView {
 
     public static void main(String[] args) {
@@ -38,7 +29,7 @@ public class TestarConsultarEscalaArbitroView {
     private static void popularDadosDeTeste() {
         try {
             // Cria árbitro de teste com ID 99
-            Arbitro arbitro = new Arbitro(99, "Árbitro Teste", "Italiana", 15);
+            Arbitro arbitro = new Arbitro(99, "Árbitro Teste", "teste@copa.com", "arbitro99", "Senha123", "999.999.999-99", "Itália", "Italiana", 15);
 
             // Cria duas partidas e designa ao árbitro
             Partida p1 = criarPartida("Brasil", "Argentina", "2026-06-15", "Maracanã");

@@ -1,11 +1,9 @@
 package br.unb.cic.copa.view.aluno3;
 
 import br.unb.cic.copa.model.aluno3.Estadio;
-import br.unb.cic.copa.model.aluno3.Localizacao;
 import br.unb.cic.copa.model.aluno3.PaisSede;
 import br.unb.cic.copa.model.aluno3.exception.CapacidadeInvalidaException;
-import br.unb.cic.copa.model.aluno3.repository.EstadioRepository;
-import br.unb.cic.copa.view.aluno1.MenuPrincipalView;
+import br.unb.cic.copa.controller.aluno3.EstadioController;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -16,7 +14,6 @@ import java.util.List;
 
 public class GerenciarEstadioView extends JFrame {
 
-    private JTextField txtId;
     private JTextField txtNome;
     private JTextField txtCapacidade;
     private JTextField txtCidade;
@@ -27,7 +24,8 @@ public class GerenciarEstadioView extends JFrame {
     private JTable tabela;
     private DefaultTableModel modeloTabela;
 
-    private final EstadioRepository repositorio = new EstadioRepository("src/dados/estadios.json");
+    private final EstadioController controller = new EstadioController();
+    private final br.unb.cic.copa.model.aluno1.Usuario usuarioLogado;
 
     private static final Color COR_FUNDO     = new Color(245, 245, 250);
     private static final Color COR_HEADER    = new Color(30, 60, 120);
@@ -39,7 +37,8 @@ public class GerenciarEstadioView extends JFrame {
     private static final Font  FONTE_CAMPO   = new Font("Segoe UI", Font.PLAIN, 13);
     private static final Font  FONTE_TITULO  = new Font("Segoe UI", Font.BOLD, 16);
 
-    public GerenciarEstadioView() {
+    public GerenciarEstadioView(br.unb.cic.copa.model.aluno1.Usuario usuarioLogado) {
+        this.usuarioLogado = usuarioLogado;
         setTitle("Gerenciar Estádio - Copa do Mundo 2026");
         setSize(600, 750);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -54,6 +53,10 @@ public class GerenciarEstadioView extends JFrame {
 
         carregarTabela("");
         setVisible(true);
+    }
+
+    public GerenciarEstadioView() {
+        this(null);
     }
 
     private JPanel criarHeader() {
@@ -88,7 +91,6 @@ public class GerenciarEstadioView extends JFrame {
         gc.insets = new Insets(6, 5, 6, 5);
         gc.anchor = GridBagConstraints.WEST;
 
-        txtId         = criarCampo();
         txtNome       = criarCampo();
         txtCapacidade = criarCampo();
         txtCidade     = criarCampo();
@@ -98,16 +100,15 @@ public class GerenciarEstadioView extends JFrame {
         comboPais.setFont(FONTE_CAMPO);
         comboPais.setPreferredSize(new Dimension(250, 32));
 
-        adicionarLinha(painel, gc, 0, "ID:",         txtId);
-        adicionarLinha(painel, gc, 1, "Nome:",       txtNome);
-        adicionarLinha(painel, gc, 2, "Capacidade:", txtCapacidade);
+        adicionarLinha(painel, gc, 0, "Nome:",       txtNome);
+        adicionarLinha(painel, gc, 1, "Capacidade:", txtCapacidade);
 
-        adicionarSeparador(painel, gc, 3, "Localização");
+        adicionarSeparador(painel, gc, 2, "Localização");
 
-        adicionarLinha(painel, gc, 4, "Cidade:",     txtCidade);
-        adicionarLinha(painel, gc, 5, "Estado:",     txtEstado);
-        adicionarLinhaCombo(painel, gc, 6, "País Sede:", comboPais);
-        adicionarLinha(painel, gc, 7, "Endereço:",   txtEndereco);
+        adicionarLinha(painel, gc, 3, "Cidade:",     txtCidade);
+        adicionarLinha(painel, gc, 4, "Estado:",     txtEstado);
+        adicionarLinhaCombo(painel, gc, 5, "País Sede:", comboPais);
+        adicionarLinha(painel, gc, 6, "Endereço:",   txtEndereco);
 
         return painel;
     }
@@ -173,7 +174,7 @@ public class GerenciarEstadioView extends JFrame {
     private void carregarTabela(String filtro) {
         modeloTabela.setRowCount(0);
         try {
-            List<Estadio> lista = repositorio.listarTodos();
+            List<Estadio> lista = controller.listarTodos();
             for (Estadio e : lista) {
                 if (filtro.isEmpty() || e.getNome().toLowerCase().contains(filtro.toLowerCase())) {
                     modeloTabela.addRow(new Object[]{
@@ -246,8 +247,8 @@ public class GerenciarEstadioView extends JFrame {
         JButton btnSalvar   = criarBotao("Salvar", COR_SALVAR);
 
         btnCancelar.addActionListener(e -> {
-            new MenuPrincipalView().setVisible(true);
             dispose();
+            new br.unb.cic.copa.view.aluno1.MenuPrincipalView();
         });
 
         btnSalvar.addActionListener(e -> salvarEstadio());
@@ -281,7 +282,7 @@ public class GerenciarEstadioView extends JFrame {
                 "Deseja excluir o estádio '" + nome + "'?", "Confirmar exclusão", JOptionPane.YES_NO_OPTION);
         if (confirmacao == JOptionPane.YES_OPTION) {
             try {
-                repositorio.remover(id);
+                controller.excluir(id);
                 JOptionPane.showMessageDialog(this, "Estádio excluído com sucesso!");
                 carregarTabela(txtBusca.getText().trim());
             } catch (IOException e) {
@@ -292,7 +293,6 @@ public class GerenciarEstadioView extends JFrame {
 
     private void salvarEstadio() {
         try {
-            int id = Integer.parseInt(txtId.getText().trim());
             String nome = txtNome.getText().trim();
             int capacidade = Integer.parseInt(txtCapacidade.getText().trim());
             String cidade = txtCidade.getText().trim();
@@ -305,16 +305,14 @@ public class GerenciarEstadioView extends JFrame {
                 return;
             }
 
-            Localizacao localizacao = new Localizacao(cidade, estado, pais, endereco);
-            Estadio estadio = new Estadio(id, nome, localizacao, capacidade);
-            repositorio.salvar(estadio);
+            controller.cadastrar(nome, capacidade, cidade, estado, pais, endereco);
 
             JOptionPane.showMessageDialog(this, "Estádio salvo com sucesso!");
             carregarTabela("");
             txtBusca.setText("");
 
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "ID e capacidade devem ser números inteiros.", "Erro", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Capacidade deve ser um número inteiro.", "Erro", JOptionPane.ERROR_MESSAGE);
         } catch (CapacidadeInvalidaException e) {
             JOptionPane.showMessageDialog(this, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         } catch (IOException e) {

@@ -1,8 +1,8 @@
 package br.unb.cic.copa.view.aluno3;
 
+import br.unb.cic.copa.controller.aluno3.ArbitroController;
 import br.unb.cic.copa.model.aluno3.Arbitro;
 import br.unb.cic.copa.model.aluno3.exception.ExperienciaInvalidaException;
-import br.unb.cic.copa.model.aluno3.repository.ArbitroRepository;
 import br.unb.cic.copa.view.aluno1.MenuPrincipalView;
 
 import javax.swing.*;
@@ -14,15 +14,19 @@ import java.util.List;
 
 public class GerenciarArbitroView extends JFrame {
 
-    private JTextField txtId;
     private JTextField txtNome;
+    private JTextField txtEmail;
+    private JTextField txtLogin;
+    private JTextField txtSenha;
+    private JTextField txtCpf;
     private JTextField txtNacionalidade;
     private JTextField txtExperiencia;
     private JTextField txtBusca;
     private JTable tabela;
     private DefaultTableModel modeloTabela;
 
-    private final ArbitroRepository repositorio = new ArbitroRepository("src/dados/arbitros.json");
+    private final ArbitroController controller = new ArbitroController();
+    private final br.unb.cic.copa.model.aluno1.Usuario usuarioLogado;
 
     private static final Color COR_FUNDO     = new Color(245, 245, 250);
     private static final Color COR_HEADER    = new Color(30, 60, 120);
@@ -34,9 +38,18 @@ public class GerenciarArbitroView extends JFrame {
     private static final Font  FONTE_CAMPO   = new Font("Segoe UI", Font.PLAIN, 13);
     private static final Font  FONTE_TITULO  = new Font("Segoe UI", Font.BOLD, 16);
 
+    public GerenciarArbitroView(br.unb.cic.copa.model.aluno1.Usuario usuarioLogado) {
+        this.usuarioLogado = usuarioLogado;
+        init();
+    }
+
     public GerenciarArbitroView() {
+        this(null);
+    }
+
+    private void init() {
         setTitle("Gerenciar Árbitro - Copa do Mundo 2026");
-        setSize(550, 650);
+        setSize(550, 720);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
@@ -83,15 +96,21 @@ public class GerenciarArbitroView extends JFrame {
         gc.insets = new Insets(6, 5, 6, 5);
         gc.anchor = GridBagConstraints.WEST;
 
-        txtId            = criarCampo();
         txtNome          = criarCampo();
+        txtEmail         = criarCampo();
+        txtLogin         = criarCampo();
+        txtSenha         = criarCampo();
+        txtCpf           = criarCampo();
         txtNacionalidade = criarCampo();
         txtExperiencia   = criarCampo();
 
-        adicionarLinha(painel, gc, 0, "ID:",                 txtId);
-        adicionarLinha(painel, gc, 1, "Nome:",               txtNome);
-        adicionarLinha(painel, gc, 2, "Nacionalidade:",      txtNacionalidade);
-        adicionarLinha(painel, gc, 3, "Experiência (anos):", txtExperiencia);
+        adicionarLinha(painel, gc, 0, "Nome:",               txtNome);
+        adicionarLinha(painel, gc, 1, "Email:",              txtEmail);
+        adicionarLinha(painel, gc, 2, "Login:",              txtLogin);
+        adicionarLinha(painel, gc, 3, "Senha:",              txtSenha);
+        adicionarLinha(painel, gc, 4, "CPF:",                txtCpf);
+        adicionarLinha(painel, gc, 5, "Nacionalidade:",      txtNacionalidade);
+        adicionarLinha(painel, gc, 6, "Experiência (anos):", txtExperiencia);
 
         return painel;
     }
@@ -157,7 +176,7 @@ public class GerenciarArbitroView extends JFrame {
     private void carregarTabela(String filtro) {
         modeloTabela.setRowCount(0);
         try {
-            List<Arbitro> lista = repositorio.listarTodos();
+            List<Arbitro> lista = controller.listarTodos();
             for (Arbitro a : lista) {
                 if (filtro.isEmpty() || a.getNome().toLowerCase().contains(filtro.toLowerCase())) {
                     modeloTabela.addRow(new Object[]{a.getId(), a.getNome(), a.getNacionalidade(), a.getExperiencia()});
@@ -200,8 +219,8 @@ public class GerenciarArbitroView extends JFrame {
         JButton btnSalvar   = criarBotao("Salvar", COR_SALVAR);
 
         btnCancelar.addActionListener(e -> {
-            new MenuPrincipalView().setVisible(true);
             dispose();
+            new MenuPrincipalView();
         });
 
         btnSalvar.addActionListener(e -> salvarArbitro());
@@ -235,7 +254,7 @@ public class GerenciarArbitroView extends JFrame {
                 "Deseja excluir o árbitro '" + nome + "'?", "Confirmar exclusão", JOptionPane.YES_NO_OPTION);
         if (confirmacao == JOptionPane.YES_OPTION) {
             try {
-                repositorio.remover(id);
+                controller.excluir(id);
                 JOptionPane.showMessageDialog(this, "Árbitro excluído com sucesso!");
                 carregarTabela(txtBusca.getText().trim());
             } catch (IOException e) {
@@ -246,29 +265,43 @@ public class GerenciarArbitroView extends JFrame {
 
     private void salvarArbitro() {
         try {
-            int id = Integer.parseInt(txtId.getText().trim());
-            String nome = txtNome.getText().trim();
+            String nome          = txtNome.getText().trim();
+            String email         = txtEmail.getText().trim();
+            String login         = txtLogin.getText().trim();
+            String senha         = txtSenha.getText().trim();
+            String cpf           = txtCpf.getText().trim();
             String nacionalidade = txtNacionalidade.getText().trim();
-            int experiencia = Integer.parseInt(txtExperiencia.getText().trim());
+            int experiencia      = Integer.parseInt(txtExperiencia.getText().trim());
 
-            if (nome.isEmpty() || nacionalidade.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Nome e nacionalidade são obrigatórios.", "Aviso", JOptionPane.WARNING_MESSAGE);
+            if (nome.isEmpty() || login.isEmpty() || senha.isEmpty() || nacionalidade.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Nome, login, senha e nacionalidade são obrigatórios.", "Aviso", JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
-            Arbitro arbitro = new Arbitro(id, nome, nacionalidade, experiencia);
-            repositorio.salvar(arbitro);
+            // ID gerado automaticamente pelo controller
+            controller.cadastrar(nome, email, login, senha, cpf, nacionalidade, experiencia);
 
             JOptionPane.showMessageDialog(this, "Árbitro salvo com sucesso!");
+            limparFormulario();
             carregarTabela("");
             txtBusca.setText("");
 
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "ID e experiência devem ser números inteiros.", "Erro", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Experiência deve ser um número inteiro.", "Erro", JOptionPane.ERROR_MESSAGE);
         } catch (ExperienciaInvalidaException e) {
             JOptionPane.showMessageDialog(this, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "Erro ao salvar: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private void limparFormulario() {
+        txtNome.setText("");
+        txtEmail.setText("");
+        txtLogin.setText("");
+        txtSenha.setText("");
+        txtCpf.setText("");
+        txtNacionalidade.setText("");
+        txtExperiencia.setText("");
     }
 }

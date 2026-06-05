@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 // Persiste árbitros em arquivo JSON
-public class  ArbitroRepository implements Repositorio<Arbitro> {
+public class ArbitroRepository implements Repositorio<Arbitro> {
 
     private final String caminhoArquivo;
 
@@ -71,6 +71,11 @@ public class  ArbitroRepository implements Repositorio<Arbitro> {
             sb.append("  {\n");
             sb.append("    \"id\": ").append(a.getId()).append(",\n");
             sb.append("    \"nome\": \"").append(a.getNome()).append("\",\n");
+            sb.append("    \"email\": \"").append(a.getEmail()).append("\",\n");
+            sb.append("    \"login\": \"").append(a.getLogin()).append("\",\n");
+            sb.append("    \"senha\": \"").append(a.getSenha()).append("\",\n");
+            sb.append("    \"cpf\": \"").append(a.getCpf()).append("\",\n");
+            sb.append("    \"pais\": \"").append(a.getPais()).append("\",\n");
             sb.append("    \"nacionalidade\": \"").append(a.getNacionalidade()).append("\",\n");
             sb.append("    \"experiencia\": ").append(a.getExperiencia()).append("\n");
             sb.append("  }");
@@ -79,7 +84,6 @@ public class  ArbitroRepository implements Repositorio<Arbitro> {
         }
         sb.append("]");
 
-        //para garantir que a pasta dados exista
         new File(caminhoArquivo).getParentFile().mkdirs();
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(caminhoArquivo))) {
             writer.write(sb.toString());
@@ -92,15 +96,13 @@ public class  ArbitroRepository implements Repositorio<Arbitro> {
         json = json.trim();
         if (json.equals("[]") || json.isEmpty()) return lista;
 
-        // Remove colchetes externos e divide por objeto
         json = json.substring(1, json.lastIndexOf("]")).trim();
         String[] objetos = json.split("\\},\\s*\\{");
 
         for (String obj : objetos) {
             obj = obj.replace("{", "").replace("}", "").trim();
-            int id = 0;
-            String nome = "", nacionalidade = "";
-            int experiencia = 0;
+            int id = 0, experiencia = 0;
+            String nome = "", email = "", login = "", senha = "", cpf = "", pais = "", nacionalidade = "";
 
             for (String linha : obj.split(",\n")) {
                 linha = linha.trim();
@@ -108,6 +110,16 @@ public class  ArbitroRepository implements Repositorio<Arbitro> {
                     id = Integer.parseInt(linha.split(":")[1].trim());
                 } else if (linha.startsWith("\"nome\"")) {
                     nome = linha.split(":", 2)[1].trim().replace("\"", "");
+                } else if (linha.startsWith("\"email\"")) {
+                    email = linha.split(":", 2)[1].trim().replace("\"", "");
+                } else if (linha.startsWith("\"login\"")) {
+                    login = linha.split(":", 2)[1].trim().replace("\"", "");
+                } else if (linha.startsWith("\"senha\"")) {
+                    senha = linha.split(":", 2)[1].trim().replace("\"", "");
+                } else if (linha.startsWith("\"cpf\"")) {
+                    cpf = linha.split(":", 2)[1].trim().replace("\"", "");
+                } else if (linha.startsWith("\"pais\"")) {
+                    pais = linha.split(":", 2)[1].trim().replace("\"", "");
                 } else if (linha.startsWith("\"nacionalidade\"")) {
                     nacionalidade = linha.split(":", 2)[1].trim().replace("\"", "");
                 } else if (linha.startsWith("\"experiencia\"")) {
@@ -116,7 +128,7 @@ public class  ArbitroRepository implements Repositorio<Arbitro> {
             }
 
             try {
-                lista.add(new Arbitro(id, nome, nacionalidade, experiencia));
+                lista.add(new Arbitro(id, nome, email, login, senha, cpf, pais, nacionalidade, experiencia));
             } catch (ExperienciaInvalidaException e) {
                 throw new IOException("Erro ao carregar árbitro: " + e.getMessage(), e);
             }
