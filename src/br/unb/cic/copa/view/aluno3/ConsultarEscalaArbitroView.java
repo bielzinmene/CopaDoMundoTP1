@@ -1,9 +1,8 @@
 package br.unb.cic.copa.view.aluno3;
 
+import br.unb.cic.copa.controller.aluno3.ArbitroController;
 import br.unb.cic.copa.model.aluno3.Arbitro;
 import br.unb.cic.copa.model.aluno4.Partida;
-import br.unb.cic.copa.model.aluno3.repository.ArbitroRepository;
-import br.unb.cic.copa.view.aluno1.MenuPrincipalView;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -20,7 +19,7 @@ public class ConsultarEscalaArbitroView extends JFrame {
     private JTable tabela;
     private DefaultTableModel modeloTabela;
 
-    private final ArbitroRepository repositorio = new ArbitroRepository("src/dados/arbitros.json");
+    private final ArbitroController controller = new ArbitroController();
 
     private static final Color COR_FUNDO     = new Color(245, 245, 250);
     private static final Color COR_HEADER    = new Color(30, 60, 120);
@@ -139,7 +138,7 @@ public class ConsultarEscalaArbitroView extends JFrame {
 
         try {
             int id = Integer.parseInt(idTexto);
-            Arbitro arbitro = repositorio.buscarPorId(id);
+            Arbitro arbitro = controller.buscarPorId(id);
 
             labelNomeArbitro.setText("Árbitro: " + arbitro.getNome());
             modeloTabela.setRowCount(0);
@@ -174,10 +173,7 @@ public class ConsultarEscalaArbitroView extends JFrame {
         rodape.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(200, 200, 220)));
 
         JButton btnVoltar = criarBotao("Voltar", COR_CANCELAR);
-        btnVoltar.addActionListener(e -> {
-            new MenuPrincipalView().setVisible(true);
-            dispose();
-        });
+        btnVoltar.addActionListener(e -> dispose());
 
         rodape.add(btnVoltar);
         return rodape;

@@ -21,7 +21,7 @@ public class TestarInterfaceEstadio {
     // Deve criar estádio sem erros
     private static void testarCriacaoValida() {
         try {
-            Localizacao loc = new Localizacao("São Paulo", "SP", PaisSede.ESTADOS_UNIDOS, "Praça Charles Miller, s/n");
+            Localizacao loc = new Localizacao("São Paulo", "SP", PaisSede.MEXICO, "Praça Charles Miller, s/n");
             Estadio e = new Estadio(1, "Pacaembu", loc, 40199);
             System.out.println("[OK] Estádio criado: " + e);
         } catch (CapacidadeInvalidaException e) {
@@ -32,7 +32,7 @@ public class TestarInterfaceEstadio {
     // Deve lançar CapacidadeInvalidaException
     private static void testarCapacidadeInvalida() {
         try {
-            Localizacao loc = new Localizacao("Brasília", "DF", PaisSede.ESTADOS_UNIDOS, "Eixo Monumental");
+            Localizacao loc = new Localizacao("Brasília", "DF", PaisSede.MEXICO, "Eixo Monumental");
             new Estadio(2, "Mané Garrincha", loc, -1);
             System.out.println("[FALHA] Deveria ter lançado CapacidadeInvalidaException.");
         } catch (CapacidadeInvalidaException e) {
@@ -84,8 +84,8 @@ public class TestarInterfaceEstadio {
 
     // Métodos auxiliares para criação de objetos de teste
     private static Estadio criarEstadio() throws CapacidadeInvalidaException {
-        Localizacao loc = new Localizacao("Miami", "Florida", PaisSede.ESTADOS_UNIDOS, "Av. Atlântica, 1000");
-        return new Estadio(1, "Nu Stadium", loc, 78000);
+        Localizacao loc = new Localizacao("Rio de Janeiro", "RJ", PaisSede.MEXICO, "Av. Atlântica, 1000");
+        return new Estadio(1, "Maracanã", loc, 78000);
     }
 
     private static Partida criarPartida(Estadio estadio, String nomeS1, String nomeS2, String data) {
