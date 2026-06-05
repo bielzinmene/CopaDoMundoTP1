@@ -85,7 +85,7 @@ public class GerenciadorSelecao {
         return resultado;
     }
 
-    // ------ Operações com jogadores (delegação) ------
+    // ------ Operações com jogadores ------
     public void adicionarJogador(String nomeSelecao, Jogador j) throws CopaException {
         Selecao s = buscarSelecaoPorNome(nomeSelecao);
         if (s == null) throw new CopaException("Seleção não encontrada");
