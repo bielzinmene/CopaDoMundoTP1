@@ -10,25 +10,22 @@ public class Selecao {
     private static final int MAX_JOGADORES = 26;
 
     private int id;
-    private static int contadorID = 0;
     private String nome;
     private String grupo;
     private String tecnico;
     private List<Jogador> jogadores;
 
-    // Construtor para nova seleção (gera ID automaticamente)
+    // Construtor para nova seleção
     public Selecao(String nome, String grupo, String tecnico) {
-        this.id = ++contadorID;  // incrementa antes de atribuir (garante que comece em 1)
         this.nome = nome;
         this.grupo = grupo;
         this.tecnico = tecnico;
         this.jogadores = new ArrayList<>();
     }
 
-    // Construtor vazio para uso do JSON (ID será setado manualmente)
+    // Construtor vazio para uso do JSON
     public Selecao() {
         this.jogadores = new ArrayList<>();
-        this.id = 0;
     }
 
     // ----------métodos (numeroJaExiste, adicionarJogador, etc.) ----------
@@ -148,16 +145,6 @@ public class Selecao {
     }
 
     // ========== GETTERS E SETTERS ==========
-
-    // Método estático para sincronizar o contador com o maior ID carregado
-    public static void setUltimoId(int ultimoId) {
-        contadorID = ultimoId;
-    }
-
-    //Se precisar obter o valor atual do contador
-    public static int getUltimoId() {
-        return contadorID;
-    }
 
     public int getId() {
         return id;
