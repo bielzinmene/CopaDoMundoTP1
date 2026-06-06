@@ -1,0 +1,13 @@
+[
+  {
+    "id": 1,
+    "nome": "Alice",
+    "email": "alice@gmail.com",
+    "login": "alice123",
+    "senha": "Alice123",
+    "cpf": "854.987.456-40",
+    "pais": "Brasil",
+    "funcao": "Arbitro",
+    "status": "Ativo"
+  }
+]

@@ -1,0 +1,35 @@
+[
+  {
+    "id": 1,
+    "nome": "Admin",
+    "email": "admin@copa.com",
+    "login": "admin",
+    "senha": "Admin123",
+    "cpf": "000.000.000-00",
+    "pais": "Brasil",
+    "funcao": "Administrador",
+    "status": "Ativo"
+  },
+  {
+    "id": 2,
+    "nome": "Amanda",
+    "email": "amandamartin@gmail.com",
+    "login": "amandaelsa",
+    "senha": "Amanda123",
+    "cpf": "908.987.980-09",
+    "pais": "Brasil",
+    "funcao": "Organizador",
+    "status": "Ativo"
+  },
+  {
+    "id": 3,
+    "nome": "Pedro",
+    "email": "pedro@gmail.com",
+    "login": "pedrogabriel",
+    "senha": "Pedro123",
+    "cpf": "567.987.098-32",
+    "pais": "Brasil",
+    "funcao": "Organizador",
+    "status": "Ativo"
+  }
+]

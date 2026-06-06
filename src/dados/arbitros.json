@@ -1,0 +1,24 @@
+[
+  {
+    "id": 0,
+    "nome": "",
+    "email": "",
+    "login": "",
+    "senha": "",
+    "cpf": "",
+    "pais": "",
+    "nacionalidade": "",
+    "experiencia": 0
+  },
+  {
+    "id": 1,
+    "nome": "Alice",
+    "email": "alice@gmail.com",
+    "login": "alice123",
+    "senha": "Alice123",
+    "cpf": "854.987.456-40",
+    "pais": "Brasil",
+    "nacionalidade": "Brasil",
+    "experiencia": 5
+  }
+]
