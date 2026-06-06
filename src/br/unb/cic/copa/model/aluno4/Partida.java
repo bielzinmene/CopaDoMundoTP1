@@ -2,16 +2,19 @@ package br.unb.cic.copa.model.aluno4;
 
 import br.unb.cic.copa.model.aluno2.Selecao;
 import br.unb.cic.copa.model.aluno3.Estadio;
+import br.unb.cic.copa.model.aluno4.Fase;
 
 public class Partida {
+    private int id;
     private Selecao selecao1;
     private Selecao selecao2;
     private String data;
     private Estadio estadio;
+    private Fase fase;
     private StatusPartida status; // agendada, em andamento, finalizada
     private Resultado resultado;
 
-    public Partida(Selecao selecao1, Selecao selecao2, String data, Estadio estadio) {
+    public Partida(Selecao selecao1, Selecao selecao2, String data, Estadio estadio, Fase fase) {
         if(selecao1.getNome().equals(selecao2.getNome())){//valida se as duas seleções sao iguais, se forem, lança um erro
             throw new IllegalArgumentException("Erro: Uma partida deve ter duas seleções diferentes.");
         }
@@ -20,6 +23,7 @@ public class Partida {
         this.selecao2 = selecao2;
         this.data = data;
         this.estadio = estadio;
+        this.fase = fase;
         this.status = StatusPartida.AGENDADA;
     }
 
@@ -71,18 +75,38 @@ public class Partida {
             return null; // empate
         }
     }
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Fase getFase() {
+        return fase;
+    }
+
+    public void setFase(Fase fase) {
+        this.fase = fase;
+    }
 
     public Selecao getSelecao1() {
+
         return selecao1;
     }
 
     public Selecao getSelecao2() {
+
         return selecao2;
     }
 
     public String getData() {
+
         return data;
     }
+
+
 
     public void setData(String data) {
         if(!(this.getStatus().equals(StatusPartida.AGENDADA))){//verifica se a partida está em andamento ou finalizada
@@ -108,9 +132,18 @@ public class Partida {
         return status;
     }
 
+    public void setStatus(StatusPartida status) {
+        this.status = status;
+    }
+
     public Resultado getResultado() {
         return resultado;
     }
+
+    public void setResultado(Resultado resultado) {
+        this.resultado = resultado;
+    }
+
 
 }
 
