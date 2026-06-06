@@ -3,6 +3,7 @@ package br.unb.cic.copa.view.aluno1;
 import br.unb.cic.copa.controller.aluno1.UsuarioController;
 import br.unb.cic.copa.model.aluno1.Usuario;
 import br.unb.cic.copa.model.aluno1.SessaoUsuario;
+import br.unb.cic.copa.view.aluno3.ConsultarEscalaArbitroView;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -13,7 +14,6 @@ public class LoginView extends JFrame {
     private JTextField txtLogin;
     private JPasswordField txtSenha;
 
-    // Cores e fontes no mesmo padrão da Aluno 3
     private static final Color COR_FUNDO     = new Color(245, 245, 250);
     private static final Color COR_HEADER    = new Color(30, 60, 120);
     private static final Color COR_ENTRAR    = new Color(34, 139, 34);
@@ -42,7 +42,7 @@ public class LoginView extends JFrame {
         header.setBackground(COR_HEADER);
         header.setBorder(new EmptyBorder(15, 20, 15, 20));
 
-        JLabel titulo = new JLabel("⚽  Copa do Mundo 2026");
+        JLabel titulo = new JLabel("  Copa do Mundo 2026");
         titulo.setFont(FONTE_TITULO);
         titulo.setForeground(Color.WHITE);
         header.add(titulo, BorderLayout.WEST);
@@ -62,7 +62,6 @@ public class LoginView extends JFrame {
         gc.insets = new Insets(8, 5, 8, 5);
         gc.anchor = GridBagConstraints.WEST;
 
-        // Campo Login
         JLabel lblLogin = new JLabel("Login:");
         lblLogin.setFont(FONTE_LABEL);
         lblLogin.setForeground(new Color(50, 50, 80));
@@ -80,7 +79,6 @@ public class LoginView extends JFrame {
         gc.gridx = 1; gc.weightx = 0.7; gc.fill = GridBagConstraints.HORIZONTAL;
         formulario.add(txtLogin, gc);
 
-        // Campo Senha
         JLabel lblSenha = new JLabel("Senha:");
         lblSenha.setFont(FONTE_LABEL);
         lblSenha.setForeground(new Color(50, 50, 80));
@@ -111,10 +109,7 @@ public class LoginView extends JFrame {
         JButton btnEntrar = criarBotao("Acessar", COR_ENTRAR);
 
         btnSair.addActionListener(e -> System.exit(0));
-
         btnEntrar.addActionListener(e -> realizarLogin());
-
-        // Permite logar pressionando Enter na senha
         txtSenha.addActionListener(e -> realizarLogin());
 
         rodape.add(btnSair);
@@ -144,9 +139,13 @@ public class LoginView extends JFrame {
                     JOptionPane.ERROR_MESSAGE);
             txtSenha.setText("");
         } else {
-            // NOVO: salva na sessão global para todas as telas acessarem
             SessaoUsuario.getInstancia().setUsuarioLogado(usuarioLogado);
-            new MenuPrincipalView(usuarioLogado).setVisible(true);
+
+            if ("Arbitro".equals(usuarioLogado.getFuncao())) {
+                new ConsultarEscalaArbitroView().setVisible(true);
+            } else {
+                new MenuPrincipalView(usuarioLogado).setVisible(true);
+            }
             dispose();
         }
     }

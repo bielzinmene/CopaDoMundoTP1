@@ -10,6 +10,8 @@ import br.unb.cic.copa.view.aluno3.GerenciarArbitroView;
 import br.unb.cic.copa.view.aluno3.GerenciarEstadioView;
 import br.unb.cic.copa.view.aluno4.PartidaView;
 import br.unb.cic.copa.view.aluno5.VendaIngressoView;
+import br.unb.cic.copa.view.aluno3.ConsultarEscalaArbitroView;
+import br.unb.cic.copa.model.aluno1.SessaoUsuario;
 
 // Importa a biblioteca padrão do Java Swing para construção de interfaces gráficas
 import javax.swing.*;
@@ -23,6 +25,9 @@ import java.awt.*;
  * Representa a janela principal do sistema após a autenticação bem-sucedida.
  * Utiliza herança da classe JFrame para se tornar uma janela Swing.
  */
+
+
+
 public class MenuPrincipalView extends JFrame {
 
     // Atributo encapsulado (private e final) que guarda o usuário autenticado na sessão atual.
@@ -30,6 +35,10 @@ public class MenuPrincipalView extends JFrame {
     // CORREÇÃO: removido o construtor vazio que deixava este campo sem inicialização,
     // causando o aviso "Field might not have been initialized".
     private final Usuario usuarioLogado;
+
+    public MenuPrincipalView() {
+        this(SessaoUsuario.getInstancia().getUsuarioLogado());
+    }
 
     // Definição de constantes de cores para manter o padrão visual Clean/Moderno da Copa 2026
     private static final Color COR_FUNDO     = new Color(245, 245, 250); // Azul acinzentado bem claro
@@ -79,7 +88,7 @@ public class MenuPrincipalView extends JFrame {
         header.setBorder(new EmptyBorder(15, 20, 15, 20));
 
         // Título principal do sistema posicionado à esquerda
-        JLabel titulo = new JLabel("⚽  Sistema de Gestão da Copa do Mundo 2026");
+        JLabel titulo = new JLabel("  Sistema de Gestão da Copa do Mundo 2026");
         titulo.setFont(FONTE_TITULO);
         titulo.setForeground(Color.WHITE);
 
@@ -111,15 +120,15 @@ public class MenuPrincipalView extends JFrame {
         grade.setBackground(COR_FUNDO);
 
         // Criação dos botões usando o método utilitário criarBotao()
-        JButton btnUsuarios   = criarBotao("👤 Gestão de Usuários", COR_BOTAO);
-        JButton btnSelecoes   = criarBotao("🏳 Gerenciar Seleções", COR_BOTAO);
-        JButton btnJogadores  = criarBotao("⚽ Gerenciar Jogadores", COR_BOTAO);
-        JButton btnEstadios   = criarBotao("🏟 Gerenciar Estádios", COR_BOTAO);
-        JButton btnArbitros   = criarBotao("🧑‍⚖️ Gerenciar Árbitros", COR_BOTAO);
-        JButton btnPartidas   = criarBotao("📋 Gerenciar Partidas", COR_BOTAO);
-        JButton btnIngressos  = criarBotao("🎫 Gerenciar Ingressos", COR_BOTAO);
-        JButton btnRelatorios = criarBotao("📊 Relatórios", COR_BOTAO);
-        JButton btnSair       = criarBotao("🚪 Sair / Logout", COR_SAIR);
+        JButton btnUsuarios   = criarBotao(" Gestão de Usuários", COR_BOTAO);
+        JButton btnSelecoes   = criarBotao(" Gerenciar Seleções", COR_BOTAO);
+        JButton btnJogadores  = criarBotao(" Gerenciar Jogadores", COR_BOTAO);
+        JButton btnEstadios   = criarBotao(" Gerenciar Estádios", COR_BOTAO);
+        JButton btnArbitros   = criarBotao(" Gerenciar Árbitros", COR_BOTAO);
+        JButton btnPartidas   = criarBotao(" Gerenciar Partidas", COR_BOTAO);
+        JButton btnIngressos  = criarBotao(" Gerenciar Ingressos", COR_BOTAO);
+        JButton btnRelatorios = criarBotao(" Relatórios", COR_BOTAO);
+        JButton btnSair       = criarBotao(" Sair / Logout", COR_SAIR);
 
         // Aplica as regras de controle de acesso — habilita ou desabilita botões
         // conforme o perfil do usuário logado (Administrador, Organizador ou Operador)
