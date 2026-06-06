@@ -26,7 +26,7 @@ public class UsuarioController {
     // construtor PRIVADO — ninguém de fora pode criar um UsuarioController
     // só o próprio controller cria a si mesmo via getInstancia()
     private UsuarioController() {
-        repository = new UsuarioRepository("dados/usuarios.json");
+        repository = new UsuarioRepository("src/dados/usuarios.json");
         try {
             usuarios = repository.listarTodos();
 

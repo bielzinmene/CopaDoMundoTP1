@@ -40,10 +40,11 @@ public class GerenciarEstadioView extends JFrame {
 
     public GerenciarEstadioView() {
         setTitle("Gerenciar Estádio - Copa do Mundo 2026");
-        setSize(600, 750);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setSize(600, 750);
         setLocationRelativeTo(null);
-        setResizable(false);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setResizable(true);
         getContentPane().setBackground(COR_FUNDO);
         setLayout(new BorderLayout());
 

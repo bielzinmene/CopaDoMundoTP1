@@ -30,13 +30,13 @@ public class ConsultarEscalaArbitroView extends JFrame {
     private static final Font  FONTE_CAMPO   = new Font("Segoe UI", Font.PLAIN, 13);
     private static final Font  FONTE_TITULO  = new Font("Segoe UI", Font.BOLD, 16);
 
-    //para acesso exclusivo do arbitro
     public ConsultarEscalaArbitroView() {
         setTitle("Consultar Escala do Árbitro - Copa do Mundo 2026");
-        setSize(750, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setSize(750, 500);
         setLocationRelativeTo(null);
-        setResizable(false);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setResizable(true);
         getContentPane().setBackground(COR_FUNDO);
         setLayout(new BorderLayout());
 
@@ -173,7 +173,7 @@ public class ConsultarEscalaArbitroView extends JFrame {
         rodape.setBackground(COR_FUNDO);
         rodape.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(200, 200, 220)));
 
-        JButton btnVoltar = criarBotao("Voltar", COR_CANCELAR);
+        JButton btnVoltar = criarBotao("FECHAR", COR_CANCELAR);
         btnVoltar.addActionListener(e -> dispose());
 
         rodape.add(btnVoltar);
