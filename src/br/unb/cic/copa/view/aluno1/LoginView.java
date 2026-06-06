@@ -42,7 +42,7 @@ public class LoginView extends JFrame {
         header.setBackground(COR_HEADER);
         header.setBorder(new EmptyBorder(15, 20, 15, 20));
 
-        JLabel titulo = new JLabel("⚽  Copa do Mundo 2026");
+        JLabel titulo = new JLabel("  Copa do Mundo 2026");
         titulo.setFont(FONTE_TITULO);
         titulo.setForeground(Color.WHITE);
         header.add(titulo, BorderLayout.WEST);

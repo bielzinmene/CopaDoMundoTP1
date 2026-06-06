@@ -64,7 +64,7 @@ public class GerenciarUsuariosView extends JFrame {
         header.setBackground(COR_HEADER);
         header.setBorder(new EmptyBorder(15, 20, 15, 20));
 
-        JLabel titulo = new JLabel("👤  Gestão de Usuários");
+        JLabel titulo = new JLabel("  Gestão de Usuários");
         titulo.setFont(FONTE_TITULO);
         titulo.setForeground(Color.WHITE);
         header.add(titulo, BorderLayout.WEST);
