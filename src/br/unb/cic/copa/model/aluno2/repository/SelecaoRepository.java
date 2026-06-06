@@ -207,7 +207,7 @@ public class SelecaoRepository implements Repositorio<Selecao> {
     }
 
     // --------------------------------------------------------------
-    // Métodos adicionais úteis
+    // Métodos adicionais
     // --------------------------------------------------------------
     public void salvarTodas(List<Selecao> selecoes) throws IOException {
         escreverJson(selecoes);

@@ -12,13 +12,35 @@
   },
   {
     "id": 1,
-    "nome": "Alice",
-    "email": "alice@gmail.com",
-    "login": "alice123",
-    "senha": "Alice123",
-    "cpf": "854.987.456-40",
+    "nome": "joao",
+    "email": "joao@gmail.com",
+    "login": "joao",
+    "senha": "joao1234",
+    "cpf": "23155266213",
+    "pais": "brasileiro",
+    "nacionalidade": "",
+    "experiencia": 0
+  },
+  {
+    "id": 4,
+    "nome": "Antonio",
+    "email": "antonio@gmail.com",
+    "login": "antonio.arbitro",
+    "senha": "12345678",
+    "cpf": "213144242412",
+    "pais": "italia",
+    "nacionalidade": "",
+    "experiencia": 0
+  },
+  {
+    "id": 5,
+    "nome": "paulo",
+    "email": "paulo@gmail.com",
+    "login": "pauloarbitro",
+    "senha": "paulo123",
+    "cpf": "4895727646",
     "pais": "Brasil",
     "nacionalidade": "Brasil",
-    "experiencia": 5
+    "experiencia": 7
   }
 ]

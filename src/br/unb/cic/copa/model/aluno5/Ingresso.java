@@ -1,8 +1,14 @@
 package br.unb.cic.copa.model.aluno5;
 
 import br.unb.cic.copa.model.aluno4.Partida;
+import java.io.Serializable;
 
-public class Ingresso {
+
+public class Ingresso implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+
     private int id;
     private Partida partida;
     private CategoriaIngresso categoria;
@@ -20,7 +26,6 @@ public class Ingresso {
     public int getId() {
         return id;
     }
-
 
     public Partida getPartida() {
         return partida;
@@ -41,6 +46,12 @@ public class Ingresso {
     public void vender() {
         this.vendido = true;
     }
+
+    @Override
+    public String toString() {
+        return "Ingresso " + id +
+                " | Categoria: " + categoria +
+                " | Preço: " + preco;
+    }
+
 }
-
-

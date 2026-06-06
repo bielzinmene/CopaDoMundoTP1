@@ -1,13 +1,68 @@
 [
   {
+    "id": 0,
+    "nome": "admin",
+    "email": "admin@gmail.com",
+    "login": "admin",
+    "senha": "Admin123",
+    "cpf": "346677764",
+    "pais": "brasileiro",
+    "funcao": "Administrador",
+    "status": "Ativo"
+  },
+  {
     "id": 1,
-    "nome": "Alice",
-    "email": "alice@gmail.com",
-    "login": "alice123",
-    "senha": "Alice123",
-    "cpf": "854.987.456-40",
+    "nome": "joao",
+    "email": "joao@gmail.com",
+    "login": "joao",
+    "senha": "joao1234",
+    "cpf": "23155266213",
+    "pais": "brasileiro",
+    "funcao": "Arbitro",
+    "status": "Ativo"
+  },
+  {
+    "id": 4,
+    "nome": "Antonio",
+    "email": "antonio@gmail.com",
+    "login": "antonio.arbitro",
+    "senha": "12345678",
+    "cpf": "213144242412",
+    "pais": "italia",
+    "funcao": "Arbitro",
+    "status": "Ativo"
+  },
+  {
+    "id": 5,
+    "nome": "paulo",
+    "email": "paulo@gmail.com",
+    "login": "pauloarbitro",
+    "senha": "paulo123",
+    "cpf": "4895727646",
     "pais": "Brasil",
     "funcao": "Arbitro",
+    "status": "Ativo"
+  },
+  {
+    "id": 6,
+    "nome": "carlos",
+    "email": "carlos@gmail.com",
+    "login": "carlosop",
+    "senha": "carlos123",
+    "cpf": "234.567.432-13",
+    "pais": "Brasil",
+    "funcao": "Administrador",
+    "status": "Ativo"
+  },
+  {
+    "id": 7,
+    "nome": "ana",
+    "email": "ana@gmail.com",
+    "login": "anaop",
+    "senha": "ana12345",
+    "cpf": "894.678.890-23",
+    "pais": "Brasil",
+    "funcao": "Operador",
     "status": "Ativo"
   }
 ]
