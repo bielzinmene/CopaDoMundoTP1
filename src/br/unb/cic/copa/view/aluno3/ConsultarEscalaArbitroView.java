@@ -30,6 +30,7 @@ public class ConsultarEscalaArbitroView extends JFrame {
     private static final Font  FONTE_CAMPO   = new Font("Segoe UI", Font.PLAIN, 13);
     private static final Font  FONTE_TITULO  = new Font("Segoe UI", Font.BOLD, 16);
 
+    //para acesso exclusivo do arbitro
     public ConsultarEscalaArbitroView() {
         setTitle("Consultar Escala do Árbitro - Copa do Mundo 2026");
         setSize(750, 500);

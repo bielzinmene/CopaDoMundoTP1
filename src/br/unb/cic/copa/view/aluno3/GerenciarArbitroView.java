@@ -1,6 +1,7 @@
 package br.unb.cic.copa.view.aluno3;
 
 import br.unb.cic.copa.controller.aluno3.ArbitroController;
+import br.unb.cic.copa.model.aluno1.SessaoUsuario;
 import br.unb.cic.copa.model.aluno3.Arbitro;
 import br.unb.cic.copa.model.aluno3.exception.ExperienciaInvalidaException;
 import br.unb.cic.copa.view.aluno1.MenuPrincipalView;
@@ -26,7 +27,6 @@ public class GerenciarArbitroView extends JFrame {
     private DefaultTableModel modeloTabela;
 
     private final ArbitroController controller = new ArbitroController();
-    private final br.unb.cic.copa.model.aluno1.Usuario usuarioLogado;
 
     private static final Color COR_FUNDO     = new Color(245, 245, 250);
     private static final Color COR_HEADER    = new Color(30, 60, 120);
@@ -38,13 +38,8 @@ public class GerenciarArbitroView extends JFrame {
     private static final Font  FONTE_CAMPO   = new Font("Segoe UI", Font.PLAIN, 13);
     private static final Font  FONTE_TITULO  = new Font("Segoe UI", Font.BOLD, 16);
 
-    public GerenciarArbitroView(br.unb.cic.copa.model.aluno1.Usuario usuarioLogado) {
-        this.usuarioLogado = usuarioLogado;
-        init();
-    }
-
     public GerenciarArbitroView() {
-        this(null);
+        init();
     }
 
     private void init() {
@@ -220,7 +215,7 @@ public class GerenciarArbitroView extends JFrame {
 
         btnCancelar.addActionListener(e -> {
             dispose();
-            new MenuPrincipalView();
+            new MenuPrincipalView(SessaoUsuario.getInstancia().getUsuarioLogado()).setVisible(true);
         });
 
         btnSalvar.addActionListener(e -> salvarArbitro());
