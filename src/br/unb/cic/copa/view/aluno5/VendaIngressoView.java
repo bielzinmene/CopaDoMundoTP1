@@ -1,91 +1,409 @@
 package br.unb.cic.copa.view.aluno5;
 
+import br.unb.cic.copa.model.aluno5.CategoriaIngresso;
 import br.unb.cic.copa.view.aluno1.MenuPrincipalView;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 public class VendaIngressoView extends JFrame {
 
+    private JTextField txtId;
     private JTextField txtComprador;
-    private JComboBox<String> cbPartida;
-    private JComboBox<String> cbCategoria;
     private JTextField txtQuantidade;
+    private JTextField txtBusca;
+
+    private JComboBox<String> cbPartida;
+    private JComboBox<CategoriaIngresso> cbCategoria;
+
+    private JTable tabela;
+    private DefaultTableModel modeloTabela;
+
+    private static final Color COR_FUNDO = new Color(245,245,250);
+    private static final Color COR_HEADER = new Color(30,60,120);
+    private static final Color COR_SALVAR = new Color(34,139,34);
+    private static final Color COR_CANCELAR = new Color(180,40,40);
+    private static final Color COR_BUSCA = new Color(30,100,180);
 
     public VendaIngressoView() {
-        setTitle("Venda de Ingressos - Copa 2026");
-        setSize(500, 400);
+
+        setTitle("Gerenciar Ingressos - Copa 2026");
+        setSize(700,700);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
+        setResizable(false);
 
-        setLayout(new GridLayout(5, 2, 10, 10));
+        getContentPane().setBackground(COR_FUNDO);
+        setLayout(new BorderLayout());
 
-        // Usuário (dps tem que relacionar ccom o cadastro, mas por enquanto vou deixar assim)
-        add(new JLabel("Comprador:"));
-        txtComprador = new JTextField();
-        add(txtComprador);
+        add(criarHeader(), BorderLayout.NORTH);
+        add(criarCorpo(), BorderLayout.CENTER);
+        add(criarRodape(), BorderLayout.SOUTH);
 
-        // Partida (depois eu vou fazer algo para preencher isso de acordo  com o cadastro das partidas)
-        add(new JLabel("Partida:"));
-        cbPartida = new JComboBox<>(new String[]{"Brasil x Argentina", "França x Alemanha"});
-        add(cbPartida);
+        carregarTabela();
 
-        // Categorias
-        add(new JLabel("Categoria:"));
-        cbCategoria = new JComboBox<>(new String[]{"VIP", "Padrão", "Meia"});
-        add(cbCategoria);
+        setVisible(true);
+    }
 
-        // Quantidade
-        add(new JLabel("Quantidade:"));
-        txtQuantidade = new JTextField();
-        add(txtQuantidade);
+    private JPanel criarHeader() {
 
-        // Botões
-        JButton botaoVender = new JButton("Vender");
-        JButton botaoCancelar = new JButton("Cancelar");
+        JPanel header = new JPanel(new BorderLayout());
 
-        botaoCancelar.addActionListener(e -> {
-            new MenuPrincipalView().setVisible(true);
-            dispose();
-        });
+        header.setBackground(COR_HEADER);
+        header.setBorder(
+                new EmptyBorder(15,20,15,20)
+        );
 
-        botaoVender.addActionListener(e -> {
-            new MenuPrincipalView().setVisible(true);
-            dispose();
-        });
+        JLabel titulo =
+                new JLabel("🎟️ Gerenciar Ingressos");
 
-        add(botaoVender);
-        add(botaoCancelar);
+        titulo.setForeground(Color.WHITE);
+        titulo.setFont(
+                new Font(
+                        "Segoe UI",
+                        Font.BOLD,
+                        16
+                )
+        );
 
+        header.add(titulo, BorderLayout.WEST);
+
+        return header;
+    }
+
+    private JPanel criarCorpo() {
+
+        JPanel corpo =
+                new JPanel(new BorderLayout(0,10));
+
+        corpo.setBackground(COR_FUNDO);
+
+        corpo.setBorder(
+                new EmptyBorder(15,20,10,20)
+        );
+
+        corpo.add(
+                criarFormulario(),
+                BorderLayout.NORTH
+        );
+
+        corpo.add(
+                criarPainelTabela(),
+                BorderLayout.CENTER
+        );
+
+        return corpo;
+    }
+
+    private JPanel criarFormulario() {
+
+        JPanel painel =
+                new JPanel(new GridBagLayout());
+
+        painel.setBackground(COR_FUNDO);
+
+        GridBagConstraints gc =
+                new GridBagConstraints();
+
+        gc.insets =
+                new Insets(6,5,6,5);
+
+        gc.anchor =
+                GridBagConstraints.WEST;
+
+        txtId = criarCampo();
+        txtId.setEditable(false);
+
+        txtComprador = criarCampo();
+        txtQuantidade = criarCampo();
+
+        cbPartida = new JComboBox<>();
+
+        cbPartida.addItem(
+                "Partidas serão carregadas futuramente"
+        );
+
+        cbCategoria =
+                new JComboBox<>(
+                        CategoriaIngresso.values()
+                );
+
+        adicionarLinha(
+                painel,gc,0,
+                "ID:",txtId
+        );
+
+        adicionarLinha(
+                painel,gc,1,
+                "Comprador:",txtComprador
+        );
+
+        JLabel lblPartida =
+                new JLabel("Partida:");
+
+        gc.gridx = 0;
+        gc.gridy = 2;
+
+        painel.add(lblPartida,gc);
+
+        gc.gridx = 1;
+        gc.fill = GridBagConstraints.HORIZONTAL;
+
+        painel.add(cbPartida,gc);
+
+        JLabel lblCategoria =
+                new JLabel("Categoria:");
+
+        gc.gridx = 0;
+        gc.gridy = 3;
+
+        painel.add(lblCategoria,gc);
+
+        gc.gridx = 1;
+
+        painel.add(cbCategoria,gc);
+
+        adicionarLinha(
+                painel,gc,4,
+                "Quantidade:",txtQuantidade
+        );
+
+        return painel;
+    }
+
+    private JPanel criarPainelTabela() {
+
+        JPanel painel =
+                new JPanel(
+                        new BorderLayout(0,8)
+                );
+
+        painel.setBackground(COR_FUNDO);
+
+        JPanel busca =
+                new JPanel(
+                        new BorderLayout(8,0)
+                );
+
+        busca.setBackground(COR_FUNDO);
+
+        txtBusca = criarCampo();
+
+        JButton btnBuscar =
+                criarBotao(
+                        "Buscar",
+                        COR_BUSCA
+                );
+
+        busca.add(
+                new JLabel("Buscar:"),
+                BorderLayout.WEST
+        );
+
+        busca.add(
+                txtBusca,
+                BorderLayout.CENTER
+        );
+
+        busca.add(
+                btnBuscar,
+                BorderLayout.EAST
+        );
+
+        modeloTabela =
+                new DefaultTableModel(
+                        new String[]{
+                                "ID",
+                                "Comprador",
+                                "Qtd Ingressos",
+                                "Valor Total"
+                        },
+                        0
+                ) {
+
+                    @Override
+                    public boolean isCellEditable(
+                            int row,
+                            int col
+                    ) {
+                        return false;
+                    }
+                };
+
+        tabela = new JTable(modeloTabela);
+
+        JScrollPane scroll =
+                new JScrollPane(tabela);
+
+        JButton btnExcluir =
+                criarBotao(
+                        "Excluir",
+                        COR_CANCELAR
+                );
+
+        btnExcluir.addActionListener(
+                e -> excluirIngresso()
+        );
+
+        JPanel painelExcluir =
+                new JPanel(
+                        new FlowLayout(
+                                FlowLayout.RIGHT
+                        )
+                );
+
+        painelExcluir.setBackground(COR_FUNDO);
+
+        painelExcluir.add(btnExcluir);
+
+        painel.add(busca,BorderLayout.NORTH);
+        painel.add(scroll,BorderLayout.CENTER);
+        painel.add(painelExcluir,BorderLayout.SOUTH);
+
+        return painel;
+    }
+
+    private JPanel criarRodape() {
+
+        JPanel rodape =
+                new JPanel(
+                        new FlowLayout(
+                                FlowLayout.RIGHT,
+                                15,
+                                12
+                        )
+                );
+
+        rodape.setBackground(COR_FUNDO);
+
+        JButton btnCancelar =
+                criarBotao(
+                        "Cancelar",
+                        COR_CANCELAR
+                );
+
+        JButton btnSalvar =
+                criarBotao(
+                        "Salvar",
+                        COR_SALVAR
+                );
+
+        btnCancelar.addActionListener(
+                e -> {
+                    new MenuPrincipalView()
+                            .setVisible(true);
+                    dispose();
+                }
+        );
+
+        btnSalvar.addActionListener(
+                e -> salvarIngresso()
+        );
+
+        rodape.add(btnCancelar);
+        rodape.add(btnSalvar);
+
+        return rodape;
+    }
+
+    private void salvarIngresso() {
+
+        JOptionPane.showMessageDialog(
+                this,
+                "Funcionalidade em desenvolvimento."
+        );
+    }
+
+    private void excluirIngresso() {
+
+        int linha =
+                tabela.getSelectedRow();
+
+        if(linha < 0) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Selecione um registro."
+            );
+
+            return;
+        }
+
+        modeloTabela.removeRow(linha);
+    }
+
+    private void carregarTabela() {
+
+        modeloTabela.setRowCount(0);
+
+        /*
+         Futuramente:
+         carregar vendas do repository/service
+        */
+    }
+
+    private JTextField criarCampo() {
+
+        JTextField campo =
+                new JTextField();
+
+        campo.setPreferredSize(
+                new Dimension(
+                        250,
+                        32
+                )
+        );
+
+        return campo;
+    }
+
+    private JButton criarBotao(
+            String texto,
+            Color cor
+    ) {
+
+        JButton btn =
+                new JButton(texto);
+
+        btn.setBackground(cor);
+        btn.setForeground(Color.WHITE);
+
+        btn.setFocusPainted(false);
+
+        btn.setPreferredSize(
+                new Dimension(
+                        110,
+                        36
+                )
+        );
+
+        return btn;
+    }
+
+    private void adicionarLinha(
+            JPanel painel,
+            GridBagConstraints gc,
+            int linha,
+            String texto,
+            JTextField campo
+    ) {
+
+        gc.gridx = 0;
+        gc.gridy = linha;
+        gc.weightx = 0.3;
+        gc.fill = GridBagConstraints.NONE;
+
+        painel.add(
+                new JLabel(texto),
+                gc
+        );
+
+        gc.gridx = 1;
+        gc.weightx = 0.7;
+        gc.fill = GridBagConstraints.HORIZONTAL;
+
+        painel.add(campo,gc);
     }
 }
-
-/*      Ação do botão vender (simples por enquanto. Em breve a lógica vai ser implementada)
-        botaoVender.addActionListener(e -> venderIngresso());
-    }
-
-    private void venderIngresso() {
-        try {
-            String comprador = txtComprador.getText();
-            String partida = (String) cbPartida.getSelectedItem();
-            String categoria = (String) cbCategoria.getSelectedItem();
-            int quantidade = Integer.parseInt(txtQuantidade.getText());
-
-            JOptionPane.showMessageDialog(this,
-                    "Venda realizada!\n" +
-                            "Comprador: " + comprador +
-                            "\nPartida: " + partida +
-                            "\nCategoria: " + categoria +
-                            "\nQuantidade: " + quantidade
-            );
-
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this,
-                    "Quantidade inválida!",
-                    "Erro",
-                    JOptionPane.ERROR_MESSAGE
-            );
-        }
-    }
-
-*/
