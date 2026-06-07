@@ -1,16 +1,5 @@
 [
   {
-    "id": 0,
-    "nome": "",
-    "email": "",
-    "login": "",
-    "senha": "",
-    "cpf": "",
-    "pais": "",
-    "nacionalidade": "",
-    "experiencia": 0
-  },
-  {
     "id": 1,
     "nome": "joao",
     "email": "joao@gmail.com",
@@ -42,5 +31,16 @@
     "pais": "Brasil",
     "nacionalidade": "Brasil",
     "experiencia": 7
+  },
+  {
+    "id": 6,
+    "nome": "Daronco",
+    "email": "daronco@gmail.com",
+    "login": "daronco",
+    "senha": "daronco1",
+    "cpf": "234.890.765-90",
+    "pais": "Brasil",
+    "nacionalidade": "Brasil",
+    "experiencia": 5
   }
 ]
