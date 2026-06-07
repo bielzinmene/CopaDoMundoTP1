@@ -1,6 +1,7 @@
 package br.unb.cic.copa.view.aluno3;
 
 import br.unb.cic.copa.controller.aluno3.ArbitroController;
+import br.unb.cic.copa.controller.aluno4.PartidaController;
 import br.unb.cic.copa.model.aluno3.Arbitro;
 import br.unb.cic.copa.model.aluno4.Partida;
 
@@ -20,6 +21,7 @@ public class ConsultarEscalaArbitroView extends JFrame {
     private DefaultTableModel modeloTabela;
 
     private final ArbitroController controller = new ArbitroController();
+    private final PartidaController partidaController = new PartidaController();
 
     private static final Color COR_FUNDO     = new Color(245, 245, 250);
     private static final Color COR_HEADER    = new Color(30, 60, 120);
@@ -80,7 +82,7 @@ public class ConsultarEscalaArbitroView extends JFrame {
         gc.anchor = GridBagConstraints.WEST;
 
         // Campo ID
-        JLabel labelId = new JLabel("ID do Árbitro:");
+        JLabel labelId = new JLabel("Login do Árbitro:");
         labelId.setFont(FONTE_LABEL);
         labelId.setForeground(new Color(50, 50, 80));
 
@@ -131,20 +133,19 @@ public class ConsultarEscalaArbitroView extends JFrame {
     }
 
     private void buscarEscala() {
-        String idTexto = txtIdArbitro.getText().trim();
-        if (idTexto.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Informe o ID do árbitro.", "Aviso", JOptionPane.WARNING_MESSAGE);
+        String login = txtIdArbitro.getText().trim();
+        if (login.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Informe o login do árbitro.", "Aviso", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
         try {
-            int id = Integer.parseInt(idTexto);
-            Arbitro arbitro = controller.buscarPorId(id);
+            Arbitro arbitro = controller.buscarPorLogin(login);
 
             labelNomeArbitro.setText("Árbitro: " + arbitro.getNome());
             modeloTabela.setRowCount(0);
 
-            List<Partida> escala = arbitro.consultarEscala();
+            List<Partida> escala = partidaController.listarPorArbitro(arbitro.getId());
 
             if (escala.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Nenhuma partida designada para este árbitro.", "Aviso", JOptionPane.INFORMATION_MESSAGE);
@@ -153,16 +154,14 @@ public class ConsultarEscalaArbitroView extends JFrame {
 
             for (Partida p : escala) {
                 modeloTabela.addRow(new Object[]{
-                        p.getSelecao1().getNome(),
-                        p.getSelecao2().getNome(),
+                        p.getSelecao1() != null ? p.getSelecao1().getNome() : "-",
+                        p.getSelecao2() != null ? p.getSelecao2().getNome() : "-",
                         p.getData(),
-                        p.getEstadio().getNome(),
+                        p.getEstadio() != null ? p.getEstadio().getNome() : "-",
                         p.getStatus()
                 });
             }
 
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "ID deve ser um número inteiro.", "Erro", JOptionPane.ERROR_MESSAGE);
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
@@ -173,7 +172,7 @@ public class ConsultarEscalaArbitroView extends JFrame {
         rodape.setBackground(COR_FUNDO);
         rodape.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(200, 200, 220)));
 
-        JButton btnVoltar = criarBotao("FECHAR", COR_CANCELAR);
+        JButton btnVoltar = criarBotao("Voltar", COR_CANCELAR);
         btnVoltar.addActionListener(e -> dispose());
 
         rodape.add(btnVoltar);

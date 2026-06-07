@@ -1,21 +1,19 @@
 package br.unb.cic.copa.controller.aluno4;
 
 import br.unb.cic.copa.model.aluno4.Partida;
-import br.unb.cic.copa.repository.aluno4.PartidaRepository;
+import br.unb.cic.copa.model.aluno4.repository.PartidaRepository;
+
 import java.util.List;
 
 public class PartidaController {
 
-    private PartidaRepository repository;
+    private final PartidaRepository repository;
 
     public PartidaController() {
         this.repository = new PartidaRepository();
     }
 
     public void salvarPartida(Partida partida) {
-        if (partida.getId() == 0) {
-            partida.setId(gerarNovoId());
-        }
         repository.salvar(partida);
     }
 
@@ -27,18 +25,20 @@ public class PartidaController {
         return repository.listarTodos();
     }
 
+    public List<Partida> listarPorArbitro(int arbitroId) {
+        return repository.listarPorArbitro(arbitroId);
+    }
+
     public void excluirPartida(int id) {
         repository.remover(id);
     }
 
-    private int gerarNovoId() {
-        List<Partida> partidas = repository.listarTodos();
-        int maiorId = 0;
-        for (Partida p : partidas) {
-            if (p.getId() > maiorId) {
-                maiorId = p.getId();
-            }
+    public int gerarNovoId() {
+        List<Partida> lista = repository.listarTodos();
+        int maior = 0;
+        for (Partida p : lista) {
+            if (p.getId() > maior) maior = p.getId();
         }
-        return maiorId + 1;
+        return maior + 1;
     }
 }

@@ -16,5 +16,14 @@
     "estado": "Jalisco",
     "pais": "MEXICO",
     "endereco": "Rua 3"
+  },
+  {
+    "id": 4,
+    "nome": "Estádio Monterrey",
+    "capacidade": 53500,
+    "cidade": "Guadalupe",
+    "estado": "Nuevo León",
+    "pais": "MEXICO",
+    "endereco": "novo mexico"
   }
 ]
