@@ -45,13 +45,13 @@
   },
   {
     "id": 6,
-    "nome": "carlos",
-    "email": "carlos@gmail.com",
-    "login": "carlosop",
-    "senha": "carlos123",
-    "cpf": "234.567.432-13",
+    "nome": "Daronco",
+    "email": "daronco@gmail.com",
+    "login": "daronco",
+    "senha": "daronco1",
+    "cpf": "234.890.765-90",
     "pais": "Brasil",
-    "funcao": "Administrador",
+    "funcao": "Arbitro",
     "status": "Ativo"
   },
   {

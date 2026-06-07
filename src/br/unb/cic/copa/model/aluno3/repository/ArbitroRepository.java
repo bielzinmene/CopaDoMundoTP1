@@ -104,26 +104,24 @@ public class ArbitroRepository implements Repositorio<Arbitro> {
             int id = 0, experiencia = 0;
             String nome = "", email = "", login = "", senha = "", cpf = "", pais = "", nacionalidade = "";
 
-            for (String linha : obj.split(",\n")) {
+            for (String linha : obj.split(",\\s*\\r?\\n")) {
                 linha = linha.trim();
-                if (linha.startsWith("\"id\"")) {
-                    id = Integer.parseInt(linha.split(":")[1].trim());
-                } else if (linha.startsWith("\"nome\"")) {
-                    nome = linha.split(":", 2)[1].trim().replace("\"", "");
-                } else if (linha.startsWith("\"email\"")) {
-                    email = linha.split(":", 2)[1].trim().replace("\"", "");
-                } else if (linha.startsWith("\"login\"")) {
-                    login = linha.split(":", 2)[1].trim().replace("\"", "");
-                } else if (linha.startsWith("\"senha\"")) {
-                    senha = linha.split(":", 2)[1].trim().replace("\"", "");
-                } else if (linha.startsWith("\"cpf\"")) {
-                    cpf = linha.split(":", 2)[1].trim().replace("\"", "");
-                } else if (linha.startsWith("\"pais\"")) {
-                    pais = linha.split(":", 2)[1].trim().replace("\"", "");
-                } else if (linha.startsWith("\"nacionalidade\"")) {
-                    nacionalidade = linha.split(":", 2)[1].trim().replace("\"", "");
-                } else if (linha.startsWith("\"experiencia\"")) {
-                    experiencia = Integer.parseInt(linha.split(":")[1].trim());
+                if (linha.isEmpty()) continue;
+                int colonPos = linha.indexOf(":");
+                if (colonPos == -1) continue;
+                String chave = linha.substring(0, colonPos).trim().replace("\"", "");
+                String valor = linha.substring(colonPos + 1).trim().replaceAll("^\"|\"$|\",$|,$", "").trim();
+
+                switch (chave) {
+                    case "id":           id = Integer.parseInt(valor); break;
+                    case "nome":         nome = valor; break;
+                    case "email":        email = valor; break;
+                    case "login":        login = valor; break;
+                    case "senha":        senha = valor; break;
+                    case "cpf":          cpf = valor; break;
+                    case "pais":         pais = valor; break;
+                    case "nacionalidade": nacionalidade = valor; break;
+                    case "experiencia":  experiencia = Integer.parseInt(valor); break;
                 }
             }
 
