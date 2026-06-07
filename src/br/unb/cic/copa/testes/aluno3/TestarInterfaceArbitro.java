@@ -8,6 +8,7 @@ import br.unb.cic.copa.model.aluno3.PaisSede;
 import br.unb.cic.copa.model.aluno3.exception.ArbitroNacionalidadeException;
 import br.unb.cic.copa.model.aluno3.exception.CapacidadeInvalidaException;
 import br.unb.cic.copa.model.aluno3.exception.ExperienciaInvalidaException;
+import br.unb.cic.copa.model.aluno4.Fase;
 import br.unb.cic.copa.model.aluno4.Partida;
 import br.unb.cic.copa.model.aluno4.StatusPartida;
 
@@ -88,6 +89,6 @@ public class TestarInterfaceArbitro {
         Selecao s2 = new Selecao(nomeSelecao2, "A", "Técnico2");
         Localizacao loc = new Localizacao("Rio de Janeiro", "RJ", PaisSede.MEXICO, "Av. Atlântica, 1000");
         Estadio estadio = new Estadio(1, "Maracanã", loc, 78000);
-        return new Partida(s1, s2, "2026-06-15", estadio);
+        return new Partida(s1, s2, "2026-06-15", estadio, Fase.GRUPOS);
     }
 }

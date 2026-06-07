@@ -6,6 +6,7 @@ import br.unb.cic.copa.model.aluno3.Localizacao;
 import br.unb.cic.copa.model.aluno3.PaisSede;
 import br.unb.cic.copa.model.aluno3.exception.CapacidadeInvalidaException;
 import br.unb.cic.copa.model.aluno3.exception.EstadioIndisponivelException;
+import br.unb.cic.copa.model.aluno4.Fase;
 import br.unb.cic.copa.model.aluno4.Partida;
 
 public class TestarInterfaceEstadio {
@@ -89,6 +90,6 @@ public class TestarInterfaceEstadio {
     }
 
     private static Partida criarPartida(Estadio estadio, String nomeS1, String nomeS2, String data) {
-        return new Partida(new Selecao(nomeS1, "A", "Técnico1"), new Selecao(nomeS2, "A", "Técnico2"), data, estadio);
+        return new Partida(new Selecao(nomeS1, "A", "Técnico1"), new Selecao(nomeS2, "A", "Técnico2"), data, estadio, Fase.GRUPOS);
     }
 }

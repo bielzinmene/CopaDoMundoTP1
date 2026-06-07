@@ -1,44 +1,38 @@
 package br.unb.cic.copa.controller.aluno4;
 
 import br.unb.cic.copa.model.aluno4.Partida;
+import br.unb.cic.copa.model.aluno4.exception.PartidaInvalidaException;
 import br.unb.cic.copa.repository.aluno4.PartidaRepository;
+
+
+import java.io.IOException;
 import java.util.List;
 
 public class PartidaController {
-
-    private PartidaRepository repository;
+    private br.unb.cic.copa.repository.aluno4.PartidaRepository repositorio;
 
     public PartidaController() {
-        this.repository = new PartidaRepository();
+        this.repositorio = new br.unb.cic.copa.repository.aluno4.PartidaRepository();
     }
 
-    public void salvarPartida(Partida partida) {
-        if (partida.getId() == 0) {
-            partida.setId(gerarNovoId());
+    public void salvarPartida(Partida partida) throws PartidaInvalidaException, IOException {
+        // Validação extra de negócio antes de salvar
+        if (partida == null) {
+            throw new PartidaInvalidaException("Erro: A partida não pode ser nula.");
         }
-        repository.salvar(partida);
+
+        repositorio.salvar(partida);
+    }
+    public List<Partida> listarPorArbitro(int arbitroId) {
+        PartidaRepository repository = null;
+        return repository.listarPorArbitro(arbitroId);
     }
 
-    public Partida buscarPorId(int id) {
-        return repository.buscarPorId(id);
+    public List<Partida> listarPartidas() throws IOException {
+        return repositorio.listarTodos();
     }
 
-    public List<Partida> listarTodas() {
-        return repository.listarTodos();
-    }
-
-    public void excluirPartida(int id) {
-        repository.remover(id);
-    }
-
-    private int gerarNovoId() {
-        List<Partida> partidas = repository.listarTodos();
-        int maiorId = 0;
-        for (Partida p : partidas) {
-            if (p.getId() > maiorId) {
-                maiorId = p.getId();
-            }
-        }
-        return maiorId + 1;
+    public void removerPartida(int id) throws IOException {
+        repositorio.remover(id);
     }
 }
