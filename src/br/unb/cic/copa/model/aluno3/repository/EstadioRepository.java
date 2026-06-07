@@ -105,22 +105,22 @@ public class EstadioRepository implements Repositorio<Estadio> {
             int id = 0, capacidade = 0;
             String nome = "", cidade = "", estado = "", pais = "", endereco = "";
 
-            for (String linha : obj.split(",\n")) {
+            for (String linha : obj.split(",\\s*\\r?\\n")) {
                 linha = linha.trim();
-                if (linha.startsWith("\"id\"")) {
-                    id = Integer.parseInt(linha.split(":")[1].trim());
-                } else if (linha.startsWith("\"nome\"")) {
-                    nome = linha.split(":", 2)[1].trim().replace("\"", "");
-                } else if (linha.startsWith("\"capacidade\"")) {
-                    capacidade = Integer.parseInt(linha.split(":")[1].trim());
-                } else if (linha.startsWith("\"cidade\"")) {
-                    cidade = linha.split(":", 2)[1].trim().replace("\"", "");
-                } else if (linha.startsWith("\"estado\"")) {
-                    estado = linha.split(":", 2)[1].trim().replace("\"", "");
-                } else if (linha.startsWith("\"pais\"")) {
-                    pais = linha.split(":", 2)[1].trim().replace("\"", "");
-                } else if (linha.startsWith("\"endereco\"")) {
-                    endereco = linha.split(":", 2)[1].trim().replace("\"", "");
+                if (linha.isEmpty()) continue;
+                int colonPos = linha.indexOf(":");
+                if (colonPos == -1) continue;
+                String chave = linha.substring(0, colonPos).trim().replace("\"", "");
+                String valor = linha.substring(colonPos + 1).trim().replaceAll("^\"|\"$|\",$|,$", "").trim();
+
+                switch (chave) {
+                    case "id":         id        = Integer.parseInt(valor); break;
+                    case "nome":       nome      = valor; break;
+                    case "capacidade": capacidade = Integer.parseInt(valor); break;
+                    case "cidade":     cidade    = valor; break;
+                    case "estado":     estado    = valor; break;
+                    case "pais":       pais      = valor; break;
+                    case "endereco":   endereco  = valor; break;
                 }
             }
 
