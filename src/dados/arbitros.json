@@ -1,27 +1,5 @@
 [
   {
-    "id": 1,
-    "nome": "joao",
-    "email": "joao@gmail.com",
-    "login": "joao",
-    "senha": "joao1234",
-    "cpf": "23155266213",
-    "pais": "brasileiro",
-    "nacionalidade": "",
-    "experiencia": 0
-  },
-  {
-    "id": 4,
-    "nome": "Antonio",
-    "email": "antonio@gmail.com",
-    "login": "antonio.arbitro",
-    "senha": "12345678",
-    "cpf": "213144242412",
-    "pais": "italia",
-    "nacionalidade": "",
-    "experiencia": 0
-  },
-  {
     "id": 5,
     "nome": "paulo",
     "email": "paulo@gmail.com",
@@ -33,14 +11,25 @@
     "experiencia": 7
   },
   {
-    "id": 6,
-    "nome": "Daronco",
-    "email": "daronco@gmail.com",
-    "login": "daronco",
-    "senha": "daronco1",
-    "cpf": "234.890.765-90",
+    "id": 7,
+    "nome": "ana",
+    "email": "ana@gmail.com",
+    "login": "ana",
+    "senha": "ana12345",
+    "cpf": "234.678.234-90",
     "pais": "Brasil",
     "nacionalidade": "Brasil",
+    "experiencia": 5
+  },
+  {
+    "id": 8,
+    "nome": "Rebeca",
+    "email": "rebeca@gmail.com",
+    "login": "rebeca",
+    "senha": "rebeca12",
+    "cpf": "543.896.569-03",
+    "pais": "Egito",
+    "nacionalidade": "Egito",
     "experiencia": 5
   }
 ]

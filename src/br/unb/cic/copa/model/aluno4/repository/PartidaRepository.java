@@ -1,4 +1,4 @@
-package br.unb.cic.copa.repository.aluno4;
+package br.unb.cic.copa.model.aluno4.repository;
 
 import br.unb.cic.copa.model.aluno2.Selecao;
 import br.unb.cic.copa.model.aluno3.Estadio;
@@ -63,14 +63,14 @@ public class PartidaRepository {
                 String estadioNome = p.getEstadio()  != null ? p.getEstadio().getNome()  : "";
                 String fase        = p.getFase()      != null ? p.getFase().name()        : "GRUPOS";
                 String json = "  {\n" +
-                        "    \"id\": "            + p.getId()        + ",\n" +
-                        "    \"arbitroId\": "     + p.getArbitroId() + ",\n" +
-                        "    \"fase\": \""        + fase             + "\",\n" +
-                        "    \"status\": \""      + p.getStatus()    + "\",\n" +
-                        "    \"data\": \""        + p.getData()      + "\",\n" +
-                        "    \"selecao1Nome\": \"" + sel1Nome        + "\",\n" +
-                        "    \"selecao2Nome\": \"" + sel2Nome        + "\",\n" +
-                        "    \"estadioNome\": \"" + estadioNome      + "\"\n" +
+                        "    \"id\": "             + p.getId()        + ",\n" +
+                        "    \"arbitroId\": "      + p.getArbitroId() + ",\n" +
+                        "    \"fase\": \""         + fase             + "\",\n" +
+                        "    \"status\": \""       + p.getStatus()    + "\",\n" +
+                        "    \"data\": \""         + p.getData()      + "\",\n" +
+                        "    \"selecao1Nome\": \"" + sel1Nome         + "\",\n" +
+                        "    \"selecao2Nome\": \"" + sel2Nome         + "\",\n" +
+                        "    \"estadioNome\": \""  + estadioNome      + "\"\n" +
                         "  }";
                 writer.write(json);
                 if (i < partidas.size() - 1) writer.write(",\n");
@@ -82,9 +82,9 @@ public class PartidaRepository {
     }
 
     public List<Partida> listarTodos() {
-        List<Partida> partidas = new ArrayList<>();
-        File file = new File(ARQUIVO);
-        if (!file.exists()) return partidas;
+            List<Partida> partidas = new ArrayList<>();
+            File file = new File(ARQUIVO);
+            if (!file.exists()) return partidas;
 
         try {
             String conteudo = new String(Files.readAllBytes(Paths.get(ARQUIVO))).trim();
@@ -130,7 +130,8 @@ public class PartidaRepository {
                     if ("EM_ANDAMENTO".equals(status)) p.iniciarPartida();
                     partidas.add(p);
                 } catch (Exception e) {
-                    // ignora entradas inválidas
+                    System.out.println("[ERRO ao carregar partida]: " + e.getMessage());
+                    e.printStackTrace();
                 }
             }
         } catch (IOException e) {

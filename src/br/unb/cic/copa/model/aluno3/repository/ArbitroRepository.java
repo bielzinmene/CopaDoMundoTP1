@@ -45,6 +45,13 @@ public class ArbitroRepository implements Repositorio<Arbitro> {
         throw new IOException("Árbitro com id " + id + " não encontrado.");
     }
 
+    public Arbitro buscarPorLogin(String login) throws IOException {
+        for (Arbitro a : listarTodos()) {
+            if (a.getLogin().equalsIgnoreCase(login)) return a;
+        }
+        throw new IOException("Árbitro com login '" + login + "' não encontrado.");
+    }
+
     @Override
     public List<Arbitro> listarTodos() throws IOException {
         File arquivo = new File(caminhoArquivo);
