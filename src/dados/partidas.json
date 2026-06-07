@@ -1,15 +1,5 @@
 [
   {
-    "id": 1,
-    "arbitroId": 6,
-    "fase": "GRUPOS",
-    "status": "AGENDADA",
-    "data": "23/03/2026",
-    "selecao1Nome": "mexico",
-    "selecao2Nome": "peru",
-    "estadioNome": "Estádio de Toronto"
-  },
-  {
     "id": 2,
     "arbitroId": 1,
     "fase": "GRUPOS",
@@ -38,5 +28,15 @@
     "selecao1Nome": "Egito",
     "selecao2Nome": "Senegal",
     "estadioNome": "Estadio Monterrey"
+  },
+  {
+    "id": 1,
+    "arbitroId": 6,
+    "fase": "GRUPOS",
+    "status": "FINALIZADA",
+    "data": "23/03/2026",
+    "selecao1Nome": "mexico",
+    "selecao2Nome": "peru",
+    "estadioNome": "Estádio de Toronto"
   }
 ]
