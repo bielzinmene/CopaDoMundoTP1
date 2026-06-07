@@ -1,7 +1,7 @@
 package br.unb.cic.copa.view.aluno2;
 
 import br.unb.cic.copa.model.aluno2.Selecao;
-import br.unb.cic.copa.controller.aluno2.GerenciadorSelecao;
+import br.unb.cic.copa.controller.aluno2.SelecaoController;
 import br.unb.cic.copa.model.aluno2.exception.CopaException;
 import br.unb.cic.copa.view.aluno1.MenuPrincipalView;
 
@@ -21,7 +21,7 @@ public class GerenciarSelecaoView extends JFrame {
     private JTable tabela;
     private DefaultTableModel modeloTabela;
 
-    private final GerenciadorSelecao gerenciador = new GerenciadorSelecao();
+    private final SelecaoController gerenciador = new SelecaoController();
 
     private static final Color COR_FUNDO     = new Color(245, 245, 250);
     private static final Color COR_HEADER    = new Color(30, 60, 120);

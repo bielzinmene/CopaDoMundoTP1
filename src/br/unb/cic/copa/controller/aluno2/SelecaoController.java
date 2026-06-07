@@ -8,17 +8,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GerenciadorSelecao {
+public class SelecaoController {
     private List<Selecao> selecoes;
     private final SelecaoRepository repositorio;
 
-    public GerenciadorSelecao() {
+    public SelecaoController() {
         this.repositorio = new SelecaoRepository("src/dados/selecoes.json");
         try {
             selecoes = repositorio.carregarTodas();
-            // Atualiza o contador de IDs da classe Selecao
-            int maxId = selecoes.stream().mapToInt(Selecao::getId).max().orElse(0);
-            Selecao.setUltimoId(maxId);
         } catch (IOException e) {
             selecoes = new ArrayList<>();
             System.err.println("Erro ao carregar seleções: " + e.getMessage());
@@ -33,11 +30,19 @@ public class GerenciadorSelecao {
         }
     }
 
+    private int gerarNovoId() {
+        int max = selecoes.stream().mapToInt(Selecao::getId).max().orElse(0);
+        return max + 1;
+    }
+
     // ------ CRUD Seleção ------
+
     public void adicionarSelecao(Selecao s) throws CopaException {
         if (buscarSelecaoPorNome(s.getNome()) != null) {
             throw new CopaException("Já existe seleção com o nome " + s.getNome());
         }
+
+        s.setId(gerarNovoId());
         selecoes.add(s);
         salvar();
     }
