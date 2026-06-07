@@ -53,5 +53,16 @@
     "pais": "Brasil",
     "funcao": "Operador",
     "status": "Ativo"
+  },
+  {
+    "id": 100,
+    "nome": "Fernanda",
+    "email": "nanda@gmail.com",
+    "login": "fernandona",
+    "senha": "nanda123",
+    "cpf": "111.111.111-11",
+    "pais": "Brasil",
+    "funcao": "Arbitro",
+    "status": "Ativo"
   }
 ]
