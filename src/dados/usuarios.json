@@ -1,0 +1,57 @@
+[
+  {
+    "id": 0,
+    "nome": "admin",
+    "email": "admin@gmail.com",
+    "login": "admin",
+    "senha": "Admin123",
+    "cpf": "346677764",
+    "pais": "brasileiro",
+    "funcao": "Administrador",
+    "status": "Ativo"
+  },
+  {
+    "id": 5,
+    "nome": "paulo",
+    "email": "paulo@gmail.com",
+    "login": "pauloarbitro",
+    "senha": "paulo123",
+    "cpf": "4895727646",
+    "pais": "Brasil",
+    "funcao": "Arbitro",
+    "status": "Ativo"
+  },
+  {
+    "id": 7,
+    "nome": "ana",
+    "email": "ana@gmail.com",
+    "login": "ana",
+    "senha": "ana12345",
+    "cpf": "234.678.234-90",
+    "pais": "Brasil",
+    "funcao": "Arbitro",
+    "status": "Ativo"
+  },
+  {
+    "id": 8,
+    "nome": "Rebeca",
+    "email": "rebeca@gmail.com",
+    "login": "rebeca",
+    "senha": "rebeca12",
+    "cpf": "543.896.569-03",
+    "pais": "Egito",
+    "funcao": "Arbitro",
+    "status": "Ativo"
+  },
+  {
+    "id": 9,
+    "nome": "Nomenome",
+    "email": "nome1234@gmail.com",
+    "login": "Nome1234",
+    "senha": "NoMee123",
+    "cpf": "894.678.890-20",
+    "pais": "Brasil",
+    "funcao": "Operador",
+    "status": "Ativo"
+  }
+]

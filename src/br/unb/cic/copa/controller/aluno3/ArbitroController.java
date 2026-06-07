@@ -37,6 +37,11 @@ public class ArbitroController {
         return arbitroRepository.buscarPorId(id);
     }
 
+    // Busca árbitro pelo login
+    public Arbitro buscarPorLogin(String login) throws IOException {
+        return arbitroRepository.buscarPorLogin(login);
+    }
+
     // Retorna todos os árbitros cadastrados
     public List<Arbitro> listarTodos() throws IOException {
         return arbitroRepository.listarTodos();

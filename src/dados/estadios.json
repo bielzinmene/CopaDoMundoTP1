@@ -1,0 +1,29 @@
+[
+  {
+    "id": 2,
+    "nome": "Estádio de Toronto",
+    "capacidade": 45000,
+    "cidade": "Toronto",
+    "estado": "Ontaro",
+    "pais": "CANADA",
+    "endereco": "Rua 2"
+  },
+  {
+    "id": 3,
+    "nome": "Estádio Guadalajara",
+    "capacidade": 48000,
+    "cidade": "Zapopan",
+    "estado": "Jalisco",
+    "pais": "MEXICO",
+    "endereco": "Rua 3"
+  },
+  {
+    "id": 4,
+    "nome": "Estádio Monterrey",
+    "capacidade": 53500,
+    "cidade": "Guadalupe",
+    "estado": "Nuevo León",
+    "pais": "MEXICO",
+    "endereco": "novo mexico"
+  }
+]
