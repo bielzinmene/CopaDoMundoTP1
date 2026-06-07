@@ -6,6 +6,6 @@ import br.unb.cic.copa.model.aluno2.exception.CopaException;
 // Cada email deve ser único — é o identificador principal do usuário
 public class UsuarioDuplicadoException extends CopaException {
     public UsuarioDuplicadoException() {
-        super("Já existe um usuário cadastrado com este email!");
+        super("Já existe um usuário cadastrado com estes dados!");
     }
 }
