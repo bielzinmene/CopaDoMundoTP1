@@ -1,0 +1,13 @@
+[
+  {
+    "id": 99,
+    "nome": "Árbitro Teste",
+    "email": "teste@copa.com",
+    "login": "arbitro99",
+    "senha": "Senha123",
+    "cpf": "999.999.999-99",
+    "pais": "Itália",
+    "nacionalidade": "Italiana",
+    "experiencia": 15
+  }
+]
