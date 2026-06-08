@@ -1,6 +1,7 @@
 package br.unb.cic.copa.model.aluno1.repository;
 
 import br.unb.cic.copa.model.aluno1.*;
+import br.unb.cic.copa.model.aluno3.Arbitro;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -8,7 +9,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UsuarioRepository {
+public class UsuarioRepository implements Repositorio<Usuario> {
 
     private final String caminhoArquivo;
 
@@ -16,9 +17,11 @@ public class UsuarioRepository {
         this.caminhoArquivo = caminhoArquivo;
     }
 
+    @Override
     public void salvar(Usuario usuario) throws IOException {
         List<Usuario> lista = listarTodos();
         boolean atualizado = false;
+
         for (int i = 0; i < lista.size(); i++) {
             if (lista.get(i).getId() == usuario.getId()) {
                 lista.set(i, usuario);
@@ -26,12 +29,15 @@ public class UsuarioRepository {
                 break;
             }
         }
+
         if (!atualizado) {
             lista.add(usuario);
         }
+
         escreverJson(lista);
     }
 
+    @Override
     public Usuario buscarPorId(int id) throws IOException {
         for (Usuario u : listarTodos()) {
             if (u.getId() == id) return u;
@@ -39,14 +45,18 @@ public class UsuarioRepository {
         throw new IOException("Usuário com id " + id + " não encontrado.");
     }
 
+    @Override
     public List<Usuario> listarTodos() throws IOException {
         File arquivo = new File(caminhoArquivo);
         if (!arquivo.exists()) return new ArrayList<>();
+
         String conteudo = new String(Files.readAllBytes(Paths.get(caminhoArquivo)));
         if (conteudo.trim().isEmpty()) return new ArrayList<>();
+
         return parseJson(conteudo);
     }
 
+    @Override
     public void remover(int id) throws IOException {
         List<Usuario> lista = listarTodos();
         boolean removido = lista.removeIf(u -> u.getId() == id);
@@ -57,6 +67,7 @@ public class UsuarioRepository {
     private void escreverJson(List<Usuario> lista) throws IOException {
         StringBuilder sb = new StringBuilder();
         sb.append("[\n");
+
         for (int i = 0; i < lista.size(); i++) {
             Usuario u = lista.get(i);
             sb.append("  {\n");
@@ -73,9 +84,11 @@ public class UsuarioRepository {
             if (i < lista.size() - 1) sb.append(",");
             sb.append("\n");
         }
+
         sb.append("]");
 
         new File(caminhoArquivo).getParentFile().mkdirs();
+
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(caminhoArquivo))) {
             writer.write(sb.toString());
         }
@@ -95,20 +108,16 @@ public class UsuarioRepository {
         json = json.trim();
         if (json.equals("[]") || json.isEmpty()) return lista;
 
-        // Remove colchetes externos
         json = json.substring(1, json.lastIndexOf("]")).trim();
 
-        // Divide por objeto - tratando casos com vírgulas dentro dos dados
         String[] objetos = splitJsonObjects(json);
 
         for (String obj : objetos) {
-            obj = obj.trim();
-            obj = obj.replace("{", "").replace("}", "").trim();
+            obj = obj.trim().replace("{", "").replace("}", "").trim();
 
             int id = 0;
             String nome = "", email = "", login = "", senha = "", cpf = "", pais = "", funcao = "", status = "";
 
-            // Pega cada linha/par chave-valor
             String[] linhas = obj.split(",\\s*(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
             for (String linha : linhas) {
                 linha = linha.trim();
@@ -152,31 +161,35 @@ public class UsuarioRepository {
             }
 
             if (!inString) {
-                if (c == '{') {
-                    braceCount++;
-                } else if (c == '}') {
+                if (c == '{') braceCount++;
+                else if (c == '}') {
                     braceCount--;
                     if (braceCount == 0) {
                         current.append(c);
                         objetos.add(current.toString());
                         current = new StringBuilder();
-                        i++; // pular próxima vírgula se houver
+                        i++;
                         continue;
                     }
                 }
             }
-
             current.append(c);
         }
-
         return objetos.toArray(new String[0]);
     }
 
-    private Usuario criarUsuario(int id, String nome, String email, String login, String senha, String cpf, String pais, String funcao) {
+    private Usuario criarUsuario(int id, String nome, String email, String login,
+                                 String senha, String cpf, String pais, String funcao) {
         switch (funcao) {
             case "Administrador": return new Administrador(id, nome, email, login, senha, cpf, pais);
-            case "Organizador": return new Organizador(id, nome, email, login, senha, cpf, pais);
-            case "Operador": return new Operador(id, nome, email, login, senha, cpf, pais);
+            case "Organizador":   return new Organizador(id, nome, email, login, senha, cpf, pais);
+            case "Operador":      return new Operador(id, nome, email, login, senha, cpf, pais);
+            case "Arbitro":
+                try {
+                    return new Arbitro(id, nome, email, login, senha, cpf, pais);
+                } catch (Exception e) {
+                    return new Organizador(id, nome, email, login, senha, cpf, pais);
+                }
             default: return new Organizador(id, nome, email, login, senha, cpf, pais);
         }
     }

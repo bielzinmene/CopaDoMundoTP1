@@ -1,6 +1,7 @@
 package br.unb.cic.copa.view.aluno3;
 
 import br.unb.cic.copa.controller.aluno3.ArbitroController;
+import br.unb.cic.copa.model.aluno1.SessaoUsuario;
 import br.unb.cic.copa.model.aluno3.Arbitro;
 import br.unb.cic.copa.model.aluno3.exception.ExperienciaInvalidaException;
 import br.unb.cic.copa.view.aluno1.MenuPrincipalView;
@@ -26,7 +27,6 @@ public class GerenciarArbitroView extends JFrame {
     private DefaultTableModel modeloTabela;
 
     private final ArbitroController controller = new ArbitroController();
-    private final br.unb.cic.copa.model.aluno1.Usuario usuarioLogado;
 
     private static final Color COR_FUNDO     = new Color(245, 245, 250);
     private static final Color COR_HEADER    = new Color(30, 60, 120);
@@ -38,21 +38,17 @@ public class GerenciarArbitroView extends JFrame {
     private static final Font  FONTE_CAMPO   = new Font("Segoe UI", Font.PLAIN, 13);
     private static final Font  FONTE_TITULO  = new Font("Segoe UI", Font.BOLD, 16);
 
-    public GerenciarArbitroView(br.unb.cic.copa.model.aluno1.Usuario usuarioLogado) {
-        this.usuarioLogado = usuarioLogado;
-        init();
-    }
-
     public GerenciarArbitroView() {
-        this(null);
+        init();
     }
 
     private void init() {
         setTitle("Gerenciar Árbitro - Copa do Mundo 2026");
-        setSize(550, 720);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setSize(550, 720);
         setLocationRelativeTo(null);
-        setResizable(false);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setResizable(true);
         getContentPane().setBackground(COR_FUNDO);
         setLayout(new BorderLayout());
 
@@ -96,20 +92,20 @@ public class GerenciarArbitroView extends JFrame {
         gc.insets = new Insets(6, 5, 6, 5);
         gc.anchor = GridBagConstraints.WEST;
 
-        txtNome          = criarCampo();
-        txtEmail         = criarCampo();
-        txtLogin         = criarCampo();
-        txtSenha         = criarCampo();
-        txtCpf           = criarCampo();
-        txtNacionalidade = criarCampo();
-        txtExperiencia   = criarCampo();
+        txtNome          = criarCampoComPlaceholder("Ex: João Silva");
+        txtEmail         = criarCampoComPlaceholder("Ex: joao@email.com");
+        txtLogin         = criarCampoComPlaceholder("Ex: joao.silva");
+        txtSenha         = criarCampoComPlaceholder("Mín. 8 caracteres, letra e número");
+        txtCpf           = criarCampoComPlaceholder("000.000.000-00");
+        txtNacionalidade = criarCampoComPlaceholder("Ex: Brasil");
+        txtExperiencia   = criarCampoComPlaceholder("Ex: 5");
 
         adicionarLinha(painel, gc, 0, "Nome:",               txtNome);
         adicionarLinha(painel, gc, 1, "Email:",              txtEmail);
         adicionarLinha(painel, gc, 2, "Login:",              txtLogin);
         adicionarLinha(painel, gc, 3, "Senha:",              txtSenha);
         adicionarLinha(painel, gc, 4, "CPF:",                txtCpf);
-        adicionarLinha(painel, gc, 5, "Nacionalidade:",      txtNacionalidade);
+        adicionarLinha(painel, gc, 5, "País:",               txtNacionalidade);
         adicionarLinha(painel, gc, 6, "Experiência (anos):", txtExperiencia);
 
         return painel;
@@ -153,6 +149,11 @@ public class GerenciarArbitroView extends JFrame {
         tabela.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 12));
         tabela.getTableHeader().setBackground(COR_HEADER);
         tabela.getTableHeader().setForeground(Color.WHITE);
+        tabela.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                carregarArbitroSelecionado();
+            }
+        });
 
         JScrollPane scroll = new JScrollPane(tabela);
         scroll.setPreferredSize(new Dimension(0, 180));
@@ -210,6 +211,27 @@ public class GerenciarArbitroView extends JFrame {
         return campo;
     }
 
+    private JTextField criarCampoComPlaceholder(String placeholder) {
+        JTextField campo = new JTextField() {
+            @Override
+            protected void paintComponent(java.awt.Graphics g) {
+                super.paintComponent(g);
+                if (getText().isEmpty()) {
+                    g.setColor(new Color(180, 180, 200));
+                    g.setFont(getFont().deriveFont(java.awt.Font.ITALIC));
+                    g.drawString(placeholder, 8, getHeight() / 2 + getFont().getSize() / 2 - 2);
+                }
+            }
+        };
+        campo.setFont(FONTE_CAMPO);
+        campo.setPreferredSize(new Dimension(250, 32));
+        campo.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(180, 180, 210)),
+                new EmptyBorder(4, 8, 4, 8)
+        ));
+        return campo;
+    }
+
     private JPanel criarRodape() {
         JPanel rodape = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 12));
         rodape.setBackground(COR_FUNDO);
@@ -220,7 +242,7 @@ public class GerenciarArbitroView extends JFrame {
 
         btnCancelar.addActionListener(e -> {
             dispose();
-            new MenuPrincipalView();
+            new MenuPrincipalView(SessaoUsuario.getInstancia().getUsuarioLogado()).setVisible(true);
         });
 
         btnSalvar.addActionListener(e -> salvarArbitro());
@@ -278,6 +300,21 @@ public class GerenciarArbitroView extends JFrame {
                 return;
             }
 
+            if (senha.length() < 8 || !senha.matches(".*[a-zA-Z].*") || !senha.matches(".*[0-9].*")) {
+                JOptionPane.showMessageDialog(this, "Senha deve ter no mínimo 8 caracteres, com pelo menos uma letra e um número.", "Aviso", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            if (!cpf.matches("\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}")) {
+                JOptionPane.showMessageDialog(this, "CPF deve estar no formato 000.000.000-00.", "Aviso", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            if (!email.isEmpty() && (!email.contains("@") || !email.substring(email.indexOf("@")).contains("."))) {
+                JOptionPane.showMessageDialog(this, "Email inválido.", "Aviso", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
             // ID gerado automaticamente pelo controller
             controller.cadastrar(nome, email, login, senha, cpf, nacionalidade, experiencia);
 
@@ -292,6 +329,25 @@ public class GerenciarArbitroView extends JFrame {
             JOptionPane.showMessageDialog(this, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "Erro ao salvar: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void carregarArbitroSelecionado() {
+        int linha = tabela.getSelectedRow();
+        if (linha >= 0) {
+            try {
+                int id = (int) modeloTabela.getValueAt(linha, 0);
+                Arbitro a = controller.buscarPorId(id);
+                txtNome.setText(a.getNome());
+                txtEmail.setText(a.getEmail());
+                txtLogin.setText(a.getLogin());
+                txtSenha.setText(a.getSenha());
+                txtCpf.setText(a.getCpf());
+                txtNacionalidade.setText(a.getNacionalidade());
+                txtExperiencia.setText(String.valueOf(a.getExperiencia()));
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(this, "Erro ao carregar árbitro: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 

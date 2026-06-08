@@ -1,9 +1,11 @@
 package br.unb.cic.copa.view.aluno3;
 
+import br.unb.cic.copa.controller.aluno3.EstadioController;
+import br.unb.cic.copa.model.aluno1.SessaoUsuario;
 import br.unb.cic.copa.model.aluno3.Estadio;
 import br.unb.cic.copa.model.aluno3.PaisSede;
 import br.unb.cic.copa.model.aluno3.exception.CapacidadeInvalidaException;
-import br.unb.cic.copa.controller.aluno3.EstadioController;
+import br.unb.cic.copa.view.aluno1.MenuPrincipalView;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -25,7 +27,6 @@ public class GerenciarEstadioView extends JFrame {
     private DefaultTableModel modeloTabela;
 
     private final EstadioController controller = new EstadioController();
-    private final br.unb.cic.copa.model.aluno1.Usuario usuarioLogado;
 
     private static final Color COR_FUNDO     = new Color(245, 245, 250);
     private static final Color COR_HEADER    = new Color(30, 60, 120);
@@ -37,13 +38,13 @@ public class GerenciarEstadioView extends JFrame {
     private static final Font  FONTE_CAMPO   = new Font("Segoe UI", Font.PLAIN, 13);
     private static final Font  FONTE_TITULO  = new Font("Segoe UI", Font.BOLD, 16);
 
-    public GerenciarEstadioView(br.unb.cic.copa.model.aluno1.Usuario usuarioLogado) {
-        this.usuarioLogado = usuarioLogado;
+    public GerenciarEstadioView() {
         setTitle("Gerenciar Estádio - Copa do Mundo 2026");
-        setSize(600, 750);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setSize(600, 750);
         setLocationRelativeTo(null);
-        setResizable(false);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setResizable(true);
         getContentPane().setBackground(COR_FUNDO);
         setLayout(new BorderLayout());
 
@@ -53,10 +54,6 @@ public class GerenciarEstadioView extends JFrame {
 
         carregarTabela("");
         setVisible(true);
-    }
-
-    public GerenciarEstadioView() {
-        this(null);
     }
 
     private JPanel criarHeader() {
@@ -248,7 +245,7 @@ public class GerenciarEstadioView extends JFrame {
 
         btnCancelar.addActionListener(e -> {
             dispose();
-            new br.unb.cic.copa.view.aluno1.MenuPrincipalView();
+            new MenuPrincipalView(SessaoUsuario.getInstancia().getUsuarioLogado()).setVisible(true);
         });
 
         btnSalvar.addActionListener(e -> salvarEstadio());
