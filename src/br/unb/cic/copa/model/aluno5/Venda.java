@@ -11,6 +11,8 @@ public class Venda implements Serializable {
     private int id;
     private String comprador;
     private LocalDateTime dataVenda;
+    private int quantidadeIngressos;
+    private double valorTotal;
     private List<Ingresso> ingressos;
 
     public Venda(int id, String comprador) {
@@ -20,19 +22,39 @@ public class Venda implements Serializable {
         this.ingressos = new ArrayList<>();
     }
 
+    public Venda(
+            int id,
+            String comprador,
+            LocalDateTime dataVenda,
+            int quantidadeIngressos,
+            double valorTotal) {
+
+        this.id = id;
+        this.comprador = comprador;
+        this.dataVenda = dataVenda;
+        this.quantidadeIngressos = quantidadeIngressos;
+        this.valorTotal = valorTotal;
+        this.ingressos = new ArrayList<>();
+    }
+
     public void adicionarIngresso(Ingresso ingresso) {
         ingressos.add(ingresso);
     }
 
     public double getValorTotal() {
 
-        double total = 0;
+        if (!ingressos.isEmpty()) {
 
-        for (Ingresso ingresso : ingressos) {
-            total += ingresso.getPreco();
+            double total = 0;
+
+            for (Ingresso ingresso : ingressos) {
+                total += ingresso.getPreco();
+            }
+
+            return total;
         }
 
-        return total;
+        return valorTotal;
     }
 
     public LocalDateTime getDataVenda() {
@@ -40,9 +62,13 @@ public class Venda implements Serializable {
     }
 
     public int getQuantidadeIngressos() {
-        return ingressos.size();
-    }
 
+        if (!ingressos.isEmpty()) {
+            return ingressos.size();
+        }
+
+        return quantidadeIngressos;
+    }
     public int getId() {
         return id;
     }
@@ -54,6 +80,7 @@ public class Venda implements Serializable {
     public List<Ingresso> getIngressos() {
         return ingressos;
     }
+
 
     @Override
     public String toString() {

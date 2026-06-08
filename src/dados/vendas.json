@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "comprador": "dan teste",
+    "dataVenda": "2026-06-08T18:06:50.800458800",
+    "quantidadeIngressos": 1,
+    "valorTotal": 150.0
+  },
+  {
+    "id": 2,
+    "comprador": "menezes teste 2",
+    "dataVenda": "2026-06-08T18:07:28.266102600",
+    "quantidadeIngressos": 2,
+    "valorTotal": 150.0
+  }
+]

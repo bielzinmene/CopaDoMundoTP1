@@ -36,6 +36,12 @@ public class IngressosController {
             );
         }
 
+        if (categoria == null) {
+            throw new VendaIngressoException(
+                    "Selecione uma categoria."
+            );
+        }
+
         if (quantidade <= 0) {
             throw new VendaIngressoException(
                     "Quantidade inválida."
@@ -53,7 +59,7 @@ public class IngressosController {
             Ingresso ingresso =
                     new Ingresso(
                             gerarNovoIdIngresso(),
-                            partida,
+                            partida.getId(),
                             categoria
                     );
 
@@ -62,27 +68,24 @@ public class IngressosController {
             venda.adicionarIngresso(ingresso);
         }
 
-        repository.adicionar(venda);
+        repository.salvar(venda);
     }
 
     public List<Venda> listarVendas() {
-        return repository.carregar();
+        return repository.listarTodos();
+    }
+
+    public Venda buscarVenda(int id) {
+
+        return repository.buscarPorId(id);
     }
 
     public void excluirVenda(int id)
             throws VendaIngressoException {
 
-        boolean existe = false;
+        Venda venda = repository.buscarPorId(id);
 
-        for (Venda venda : repository.carregar()) {
-
-            if (venda.getId() == id) {
-                existe = true;
-                break;
-            }
-        }
-
-        if (!existe) {
+        if (venda == null) {
             throw new VendaIngressoException(
                     "Venda não encontrada."
             );
@@ -95,7 +98,7 @@ public class IngressosController {
 
         int maior = 0;
 
-        for (Venda venda : repository.carregar()) {
+        for (Venda venda : repository.listarTodos()) {
 
             if (venda.getId() > maior) {
                 maior = venda.getId();
@@ -109,7 +112,7 @@ public class IngressosController {
 
         int maior = 0;
 
-        for (Venda venda : repository.carregar()) {
+        for (Venda venda : repository.listarTodos()) {
 
             for (Ingresso ingresso : venda.getIngressos()) {
 

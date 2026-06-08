@@ -130,4 +130,15 @@ public class Partida implements Serializable {
 
     public StatusPartida getStatus() { return status; }
     public Resultado getResultado() { return resultado; }
+
+    @Override
+    public String toString() {
+
+        return getSelecao1().getNome()
+                + " x "
+                + getSelecao2().getNome()
+                + " - "
+                + getData();
+    }
 }
+
