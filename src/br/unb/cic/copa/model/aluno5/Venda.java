@@ -13,11 +13,13 @@ public class Venda implements Serializable {
     private LocalDateTime dataVenda;
     private int quantidadeIngressos;
     private double valorTotal;
+    private int partidaId;
     private List<Ingresso> ingressos;
 
-    public Venda(int id, String comprador) {
+    public Venda(int id, String comprador, int partidaId) {
         this.id = id;
         this.comprador = comprador;
+        this.partidaId = partidaId;
         this.dataVenda = LocalDateTime.now();
         this.ingressos = new ArrayList<>();
     }
@@ -27,7 +29,8 @@ public class Venda implements Serializable {
             String comprador,
             LocalDateTime dataVenda,
             int quantidadeIngressos,
-            double valorTotal) {
+            double valorTotal,
+            int partidaId) {
 
         this.id = id;
         this.comprador = comprador;
@@ -35,6 +38,7 @@ public class Venda implements Serializable {
         this.quantidadeIngressos = quantidadeIngressos;
         this.valorTotal = valorTotal;
         this.ingressos = new ArrayList<>();
+        this.partidaId = partidaId;
     }
 
     public void adicionarIngresso(Ingresso ingresso) {
@@ -75,6 +79,9 @@ public class Venda implements Serializable {
 
     public String getComprador() {
         return comprador;
+    }
+
+    public int getPartidaId() { return partidaId;
     }
 
     public List<Ingresso> getIngressos() {

@@ -6,6 +6,7 @@ import br.unb.cic.copa.model.aluno5.Ingresso;
 import br.unb.cic.copa.model.aluno5.Venda;
 import br.unb.cic.copa.model.aluno5.exception.VendaIngressoException;
 import br.unb.cic.copa.model.aluno5.repository.VendaRepository;
+import br.unb.cic.copa.controller.aluno4.PartidaController;
 
 import java.util.List;
 
@@ -51,7 +52,8 @@ public class IngressosController {
         Venda venda =
                 new Venda(
                         gerarNovoIdVenda(),
-                        comprador
+                        comprador,
+                        partida.getId()
                 );
 
         for (int i = 0; i < quantidade; i++) {
@@ -106,6 +108,58 @@ public class IngressosController {
         }
 
         return maior + 1;
+    }
+
+    public int getTotalIngressosVendidos() {
+
+        int total = 0;
+
+        for (Venda venda : repository.listarTodos()) {
+            total += venda.getQuantidadeIngressos();
+        }
+
+        return total;
+    }
+
+    public double getValorTotalArrecadado() {
+
+        double total = 0;
+
+        for (Venda venda : repository.listarTodos()) {
+            total += venda.getValorTotal();
+        }
+
+        return total;
+    }
+
+    public double getMediaIngressosPorPartida() {
+
+        PartidaController partidaController =
+                new PartidaController();
+
+        int quantidadePartidas =
+                partidaController.listarTodasPartidas().size();
+
+        if (quantidadePartidas == 0) {
+            return 0;
+        }
+
+        return (double) getTotalIngressosVendidos()
+                / quantidadePartidas;
+    }
+
+    public int getQuantidadeIngressosPartida(int partidaId) {
+
+        int total = 0;
+
+        for (Venda venda : repository.listarTodos()) {
+
+            if (venda.getPartidaId() == partidaId) {
+                total += venda.getQuantidadeIngressos();
+            }
+        }
+
+        return total;
     }
 
     private int gerarNovoIdIngresso() {

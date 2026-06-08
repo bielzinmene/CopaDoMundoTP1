@@ -109,6 +109,7 @@ public class VendaRepository {
                 writer.write("    \"id\": " + v.getId() + ",\n");
                 writer.write("    \"comprador\": \"" + v.getComprador() + "\",\n");
                 writer.write("    \"dataVenda\": \"" + v.getDataVenda() + "\",\n");
+                writer.write("    \"partidaId\": " + v.getPartidaId() + ",\n");
                 writer.write("    \"quantidadeIngressos\": " + v.getQuantidadeIngressos() + ",\n");
                 writer.write("    \"valorTotal\": " + v.getValorTotal() + "\n");
                 writer.write("  }");
@@ -134,7 +135,7 @@ public class VendaRepository {
         List<Venda> vendas = new ArrayList<>();
 
         json = json.trim();
-
+        int partidaId = 0;
         if (json.isEmpty() || json.equals("[]")) {
             return vendas;
         }
@@ -167,6 +168,12 @@ public class VendaRepository {
                     id = Integer.parseInt(
                             linha.split(":")[1].trim());
 
+                } else if (linha.startsWith("\"partidaId\"")) {
+
+                    partidaId =
+                            Integer.parseInt(
+                                    linha.split(":")[1].trim()
+                            );
                 } else if (linha.startsWith("\"comprador\"")) {
 
                     comprador =
@@ -203,7 +210,8 @@ public class VendaRepository {
                             comprador,
                             dataVenda,
                             quantidadeIngressos,
-                            valorTotal
+                            valorTotal,
+                            partidaId
                     );
 
             vendas.add(venda);
