@@ -1,35 +1,35 @@
 [
   {
-    "id": 5,
-    "nome": "paulo",
-    "email": "paulo@gmail.com",
-    "login": "pauloarbitro",
-    "senha": "paulo123",
-    "cpf": "4895727646",
-    "pais": "Brasil",
-    "nacionalidade": "Brasil",
-    "experiencia": 7
+    "id": 0,
+    "nome": "",
+    "email": "",
+    "login": "",
+    "senha": "",
+    "cpf": "",
+    "pais": "",
+    "nacionalidade": "",
+    "experiencia": 0
   },
   {
-    "id": 7,
-    "nome": "ana",
-    "email": "ana@gmail.com",
-    "login": "ana",
-    "senha": "ana12345",
-    "cpf": "234.678.234-90",
-    "pais": "Brasil",
-    "nacionalidade": "Brasil",
-    "experiencia": 5
+    "id": 99,
+    "nome": "Árbitro Teste",
+    "email": "teste@copa.com",
+    "login": "arbitro99",
+    "senha": "Senha123",
+    "cpf": "999.999.999-99",
+    "pais": "Itália",
+    "nacionalidade": "Italiana",
+    "experiencia": 15
   },
   {
-    "id": 8,
-    "nome": "Rebeca",
-    "email": "rebeca@gmail.com",
-    "login": "rebeca",
-    "senha": "rebeca12",
-    "cpf": "543.896.569-03",
-    "pais": "Egito",
-    "nacionalidade": "Egito",
-    "experiencia": 5
+    "id": 100,
+    "nome": "Fernanda",
+    "email": "nanda@gmail.com",
+    "login": "fernandona",
+    "senha": "nanda123",
+    "cpf": "111.111.111-11",
+    "pais": "Brasil",
+    "nacionalidade": "Brasil",
+    "experiencia": 3
   }
 ]

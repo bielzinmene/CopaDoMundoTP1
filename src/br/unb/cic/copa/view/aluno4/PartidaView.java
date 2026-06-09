@@ -1,8 +1,12 @@
 package br.unb.cic.copa.view.aluno4;
 
 import br.unb.cic.copa.controller.aluno3.ArbitroController;
+import br.unb.cic.copa.controller.aluno3.EstadioController;
 import br.unb.cic.copa.controller.aluno4.PartidaController;
+import br.unb.cic.copa.model.aluno1.Administrador;
+import br.unb.cic.copa.model.aluno1.Organizador;
 import br.unb.cic.copa.model.aluno1.SessaoUsuario;
+import br.unb.cic.copa.model.aluno1.Usuario;
 import br.unb.cic.copa.model.aluno2.Selecao;
 import br.unb.cic.copa.model.aluno3.Arbitro;
 import br.unb.cic.copa.model.aluno3.Estadio;
@@ -16,6 +20,9 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 public class PartidaView extends JFrame {
@@ -24,13 +31,16 @@ public class PartidaView extends JFrame {
     private JTextField campoSelecao2;
     private JComboBox<Fase> comboFase;
     private JTextField campoData;
-    private JTextField campoEstadio;
-    private JTextField campoIdArbitro;
+    private JComboBox<String> comboEstadio;
+    private JComboBox<String> comboIdArbitro;
     private JTable tabela;
     private DefaultTableModel modeloTabela;
 
+    private final Usuario usuarioLogado = SessaoUsuario.getInstancia().getUsuarioLogado();
+
     private final PartidaController partidaController = new PartidaController();
     private final ArbitroController arbitroController = new ArbitroController();
+    private final EstadioController estadioController = new EstadioController();
 
     private static final Color COR_FUNDO     = new Color(245, 245, 250);
     private static final Color COR_HEADER    = new Color(30, 60, 120);
@@ -94,19 +104,43 @@ public class PartidaView extends JFrame {
 
         campoSelecao1  = criarCampoComPlaceholder("Ex: Brasil");
         campoSelecao2  = criarCampoComPlaceholder("Ex: Argentina");
+
         comboFase      = new JComboBox<>(Fase.values());
         comboFase.setFont(FONTE_CAMPO);
         comboFase.setPreferredSize(new Dimension(250, 32));
+
         campoData      = criarCampoComPlaceholder("dd/mm/aaaa");
-        campoEstadio   = criarCampoComPlaceholder("Ex: Maracanã");
-        campoIdArbitro = criarCampoComPlaceholder("Ex: 1");
+
+        try {
+            List<Estadio> listaEstadios = estadioController.listarTodos();
+            if (listaEstadios == null || listaEstadios.isEmpty()) {
+                System.out.println("Aviso: O JSON de estadios nao foi carregado pelo Controller do Aluno 3. Usando Plano B!");
+                comboEstadio = new JComboBox<>(new String[]{"Estádio de Toronto", "Estádio Guadalajara", "Estádio Monterrey"});
+            } else {
+                String[] nomesEstadios = new String[listaEstadios.size()];
+                for (int i = 0; i < listaEstadios.size(); i++) {
+                    nomesEstadios[i] = listaEstadios.get(i).getNome();
+                }
+                comboEstadio = new JComboBox<>(nomesEstadios);
+            }
+        } catch (Exception e) {
+            System.out.println("Erro no codigo do Aluno 3 ao listar estadios: " + e.getMessage());
+            comboEstadio = new JComboBox<>(new String[]{"Estádio de Toronto", "Estádio Guadalajara", "Estádio Monterrey"});
+        }
+
+        comboEstadio.setFont(FONTE_CAMPO);
+        comboEstadio.setPreferredSize(new Dimension(250, 32));
+
+        comboIdArbitro = new JComboBox<>(new String[]{"1", "2", "3", "99"});
+        comboIdArbitro.setFont(FONTE_CAMPO);
+        comboIdArbitro.setPreferredSize(new Dimension(250, 32));
 
         adicionarLinha(painel, gc, 0, "Seleção 1:",       campoSelecao1);
         adicionarLinha(painel, gc, 1, "Seleção 2:",       campoSelecao2);
-        adicionarLinhaCombo(painel, gc, 2, "Fase:",        comboFase);
-        adicionarLinha(painel, gc, 3, "Data:",             campoData);
-        adicionarLinha(painel, gc, 4, "Estádio:",          campoEstadio);
-        adicionarLinha(painel, gc, 5, "ID do Árbitro:",    campoIdArbitro);
+        adicionarLinhaCombo(painel, gc, 2, "Fase:",       comboFase);
+        adicionarLinha(painel, gc, 3, "Data:",            campoData);
+        adicionarLinhaCombo(painel, gc, 4, "Estádio:",    comboEstadio);
+        adicionarLinhaCombo(painel, gc, 5, "ID do Árbitro:", comboIdArbitro);
 
         return painel;
     }
@@ -115,7 +149,6 @@ public class PartidaView extends JFrame {
         JPanel painel = new JPanel(new BorderLayout(0, 8));
         painel.setBackground(COR_FUNDO);
 
-        // Painel de resultado
         JPanel painelResultado = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
         painelResultado.setBackground(COR_FUNDO);
         painelResultado.setBorder(BorderFactory.createTitledBorder(
@@ -145,7 +178,6 @@ public class PartidaView extends JFrame {
         painelResultado.add(campoGols2);
         painelResultado.add(btnResultado);
 
-        // Tabela
         modeloTabela = new DefaultTableModel(
                 new String[]{"ID", "Seleção 1", "Seleção 2", "Data", "Fase", "Status", "ID Árbitro"}, 0) {
             public boolean isCellEditable(int row, int col) { return false; }
@@ -161,9 +193,13 @@ public class PartidaView extends JFrame {
         JScrollPane scroll = new JScrollPane(tabela);
         scroll.setPreferredSize(new Dimension(0, 200));
 
-        // Botão excluir
         JButton btnExcluir = criarBotao("Excluir", COR_CANCELAR);
         btnExcluir.setPreferredSize(new Dimension(110, 32));
+
+        if (!(usuarioLogado instanceof Administrador)) {
+            btnExcluir.setEnabled(false);
+        }
+
         btnExcluir.addActionListener(e -> excluirPartida());
 
         JPanel painelExcluir = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 6));
@@ -217,6 +253,11 @@ public class PartidaView extends JFrame {
         JButton btnCancelar = criarBotao("Cancelar", COR_CANCELAR);
         JButton btnSalvar   = criarBotao("Salvar", COR_SALVAR);
 
+        if (!(usuarioLogado instanceof Administrador) && !(usuarioLogado instanceof Organizador)) {
+            btnSalvar.setEnabled(false);
+            btnSalvar.setToolTipText("Você não tem permissão para criar partidas.");
+        }
+
         btnCancelar.addActionListener(e -> {
             dispose();
             new MenuPrincipalView(SessaoUsuario.getInstancia().getUsuarioLogado()).setVisible(true);
@@ -234,12 +275,28 @@ public class PartidaView extends JFrame {
             String nomeSel1    = campoSelecao1.getText().trim();
             String nomeSel2    = campoSelecao2.getText().trim();
             String data        = campoData.getText().trim();
-            String nomeEstadio = campoEstadio.getText().trim();
+            String nomeEstadio = comboEstadio.getSelectedItem().toString();
+            String idArbitroTxt = comboIdArbitro.getSelectedItem().toString();
             Fase fase          = (Fase) comboFase.getSelectedItem();
-            String idArbitroTxt = campoIdArbitro.getText().trim();
 
             if (nomeSel1.isEmpty() || nomeSel2.isEmpty() || data.isEmpty() || nomeEstadio.isEmpty() || idArbitroTxt.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Preencha todos os campos.", "Aviso", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            try {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                LocalDate dataPartida = LocalDate.parse(data, formatter);
+
+                LocalDate inicioCopa = LocalDate.of(2026, 6, 11);
+                LocalDate fimCopa = LocalDate.of(2026, 7, 19);
+
+                if (dataPartida.isBefore(inicioCopa) || dataPartida.isAfter(fimCopa)) {
+                    JOptionPane.showMessageDialog(this, "A data deve estar no período da Copa (11/06/2026 a 19/07/2026).", "Data Inválida", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+            } catch (DateTimeParseException ex) {
+                JOptionPane.showMessageDialog(this, "Data inválida! Use o padrão dd/mm/aaaa (Ex: 15/06/2026).", "Erro de Formato", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
@@ -325,9 +382,9 @@ public class PartidaView extends JFrame {
         campoSelecao1.setText("");
         campoSelecao2.setText("");
         campoData.setText("");
-        campoEstadio.setText("");
-        campoIdArbitro.setText("");
         comboFase.setSelectedIndex(0);
+        if (comboEstadio.getItemCount() > 0) comboEstadio.setSelectedIndex(0);
+        if (comboIdArbitro.getItemCount() > 0) comboIdArbitro.setSelectedIndex(0);
     }
 
     private void adicionarLinha(JPanel painel, GridBagConstraints gc, int linha, String labelTxt, JTextField campo) {
