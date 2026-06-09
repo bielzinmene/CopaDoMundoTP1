@@ -22,5 +22,13 @@
     "partidaId": 6,
     "quantidadeIngressos": 2,
     "valorTotal": 600.0
+  },
+  {
+    "id": 4,
+    "comprador": "fernanda teste 4",
+    "dataVenda": "2026-06-09T00:07:49.177809",
+    "partidaId": 1,
+    "quantidadeIngressos": 5,
+    "valorTotal": 750.0
   }
 ]

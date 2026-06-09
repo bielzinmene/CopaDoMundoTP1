@@ -35,7 +35,7 @@ public class GerenciarSelecaoView extends JFrame {
 
     public GerenciarSelecaoView() {
         setTitle("Gerenciar Seleções - Copa do Mundo 2026");
-        setSize(650, 700);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
@@ -210,17 +210,17 @@ public class GerenciarSelecaoView extends JFrame {
         rodape.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(200, 200, 220)));
 
         JButton btnCancelar = criarBotao("Cancelar", COR_CANCELAR);
-        JButton btnSalvar   = criarBotao("Salvar", COR_SALVAR);
+        JButton btnSalvarSel   = criarBotao("Salvar", COR_SALVAR);
 
         btnCancelar.addActionListener(e -> {
             new MenuPrincipalView().setVisible(true);
             dispose();
         });
 
-        btnSalvar.addActionListener(e -> salvarSelecao());
+        btnSalvarSel.addActionListener(e -> salvarSelecao());
 
         rodape.add(btnCancelar);
-        rodape.add(btnSalvar);
+        rodape.add(btnSalvarSel);
         return rodape;
     }
 

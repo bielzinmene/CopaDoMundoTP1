@@ -6,7 +6,7 @@ public class Jogador {
     private String nome;
     private int numeracao;
     private Posicao posicao;
-    private Selecao selecao;
+    private transient Selecao selecao;
     private boolean titular;
     private StatusJogador status;
 

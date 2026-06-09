@@ -64,5 +64,16 @@
     "pais": "Brasil",
     "funcao": "Arbitro",
     "status": "Ativo"
+  },
+  {
+    "id": 101,
+    "nome": "Olivia",
+    "email": "olivia@gmail.com",
+    "login": "oliviag",
+    "senha": "Olivia123",
+    "cpf": "678.098.345-09",
+    "pais": "Bolívia",
+    "funcao": "Organizador",
+    "status": "Ativo"
   }
 ]

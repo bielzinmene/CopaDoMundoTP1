@@ -1,14 +1,29 @@
 [
   {
     "id": 1,
-    "nome": "austria",
-    "grupo": "2",
-    "tecnico": "eu",
+    "nome": "Brasil",
+    "grupo": "A",
+    "tecnico": "Tite",
     "jogadores": [
       {
-        "nome": "dan",
+        "nome": "Neymar",
         "numeracao": 10,
-        "posicao": "GOLEIRO",
+        "posicao": "ZAGUEIRO",
+        "titular": true,
+        "status": "ATIVO"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "nome": "Alemanha",
+    "grupo": "A",
+    "tecnico": "KDAMKDA",
+    "jogadores": [
+      {
+        "nome": "LOOOK",
+        "numeracao": 9,
+        "posicao": "MEIO_CAMPO",
         "titular": true,
         "status": "ATIVO"
       }

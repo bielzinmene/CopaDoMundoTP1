@@ -38,8 +38,7 @@ public class GerenciarJogadorView extends JFrame {
 
     public GerenciarJogadorView() {
         setTitle("Gerenciar Jogadores - Copa do Mundo 2026");
-        setSize(800, 700);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
         getContentPane().setBackground(COR_FUNDO);
@@ -52,6 +51,7 @@ public class GerenciarJogadorView extends JFrame {
         carregarComboSelecoes();
         setVisible(true);
     }
+
 
     private JPanel criarHeader() {
         JPanel header = new JPanel(new BorderLayout());
@@ -269,17 +269,19 @@ public class GerenciarJogadorView extends JFrame {
         rodape.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(200, 200, 220)));
 
         JButton btnCancelar = criarBotao("Cancelar", COR_CANCELAR);
-        JButton btnSalvar   = criarBotao("Salvar", COR_SALVAR);
+        JButton btnSalvarJog   = criarBotao("Salvar", COR_SALVAR);
+
+        getRootPane().setDefaultButton(btnSalvarJog);
 
         btnCancelar.addActionListener(e -> {
             new MenuPrincipalView().setVisible(true);
             dispose();
         });
 
-        btnSalvar.addActionListener(e -> salvarJogador());
+        btnSalvarJog.addActionListener(e -> salvarJogador());
 
         rodape.add(btnCancelar);
-        rodape.add(btnSalvar);
+        rodape.add(btnSalvarJog);
         return rodape;
     }
 
