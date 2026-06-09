@@ -16,7 +16,7 @@ public class SelecaoRepository implements Repositorio<Selecao> {
 
     public SelecaoRepository(String caminhoArquivo) {
         this.caminhoArquivo = caminhoArquivo;
-        System.out.println(">>> Caminho do arquivo: " + new File(caminhoArquivo).getAbsolutePath());
+        System.out.println(">>> Caminho do arquivo:: " + new File(caminhoArquivo).getAbsolutePath());
     }
 
     // --------------------------------------------------------------
