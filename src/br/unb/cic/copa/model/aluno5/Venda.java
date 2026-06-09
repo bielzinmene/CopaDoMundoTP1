@@ -11,13 +11,34 @@ public class Venda implements Serializable {
     private int id;
     private String comprador;
     private LocalDateTime dataVenda;
+    private int quantidadeIngressos;
+    private double valorTotal;
+    private int partidaId;
     private List<Ingresso> ingressos;
 
-    public Venda(int id, String comprador) {
+    public Venda(int id, String comprador, int partidaId) {
         this.id = id;
         this.comprador = comprador;
+        this.partidaId = partidaId;
         this.dataVenda = LocalDateTime.now();
         this.ingressos = new ArrayList<>();
+    }
+
+    public Venda(
+            int id,
+            String comprador,
+            LocalDateTime dataVenda,
+            int quantidadeIngressos,
+            double valorTotal,
+            int partidaId) {
+
+        this.id = id;
+        this.comprador = comprador;
+        this.dataVenda = dataVenda;
+        this.quantidadeIngressos = quantidadeIngressos;
+        this.valorTotal = valorTotal;
+        this.ingressos = new ArrayList<>();
+        this.partidaId = partidaId;
     }
 
     public void adicionarIngresso(Ingresso ingresso) {
@@ -26,13 +47,18 @@ public class Venda implements Serializable {
 
     public double getValorTotal() {
 
-        double total = 0;
+        if (!ingressos.isEmpty()) {
 
-        for (Ingresso ingresso : ingressos) {
-            total += ingresso.getPreco();
+            double total = 0;
+
+            for (Ingresso ingresso : ingressos) {
+                total += ingresso.getPreco();
+            }
+
+            return total;
         }
 
-        return total;
+        return valorTotal;
     }
 
     public LocalDateTime getDataVenda() {
@@ -40,9 +66,13 @@ public class Venda implements Serializable {
     }
 
     public int getQuantidadeIngressos() {
-        return ingressos.size();
-    }
 
+        if (!ingressos.isEmpty()) {
+            return ingressos.size();
+        }
+
+        return quantidadeIngressos;
+    }
     public int getId() {
         return id;
     }
@@ -51,9 +81,13 @@ public class Venda implements Serializable {
         return comprador;
     }
 
+    public int getPartidaId() { return partidaId;
+    }
+
     public List<Ingresso> getIngressos() {
         return ingressos;
     }
+
 
     @Override
     public String toString() {

@@ -3,55 +3,220 @@ package br.unb.cic.copa.model.aluno5.repository;
 import br.unb.cic.copa.model.aluno5.Venda;
 
 import java.io.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class VendaRepository {
 
-    private static final String ARQUIVO = "vendas.dat";
+    private static final String ARQUIVO = "src/dados/vendas.json";
 
-    @SuppressWarnings("unchecked")
-    public List<Venda> carregar() {
+    public void salvar(Venda venda) {
 
-        try(ObjectInputStream in =
-                    new ObjectInputStream(
-                            new FileInputStream(ARQUIVO))) {
+        List<Venda> vendas = listarTodos();
 
-            return (List<Venda>) in.readObject();
+        boolean atualizada = false;
+
+        for (int i = 0; i < vendas.size(); i++) {
+
+            if (vendas.get(i).getId() == venda.getId()) {
+                vendas.set(i, venda);
+                atualizada = true;
+                break;
+            }
+        }
+
+        if (!atualizada) {
+            vendas.add(venda);
+        }
+
+        escreverJson(vendas);
+    }
+
+    public List<Venda> listarTodos() {
+
+        File arquivo = new File(ARQUIVO);
+
+        if (!arquivo.exists()) {
+            return new ArrayList<>();
+        }
+
+        try {
+
+            BufferedReader reader =
+                    new BufferedReader(
+                            new FileReader(arquivo));
+
+            StringBuilder json = new StringBuilder();
+
+            String linha;
+
+            while ((linha = reader.readLine()) != null) {
+                json.append(linha).append("\n");
+            }
+
+            reader.close();
+
+            return parseJson(json.toString());
 
         } catch (Exception e) {
+
+            e.printStackTrace();
             return new ArrayList<>();
         }
     }
 
-    public void salvar(List<Venda> vendas) {
+    public Venda buscarPorId(int id) {
 
-        try(ObjectOutputStream out =
-                    new ObjectOutputStream(
-                            new FileOutputStream(ARQUIVO))) {
+        for (Venda venda : listarTodos()) {
 
-            out.writeObject(vendas);
+            if (venda.getId() == id) {
+                return venda;
+            }
+        }
+
+        return null;
+    }
+
+    public void remover(int id) {
+
+        List<Venda> vendas = listarTodos();
+
+        vendas.removeIf(v -> v.getId() == id);
+
+        escreverJson(vendas);
+    }
+
+    private void escreverJson(List<Venda> vendas) {
+
+        try {
+
+            File arquivo = new File(ARQUIVO);
+
+            arquivo.getParentFile().mkdirs();
+
+            BufferedWriter writer =
+                    new BufferedWriter(
+                            new FileWriter(arquivo));
+
+            writer.write("[\n");
+
+            for (int i = 0; i < vendas.size(); i++) {
+
+                Venda v = vendas.get(i);
+
+                writer.write("  {\n");
+                writer.write("    \"id\": " + v.getId() + ",\n");
+                writer.write("    \"comprador\": \"" + v.getComprador() + "\",\n");
+                writer.write("    \"dataVenda\": \"" + v.getDataVenda() + "\",\n");
+                writer.write("    \"partidaId\": " + v.getPartidaId() + ",\n");
+                writer.write("    \"quantidadeIngressos\": " + v.getQuantidadeIngressos() + ",\n");
+                writer.write("    \"valorTotal\": " + v.getValorTotal() + "\n");
+                writer.write("  }");
+
+                if (i < vendas.size() - 1) {
+                    writer.write(",");
+                }
+
+                writer.write("\n");
+            }
+
+            writer.write("]");
+
+            writer.close();
 
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void adicionar(Venda venda) {
+    private List<Venda> parseJson(String json) {
 
-        List<Venda> vendas = carregar();
+        List<Venda> vendas = new ArrayList<>();
 
-        vendas.add(venda);
+        json = json.trim();
+        int partidaId = 0;
+        if (json.isEmpty() || json.equals("[]")) {
+            return vendas;
+        }
 
-        salvar(vendas);
-    }
+        json = json.substring(1, json.length() - 1);
 
-    public void remover(int id) {
+        String[] objetos = json.split("\\},\\s*\\{");
 
-        List<Venda> vendas = carregar();
+        for (String obj : objetos) {
 
-        vendas.removeIf(v -> v.getId() == id);
+            obj = obj.replace("{", "")
+                    .replace("}", "")
+                    .trim();
 
-        salvar(vendas);
+            int id = 0;
+            String comprador = "";
+            LocalDateTime dataVenda = LocalDateTime.now();
+
+            int quantidadeIngressos = 0;
+            double valorTotal = 0;
+
+            String[] linhas = obj.split(",");
+
+            for (String linha : linhas) {
+
+                linha = linha.trim();
+
+                if (linha.startsWith("\"id\"")) {
+
+                    id = Integer.parseInt(
+                            linha.split(":")[1].trim());
+
+                } else if (linha.startsWith("\"partidaId\"")) {
+
+                    partidaId =
+                            Integer.parseInt(
+                                    linha.split(":")[1].trim()
+                            );
+                } else if (linha.startsWith("\"comprador\"")) {
+
+                    comprador =
+                            linha.split(":", 2)[1]
+                                    .trim()
+                                    .replace("\"", "");
+
+                } else if (linha.startsWith("\"dataVenda\"")) {
+
+                    String data =
+                            linha.split(":", 2)[1]
+                                    .trim()
+                                    .replace("\"", "");
+
+                    dataVenda = LocalDateTime.parse(data);
+
+                } else if (linha.startsWith("\"quantidadeIngressos\"")) {
+
+                    quantidadeIngressos =
+                            Integer.parseInt(
+                                    linha.split(":")[1].trim());
+
+                } else if (linha.startsWith("\"valorTotal\"")) {
+
+                    valorTotal =
+                            Double.parseDouble(
+                                    linha.split(":")[1].trim());
+                }
+            }
+
+            Venda venda =
+                    new Venda(
+                            id,
+                            comprador,
+                            dataVenda,
+                            quantidadeIngressos,
+                            valorTotal,
+                            partidaId
+                    );
+
+            vendas.add(venda);
+        }
+
+        return vendas;
     }
 }

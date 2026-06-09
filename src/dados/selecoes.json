@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1,
+    "nome": "austria",
+    "grupo": "2",
+    "tecnico": "eu",
+    "jogadores": [
+      {
+        "nome": "dan",
+        "numeracao": 10,
+        "posicao": "GOLEIRO",
+        "titular": true,
+        "status": "ATIVO"
+      }
+    ]
+  }
+]
