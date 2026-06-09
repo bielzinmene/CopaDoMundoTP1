@@ -6,18 +6,19 @@ import java.io.Serializable;
 
 public class Ingresso implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-
-
     private int id;
-    private Partida partida;
+    private int partidaId;
     private CategoriaIngresso categoria;
     private double preco;
     private boolean vendido;
 
-    public Ingresso(int id, Partida partida, CategoriaIngresso categoria) {
+    public Ingresso(
+            int id,
+            int partidaId,
+            CategoriaIngresso categoria
+    ) {
         this.id = id;
-        this.partida = partida;
+        this.partidaId = partidaId;
         this.categoria = categoria;
         this.preco = categoria.getPreco();
         this.vendido = false;
@@ -27,8 +28,8 @@ public class Ingresso implements Serializable {
         return id;
     }
 
-    public Partida getPartida() {
-        return partida;
+    public int getPartidaId() {
+        return partidaId;
     }
 
     public CategoriaIngresso getCategoria() {
@@ -44,7 +45,7 @@ public class Ingresso implements Serializable {
     }
 
     public void vender() {
-        this.vendido = true;
+        vendido = true;
     }
 
     @Override

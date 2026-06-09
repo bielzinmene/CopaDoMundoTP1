@@ -9,6 +9,7 @@ import br.unb.cic.copa.view.aluno4.PartidaView;
 import br.unb.cic.copa.view.aluno5.VendaIngressoView;
 import br.unb.cic.copa.view.aluno3.ConsultarEscalaArbitroView;
 import br.unb.cic.copa.model.aluno1.SessaoUsuario;
+import br.unb.cic.copa.view.aluno1.RelatorioView;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -121,11 +122,8 @@ public class MenuPrincipalView extends JFrame {
             dispose();
         });
         btnRelatorios.addActionListener(evt -> {
-            JOptionPane.showMessageDialog(this,
-                    "O módulo de Relatórios Gerais está em fase de modelagem\n" +
-                            "e será implementado na etapa seguinte.",
-                    "Módulo em Desenvolvimento",
-                    JOptionPane.INFORMATION_MESSAGE);
+            new RelatorioView(usuarioLogado).setVisible(true);
+            dispose();
         });
         btnSair.addActionListener(evt -> {
             int confirmacao = JOptionPane.showConfirmDialog(this,

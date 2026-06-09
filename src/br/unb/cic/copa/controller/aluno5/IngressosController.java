@@ -1,4 +1,4 @@
-package br.unb.cic.copa.model.aluno5.service;
+package br.unb.cic.copa.controller.aluno5;
 
 import br.unb.cic.copa.model.aluno4.Partida;
 import br.unb.cic.copa.model.aluno5.CategoriaIngresso;
@@ -6,14 +6,15 @@ import br.unb.cic.copa.model.aluno5.Ingresso;
 import br.unb.cic.copa.model.aluno5.Venda;
 import br.unb.cic.copa.model.aluno5.exception.VendaIngressoException;
 import br.unb.cic.copa.model.aluno5.repository.VendaRepository;
+import br.unb.cic.copa.controller.aluno4.PartidaController;
 
 import java.util.List;
 
-public class VendaIngressoService {
+public class IngressosController {
 
     private final VendaRepository repository;
 
-    public VendaIngressoService() {
+    public IngressosController() {
         repository = new VendaRepository();
     }
 
@@ -36,6 +37,12 @@ public class VendaIngressoService {
             );
         }
 
+        if (categoria == null) {
+            throw new VendaIngressoException(
+                    "Selecione uma categoria."
+            );
+        }
+
         if (quantidade <= 0) {
             throw new VendaIngressoException(
                     "Quantidade inválida."
@@ -45,7 +52,8 @@ public class VendaIngressoService {
         Venda venda =
                 new Venda(
                         gerarNovoIdVenda(),
-                        comprador
+                        comprador,
+                        partida.getId()
                 );
 
         for (int i = 0; i < quantidade; i++) {
@@ -53,7 +61,7 @@ public class VendaIngressoService {
             Ingresso ingresso =
                     new Ingresso(
                             gerarNovoIdIngresso(),
-                            partida,
+                            partida.getId(),
                             categoria
                     );
 
@@ -62,27 +70,24 @@ public class VendaIngressoService {
             venda.adicionarIngresso(ingresso);
         }
 
-        repository.adicionar(venda);
+        repository.salvar(venda);
     }
 
     public List<Venda> listarVendas() {
-        return repository.carregar();
+        return repository.listarTodos();
+    }
+
+    public Venda buscarVenda(int id) {
+
+        return repository.buscarPorId(id);
     }
 
     public void excluirVenda(int id)
             throws VendaIngressoException {
 
-        boolean existe = false;
+        Venda venda = repository.buscarPorId(id);
 
-        for (Venda venda : repository.carregar()) {
-
-            if (venda.getId() == id) {
-                existe = true;
-                break;
-            }
-        }
-
-        if (!existe) {
+        if (venda == null) {
             throw new VendaIngressoException(
                     "Venda não encontrada."
             );
@@ -95,7 +100,7 @@ public class VendaIngressoService {
 
         int maior = 0;
 
-        for (Venda venda : repository.carregar()) {
+        for (Venda venda : repository.listarTodos()) {
 
             if (venda.getId() > maior) {
                 maior = venda.getId();
@@ -105,11 +110,65 @@ public class VendaIngressoService {
         return maior + 1;
     }
 
+
+    //funcoes para o relatorio
+    public int getTotalIngressosVendidos() {
+
+        int total = 0;
+
+        for (Venda venda : repository.listarTodos()) {
+            total += venda.getQuantidadeIngressos();
+        }
+
+        return total;
+    }
+
+    public double getValorTotalArrecadado() {
+
+        double total = 0;
+
+        for (Venda venda : repository.listarTodos()) {
+            total += venda.getValorTotal();
+        }
+
+        return total;
+    }
+
+    public double getMediaIngressosPorPartida() {
+
+        PartidaController partidaController =
+                new PartidaController();
+
+        int quantidadePartidas =
+                partidaController.listarTodasPartidas().size();
+
+        if (quantidadePartidas == 0) {
+            return 0;
+        }
+
+        return (double) getTotalIngressosVendidos()
+                / quantidadePartidas;
+    }
+
+    public int getQuantidadeIngressosPartida(int partidaId) {
+
+        int total = 0;
+
+        for (Venda venda : repository.listarTodos()) {
+
+            if (venda.getPartidaId() == partidaId) {
+                total += venda.getQuantidadeIngressos();
+            }
+        }
+
+        return total;
+    }
+
     private int gerarNovoIdIngresso() {
 
         int maior = 0;
 
-        for (Venda venda : repository.carregar()) {
+        for (Venda venda : repository.listarTodos()) {
 
             for (Ingresso ingresso : venda.getIngressos()) {
 

@@ -1,0 +1,34 @@
+[
+  {
+    "id": 1,
+    "comprador": "dan teste 1",
+    "dataVenda": "2026-06-08T18:36:42.233460400",
+    "partidaId": 3,
+    "quantidadeIngressos": 1,
+    "valorTotal": 300.0
+  },
+  {
+    "id": 2,
+    "comprador": "menezews teste 2",
+    "dataVenda": "2026-06-08T18:37:14.005695200",
+    "partidaId": 3,
+    "quantidadeIngressos": 3,
+    "valorTotal": 225.0
+  },
+  {
+    "id": 3,
+    "comprador": "erica teste 3",
+    "dataVenda": "2026-06-08T18:38:07.962794100",
+    "partidaId": 6,
+    "quantidadeIngressos": 2,
+    "valorTotal": 600.0
+  },
+  {
+    "id": 4,
+    "comprador": "fernanda teste 4",
+    "dataVenda": "2026-06-09T00:07:49.177809",
+    "partidaId": 1,
+    "quantidadeIngressos": 5,
+    "valorTotal": 750.0
+  }
+]
