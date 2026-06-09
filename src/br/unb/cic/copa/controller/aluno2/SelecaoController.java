@@ -38,6 +38,8 @@ public class SelecaoController {
     // ------ CRUD Seleção ------
 
     public void adicionarSelecao(Selecao s) throws CopaException {
+        System.out.println(">>> adicionarSelecao chamado com nome: '" + s.getNome() + "'");
+        new Exception().printStackTrace(); // ou Thread.dumpStack()
         if (buscarSelecaoPorNome(s.getNome()) != null) {
             throw new CopaException("Já existe seleção com o nome " + s.getNome());
         }
@@ -92,6 +94,7 @@ public class SelecaoController {
 
     // ------ Operações com jogadores ------
     public void adicionarJogador(String nomeSelecao, Jogador j) throws CopaException {
+        System.out.println(">>> adicionarJogador chamado para seleção: " + nomeSelecao + ", jogador: " + j.getNome());
         Selecao s = buscarSelecaoPorNome(nomeSelecao);
         if (s == null) throw new CopaException("Seleção não encontrada");
         if (j.getSelecao() != null) {
