@@ -1,6 +1,11 @@
 package br.unb.cic.copa.view.aluno5;
 
+import br.unb.cic.copa.controller.aluno4.PartidaController;
+import br.unb.cic.copa.controller.aluno5.IngressosController;
+import br.unb.cic.copa.model.aluno4.Partida;
 import br.unb.cic.copa.model.aluno5.CategoriaIngresso;
+import br.unb.cic.copa.model.aluno5.Venda;
+import br.unb.cic.copa.model.aluno5.exception.VendaIngressoException;
 import br.unb.cic.copa.view.aluno1.MenuPrincipalView;
 
 import javax.swing.*;
@@ -15,11 +20,14 @@ public class VendaIngressoView extends JFrame {
     private JTextField txtQuantidade;
     private JTextField txtBusca;
 
-    private JComboBox<String> cbPartida;
+    private JComboBox<Partida> cbPartida;
     private JComboBox<CategoriaIngresso> cbCategoria;
 
     private JTable tabela;
     private DefaultTableModel modeloTabela;
+
+    private final IngressosController controller;
+    private final PartidaController partidaController;
 
     private static final Color COR_FUNDO = new Color(245,245,250);
     private static final Color COR_HEADER = new Color(30,60,120);
@@ -28,6 +36,9 @@ public class VendaIngressoView extends JFrame {
     private static final Color COR_BUSCA = new Color(30,100,180);
 
     public VendaIngressoView() {
+
+        controller = new IngressosController();
+        partidaController = new PartidaController();
 
         setTitle("Gerenciar Ingressos - Copa 2026");
         setSize(700,700);
@@ -121,9 +132,7 @@ public class VendaIngressoView extends JFrame {
 
         cbPartida = new JComboBox<>();
 
-        cbPartida.addItem(
-                "Partidas serão carregadas futuramente"
-        );
+        carregarPartidas();
 
         cbCategoria =
                 new JComboBox<>(
@@ -308,42 +317,6 @@ public class VendaIngressoView extends JFrame {
         return rodape;
     }
 
-    private void salvarIngresso() {
-
-        JOptionPane.showMessageDialog(
-                this,
-                "Funcionalidade em desenvolvimento."
-        );
-    }
-
-    private void excluirIngresso() {
-
-        int linha =
-                tabela.getSelectedRow();
-
-        if(linha < 0) {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Selecione um registro."
-            );
-
-            return;
-        }
-
-        modeloTabela.removeRow(linha);
-    }
-
-    private void carregarTabela() {
-
-        modeloTabela.setRowCount(0);
-
-        /*
-         Futuramente:
-         carregar vendas do repository/service
-        */
-    }
-
     private JTextField criarCampo() {
 
         JTextField campo =
@@ -381,6 +354,148 @@ public class VendaIngressoView extends JFrame {
 
         return btn;
     }
+
+    private void carregarPartidas() {
+
+        cbPartida.removeAllItems();
+
+        for (Partida partida : partidaController.listarTodas()) {
+            cbPartida.addItem(partida);
+        }
+    }
+
+    private void salvarIngresso() {
+
+        try {
+
+            String comprador =
+                    txtComprador.getText().trim();
+
+            int quantidade =
+                    Integer.parseInt(
+                            txtQuantidade.getText().trim()
+                    );
+
+            Partida partida =
+                    (Partida) cbPartida.getSelectedItem();
+
+            CategoriaIngresso categoria =
+                    (CategoriaIngresso) cbCategoria.getSelectedItem();
+
+            controller.registrarVenda(
+                    comprador,
+                    partida,
+                    categoria,
+                    quantidade
+            );
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Venda registrada com sucesso!"
+            );
+
+            limparFormulario();
+
+            carregarTabela();
+
+        }
+        catch (VendaIngressoException e) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    e.getMessage(),
+                    "Erro",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        }
+        catch (NumberFormatException e) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Quantidade inválida.",
+                    "Erro",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        }
+    }
+
+    private void excluirIngresso() {
+
+        int linha = tabela.getSelectedRow();
+
+        if (linha < 0) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Selecione uma venda."
+            );
+
+            return;
+        }
+
+        int id =
+                (Integer) modeloTabela.getValueAt(
+                        linha,
+                        0
+                );
+
+        try {
+
+            controller.excluirVenda(id);
+
+            carregarTabela();
+
+            limparFormulario();
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Venda removida com sucesso!"
+            );
+
+        }
+        catch (VendaIngressoException e) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    e.getMessage(),
+                    "Erro",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        }
+    }
+
+    private void carregarTabela() {
+
+        modeloTabela.setRowCount(0);
+
+        for (Venda venda : controller.listarVendas()) {
+
+            modeloTabela.addRow(
+                    new Object[] {
+                            venda.getId(),
+                            venda.getComprador(),
+                            venda.getQuantidadeIngressos(),
+                            venda.getValorTotal()
+                    }
+            );
+        }
+    }
+
+    private void limparFormulario() {
+
+        txtId.setText("");
+        txtComprador.setText("");
+        txtQuantidade.setText("");
+
+        if (cbPartida.getItemCount() > 0) {
+            cbPartida.setSelectedIndex(0);
+        }
+
+        cbCategoria.setSelectedIndex(0);
+
+        tabela.clearSelection();
+    }
+
 
     private void adicionarLinha(
             JPanel painel,

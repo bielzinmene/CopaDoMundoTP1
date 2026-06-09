@@ -88,6 +88,28 @@ public class Partida implements Serializable {
     public Selecao getSelecao2() { return selecao2; }
     public String getData() { return data; }
 
+
+    public int getGolsSelecao1() {
+        if (this.resultado != null) {
+            return this.resultado.getGols1();
+        }
+        return 0;
+    }
+
+    public int getGolsSelecao2() {
+        if (this.resultado != null) {
+            return this.resultado.getGols2();
+        }
+        return 0;
+    }
+
+    public boolean isFinalizada() {
+        if (this.status != null) {
+            return this.status.equals(StatusPartida.FINALIZADA);
+        }
+        return false;
+    }
+
     public void setData(String data) {
         if (!(this.getStatus().equals(StatusPartida.AGENDADA))) {
             System.out.println("Erro: não é possivel alterar a data de uma partida " + this.getStatus());
@@ -108,4 +130,15 @@ public class Partida implements Serializable {
 
     public StatusPartida getStatus() { return status; }
     public Resultado getResultado() { return resultado; }
+
+    @Override
+    public String toString() {
+
+        return getSelecao1().getNome()
+                + " x "
+                + getSelecao2().getNome()
+                + " - "
+                + getData();
+    }
 }
+

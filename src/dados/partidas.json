@@ -1,5 +1,25 @@
 [
   {
+    "id": 3,
+    "arbitroId": 7,
+    "fase": "GRUPOS",
+    "status": "AGENDADA",
+    "data": "12/06/2026",
+    "selecao1Nome": "Egito",
+    "selecao2Nome": "Marrocos",
+    "estadioNome": "Estádio de Toronto"
+  },
+  {
+    "id": 4,
+    "arbitroId": 7,
+    "fase": "GRUPOS",
+    "status": "AGENDADA",
+    "data": "23/03/2026",
+    "selecao1Nome": "Egito",
+    "selecao2Nome": "Senegal",
+    "estadioNome": "Estadio Monterrey"
+  },
+  {
     "id": 1,
     "arbitroId": 6,
     "fase": "GRUPOS",
@@ -20,23 +40,23 @@
     "estadioNome": "Estádio de Toronto"
   },
   {
-    "id": 3,
-    "arbitroId": 7,
+    "id": 5,
+    "arbitroId": 99,
     "fase": "GRUPOS",
     "status": "AGENDADA",
-    "data": "12/06/2026",
-    "selecao1Nome": "Egito",
-    "selecao2Nome": "Marrocos",
+    "data": "24/06/2026",
+    "selecao1Nome": "Alemanha",
+    "selecao2Nome": "Curação",
     "estadioNome": "Estádio de Toronto"
   },
   {
-    "id": 4,
-    "arbitroId": 7,
+    "id": 6,
+    "arbitroId": 99,
     "fase": "GRUPOS",
     "status": "AGENDADA",
-    "data": "23/03/2026",
-    "selecao1Nome": "Egito",
-    "selecao2Nome": "Senegal",
-    "estadioNome": "Estadio Monterrey"
+    "data": "18/06/2026",
+    "selecao1Nome": "Japão",
+    "selecao2Nome": "Colômbia",
+    "estadioNome": "Estádio Guadalajara"
   }
 ]
