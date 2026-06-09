@@ -321,7 +321,6 @@ public class GerenciarJogadorView extends JFrame {
     }
 
     private void salvarJogador() {
-        System.out.println(">>> salvarJogador chamado");
         String nomeSelecao = (String) comboSelecao.getSelectedItem();
         if (nomeSelecao == null) {
             JOptionPane.showMessageDialog(this, "Selecione uma seleção.", "Aviso", JOptionPane.WARNING_MESSAGE);

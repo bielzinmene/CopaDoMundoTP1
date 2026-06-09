@@ -1,234 +1,134 @@
 package br.unb.cic.copa.model.aluno2.repository;
 
-import br.unb.cic.copa.model.aluno2.*;
-import br.unb.cic.copa.model.aluno2.exception.*;
-import br.unb.cic.copa.model.aluno3.repository.*;
+import br.unb.cic.copa.model.aluno2.Jogador;
+import br.unb.cic.copa.model.aluno2.Selecao;
+import br.unb.cic.copa.model.aluno3.repository.Repositorio;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.*;
+import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Repositório de Seleções usando Gson para persistência em JSON.
+ * Gerencia o arquivo src/dados/selecoes.json
+ */
 public class SelecaoRepository implements Repositorio<Selecao> {
 
     private final String caminhoArquivo;
+    private final Gson gson;
 
     public SelecaoRepository(String caminhoArquivo) {
         this.caminhoArquivo = caminhoArquivo;
-        System.out.println(">>> Caminho do arquivo:: " + new File(caminhoArquivo).getAbsolutePath());
+        // Cria o Gson com formatação bonita (pretty printing) para facilitar leitura manual
+        this.gson = new GsonBuilder().setPrettyPrinting().create();
     }
 
     // --------------------------------------------------------------
-    // Métodos da interface
+    // Métodos de persistência principais (salvar e carregar)
+    // --------------------------------------------------------------
+
+    /**
+     * Salva a lista completa de seleções no arquivo JSON.
+     */
+    public void salvarTodas(List<Selecao> selecoes) throws IOException {
+        String json = gson.toJson(selecoes);
+
+        File arquivo = new File(caminhoArquivo);
+        arquivo.getParentFile().mkdirs(); // Garante que a pasta exista
+        Files.write(Paths.get(caminhoArquivo), json.getBytes());
+    }
+
+    /**
+     * Carrega a lista completa de seleções do arquivo JSON.
+     * Se o arquivo não existir, retorna uma lista vazia.
+     */
+    public List<Selecao> carregarTodas() throws IOException {
+        File arquivo = new File(caminhoArquivo);
+        if (!arquivo.exists()) {
+            return new ArrayList<>();
+        }
+        String json = new String(Files.readAllBytes(Paths.get(caminhoArquivo)));
+        Type tipoLista = new TypeToken<ArrayList<Selecao>>() {}.getType();
+        List<Selecao> selecoes = gson.fromJson(json, tipoLista);
+        // Reconstroi a referência bidirecional jogador -> seleção (importante)
+        if (selecoes != null) {
+            for (Selecao s : selecoes) {
+                for (Jogador j : s.getJogadores()) {
+                    j.setSelecao(s);
+                }
+            }
+        }
+        return selecoes != null ? selecoes : new ArrayList<>();
+    }
+
+    // --------------------------------------------------------------
+    // Implementação dos métodos da interface Repositorio<Selecao>
     // --------------------------------------------------------------
 
     @Override
     public void salvar(Selecao selecao) throws IOException {
-        List<Selecao> lista = listarTodos();
-        boolean atualizado = false;
-        for (int i = 0; i < lista.size(); i++) {
-            if (lista.get(i).getId() == selecao.getId()) {
-                lista.set(i, selecao);
-                atualizado = true;
+        List<Selecao> todas = listarTodos();
+        // Atualiza se já existir (pelo ID), senão adiciona
+        boolean encontrado = false;
+        for (int i = 0; i < todas.size(); i++) {
+            if (todas.get(i).getId() == selecao.getId()) {
+                todas.set(i, selecao);
+                encontrado = true;
                 break;
             }
         }
-        if (!atualizado) {
-            lista.add(selecao);
+        if (!encontrado) {
+            todas.add(selecao);
         }
-        escreverJson(lista);
+        salvarTodas(todas);
     }
 
     @Override
     public Selecao buscarPorId(int id) throws IOException {
-        for (Selecao s : listarTodos()) {
-            if (s.getId() == id) return s;
-        }
-        throw new IOException("Seleção com id " + id + " não encontrada.");
+        return listarTodos().stream()
+                .filter(s -> s.getId() == id)
+                .findFirst()
+                .orElseThrow(() -> new IOException("Seleção com id " + id + " não encontrada."));
     }
 
     @Override
     public List<Selecao> listarTodos() throws IOException {
-        File arquivo = new File(caminhoArquivo);
-        if (!arquivo.exists()) return new ArrayList<>();
-        String conteudo = new String(Files.readAllBytes(Paths.get(caminhoArquivo)));
-        return parseJson(conteudo);
+        return carregarTodas();
     }
 
     @Override
     public void remover(int id) throws IOException {
-        List<Selecao> lista = listarTodos();
-        boolean removido = lista.removeIf(s -> s.getId() == id);
-        if (!removido) throw new IOException("Seleção com id " + id + " não encontrada.");
-        escreverJson(lista);
-    }
-
-    // --------------------------------------------------------------
-    // Métodos auxiliares para JSON manual (sem bibliotecas)
-    // --------------------------------------------------------------
-
-    private void escreverJson(List<Selecao> lista) throws IOException {
-        StringBuilder sb = new StringBuilder();
-        sb.append("[\n");
-        for (int i = 0; i < lista.size(); i++) {
-            Selecao s = lista.get(i);
-            sb.append("  {\n");
-            sb.append("    \"id\": ").append(s.getId()).append(",\n");
-            sb.append("    \"nome\": \"").append(escapeJson(s.getNome())).append("\",\n");
-            sb.append("    \"grupo\": \"").append(escapeJson(s.getGrupo())).append("\",\n");
-            sb.append("    \"tecnico\": \"").append(escapeJson(s.getTecnico())).append("\",\n");
-            sb.append("    \"jogadores\": [\n");
-            List<Jogador> jogadores = s.getJogadores();
-            for (int j = 0; j < jogadores.size(); j++) {
-                Jogador jog = jogadores.get(j);
-                sb.append("      {\n");
-                sb.append("        \"nome\": \"").append(escapeJson(jog.getNome())).append("\",\n");
-                sb.append("        \"numeracao\": ").append(jog.getNumeracao()).append(",\n");
-                sb.append("        \"posicao\": \"").append(jog.getPosicao().name()).append("\",\n");
-                sb.append("        \"titular\": ").append(jog.isTitular()).append(",\n");
-                sb.append("        \"status\": \"").append(jog.getStatus().name()).append("\"\n");
-                sb.append("      }");
-                if (j < jogadores.size() - 1) sb.append(",");
-                sb.append("\n");
-            }
-            sb.append("    ]\n");
-            sb.append("  }");
-            if (i < lista.size() - 1) sb.append(",");
-            sb.append("\n");
+        List<Selecao> todas = listarTodos();
+        boolean removido = todas.removeIf(s -> s.getId() == id);
+        if (!removido) {
+            throw new IOException("Seleção com id " + id + " não encontrada.");
         }
-        sb.append("]");
-
-        // Garante que a pasta exista
-        new File(caminhoArquivo).getParentFile().mkdirs();
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(caminhoArquivo))) {
-            writer.write(sb.toString());
-        }
-    }
-
-    private List<Selecao> parseJson(String json) throws IOException {
-        List<Selecao> lista = new ArrayList<>();
-        json = json.trim();
-        if (json.equals("[]") || json.isEmpty()) return lista;
-
-        // Remove os colchetes externos
-        json = json.substring(1, json.lastIndexOf("]")).trim();
-        // Divide os objetos (cada seleção está entre { } )
-        String[] objetos = json.split("\\},\\s*\\{");
-
-        for (String obj : objetos) {
-            obj = obj.replace("{", "").replace("}", "").trim();
-            Selecao s = new Selecao(); // construtor vazio
-            List<Jogador> jogadores = new ArrayList<>();
-
-            // Extrai a parte do array de jogadores
-            String arrayJogadores = "";
-            int inicioArray = obj.indexOf("[");
-            int fimArray = obj.lastIndexOf("]");
-            if (inicioArray != -1 && fimArray != -1 && fimArray > inicioArray) {
-                arrayJogadores = obj.substring(inicioArray + 1, fimArray).trim();
-                // Remove a parte do array do obj principal
-                obj = obj.substring(0, inicioArray) + obj.substring(fimArray + 1);
-            }
-
-            // Processa os campos simples (id, nome, grupo, tecnico)
-            String[] linhas = obj.split(",\\s*");
-            for (String linha : linhas) {
-                linha = linha.trim();
-                if (linha.startsWith("\"id\"")) {
-                    int id = Integer.parseInt(linha.split(":", 2)[1].trim());
-                    s.setId(id);
-                } else if (linha.startsWith("\"nome\"")) {
-                    String nome = linha.split(":", 2)[1].trim().replace("\"", "");
-                    s.setNome(nome);
-                } else if (linha.startsWith("\"grupo\"")) {
-                    String grupo = linha.split(":", 2)[1].trim().replace("\"", "");
-                    s.setGrupo(grupo);
-                } else if (linha.startsWith("\"tecnico\"")) {
-                    String tecnico = linha.split(":", 2)[1].trim().replace("\"", "");
-                    s.setTecnico(tecnico);
-                }
-            }
-
-            // Processa o array de jogadores
-            if (!arrayJogadores.isEmpty()) {
-                String[] jogObjs = arrayJogadores.split("\\},\\s*\\{");
-                for (String jogObj : jogObjs) {
-                    jogObj = jogObj.replace("{", "").replace("}", "").trim();
-                    Jogador j = new Jogador(); // construtor vazio
-                    String[] camposJog = jogObj.split(",\\s*");
-                    boolean invalido = false;
-
-                    for (String campo : camposJog) {
-                        campo = campo.trim();
-                        try {
-                            if (campo.startsWith("\"nome\"")) {
-                                String nome = campo.split(":", 2)[1].trim().replace("\"", "");
-                                j.setNome(nome);
-                            } else if (campo.startsWith("\"numeracao\"")) {
-                                int num = Integer.parseInt(campo.split(":", 2)[1].trim());
-                                j.setNumeracao(num);  // pode lançar NumeroCamisaInvalidoException
-                            } else if (campo.startsWith("\"posicao\"")) {
-                                String pos = campo.split(":", 2)[1].trim().replace("\"", "");
-                                j.setPosicao(Posicao.valueOf(pos));
-                            } else if (campo.startsWith("\"titular\"")) {
-                                j.setTitular(Boolean.parseBoolean(campo.split(":", 2)[1].trim()));
-                            } else if (campo.startsWith("\"status\"")) {
-                                String status = campo.split(":", 2)[1].trim().replace("\"", "");
-                                j.setStatus(StatusJogador.valueOf(status));
-                            }
-                        } catch (NumeroCamisaInvalidoException e) {
-                            System.err.println("Ignorando jogador inválido: " + e.getMessage());
-                            invalido = true;
-                            break;
-                        } catch (IllegalArgumentException e) {
-                            System.err.println("Ignorando jogador com dado inválido: " + e.getMessage());
-                            invalido = true;
-                            break;
-                        }
-                    }
-                    if (!invalido) {
-                        j.setSelecao(s);
-                        jogadores.add(j);
-                    }
-                }
-            }
-            s.setJogadores(jogadores);
-            lista.add(s);
-        }
-        return lista;
-    }
-
-    private String escapeJson(String texto) {
-        if (texto == null) return "";
-        return texto.replace("\\", "\\\\")
-                .replace("\"", "\\\"")
-                .replace("\n", "\\n")
-                .replace("\r", "\\r");
+        salvarTodas(todas);
     }
 
     // --------------------------------------------------------------
-    // Métodos adicionais
+    // Métodos auxiliares adicionais (para conveniência)
     // --------------------------------------------------------------
-    public void salvarTodas(List<Selecao> selecoes) throws IOException {
-        escreverJson(selecoes);
-    }
-
-    public List<Selecao> carregarTodas() throws IOException {
-        return listarTodos();
-    }
 
     public Selecao buscarPorNome(String nome) throws IOException {
-        for (Selecao s : listarTodos()) {
-            if (s.getNome().equalsIgnoreCase(nome)) return s;
-        }
-        return null;
+        return listarTodos().stream()
+                .filter(s -> s.getNome().equalsIgnoreCase(nome))
+                .findFirst()
+                .orElse(null);
     }
 
     public void removerPorNome(String nome) throws IOException {
         List<Selecao> todas = listarTodos();
         boolean removido = todas.removeIf(s -> s.getNome().equalsIgnoreCase(nome));
-        if (!removido) throw new IOException("Seleção " + nome + " não encontrada.");
-        escreverJson(todas);
+        if (!removido) {
+            throw new IOException("Seleção com nome " + nome + " não encontrada.");
+        }
+        salvarTodas(todas);
     }
 }
