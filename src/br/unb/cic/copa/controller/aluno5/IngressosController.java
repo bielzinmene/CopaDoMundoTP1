@@ -110,6 +110,8 @@ public class IngressosController {
         return maior + 1;
     }
 
+
+    //funcoes para o relatorio
     public int getTotalIngressosVendidos() {
 
         int total = 0;
