@@ -33,6 +33,10 @@ public class PartidaController {
         repository.remover(id);
     }
 
+    public List<Partida> listarTodasPartidas() {
+        return repository.listarTodos();
+    }
+
     public int gerarNovoId() {
         List<Partida> lista = repository.listarTodos();
         int maior = 0;
