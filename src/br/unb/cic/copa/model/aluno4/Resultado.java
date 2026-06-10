@@ -6,6 +6,7 @@ public class Resultado {
 
     public Resultado(int gols1, int gols2) {
         if(gols1 < 0 || gols2 < 0){
+            // tratamento de erro
             throw new IllegalArgumentException("Erro: os gols não podem ser negativos. Valores recebidos: " + gols1 + " e " + gols2 + ".");
         }
         else {

@@ -11,6 +11,13 @@
         "posicao": "GOLEIRO",
         "titular": true,
         "status": "ATIVO"
+      },
+      {
+        "nome": "Erica",
+        "numeracao": 2,
+        "posicao": "GOLEIRO",
+        "titular": true,
+        "status": "LESIONADO"
       }
     ]
   }
