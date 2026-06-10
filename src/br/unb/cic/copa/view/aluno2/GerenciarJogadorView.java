@@ -7,6 +7,8 @@ import br.unb.cic.copa.view.aluno1.MenuPrincipalView;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import java.awt.Image;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
@@ -27,7 +29,7 @@ public class GerenciarJogadorView extends JFrame {
     private Selecao selecaoAtual;
 
     private static final Color COR_FUNDO     = new Color(245, 245, 250);
-    private static final Color COR_HEADER    = new Color(30, 60, 120);
+    private static final Color COR_HEADER    = Color.BLACK;
     private static final Color COR_SALVAR    = new Color(34, 139, 34);
     private static final Color COR_CANCELAR  = new Color(180, 40, 40);
     private static final Color COR_BUSCA     = new Color(30, 100, 180);
@@ -44,6 +46,11 @@ public class GerenciarJogadorView extends JFrame {
         getContentPane().setBackground(COR_FUNDO);
         setLayout(new BorderLayout());
 
+        try{
+            java.net.URL imgURL = getClass().getClassLoader().getResource("resources/copa2026.jpg");
+            if(imgURL != null) setIconImage(new ImageIcon(imgURL).getImage());
+        }catch (Exception ignored){}
+
         add(criarHeader(), BorderLayout.NORTH);
         add(criarCorpo(), BorderLayout.CENTER);
         add(criarRodape(), BorderLayout.SOUTH);
@@ -56,12 +63,21 @@ public class GerenciarJogadorView extends JFrame {
     private JPanel criarHeader() {
         JPanel header = new JPanel(new BorderLayout());
         header.setBackground(COR_HEADER);
-        header.setBorder(new EmptyBorder(15, 20, 15, 20));
+        header.setBorder(new EmptyBorder(10, 20, 10, 20));
 
-        JLabel titulo = new JLabel("⚽  Gerenciar Jogadores");
+        JLabel titulo = new JLabel("Gerenciar Jogadores");
         titulo.setFont(FONTE_TITULO);
         titulo.setForeground(Color.WHITE);
         header.add(titulo, BorderLayout.WEST);
+        try{
+            java.net.URL imgURL = getClass().getClassLoader().getResource("resources/copa_3.png");
+            if(imgURL != null){
+                ImageIcon icone = new ImageIcon(imgURL);
+                Image img = icone.getImage().getScaledInstance(50,60,Image.SCALE_SMOOTH);
+                JLabel lblImagem = new JLabel(new ImageIcon((img)));
+                header.add(lblImagem, BorderLayout.EAST);
+            }
+        } catch (Exception ignored) {}
 
         return header;
     }
@@ -149,6 +165,16 @@ public class GerenciarJogadorView extends JFrame {
         tabela.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 12));
         tabela.getTableHeader().setBackground(COR_HEADER);
         tabela.getTableHeader().setForeground(Color.WHITE);
+        tabela.setDefaultRenderer(Object.class, new DefaultTableCellRenderer(){
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column){
+                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                if(!isSelected){
+                    c.setBackground(row % 2 == 0 ? Color.WHITE : new Color(240,240,248));
+                }
+                return c;
+            }
+        });
         tabela.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) carregarJogadorSelecionado();
         });
