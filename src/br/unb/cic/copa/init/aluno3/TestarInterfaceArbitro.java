@@ -1,4 +1,4 @@
-package br.unb.cic.copa.testes.aluno3;
+package br.unb.cic.copa.init.aluno3;
 
 import br.unb.cic.copa.model.aluno2.Selecao;
 import br.unb.cic.copa.model.aluno3.Arbitro;
@@ -10,7 +10,6 @@ import br.unb.cic.copa.model.aluno3.exception.CapacidadeInvalidaException;
 import br.unb.cic.copa.model.aluno3.exception.ExperienciaInvalidaException;
 import br.unb.cic.copa.model.aluno4.Fase;
 import br.unb.cic.copa.model.aluno4.Partida;
-import br.unb.cic.copa.model.aluno4.StatusPartida;
 
 public class TestarInterfaceArbitro {
 
