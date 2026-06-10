@@ -210,25 +210,29 @@ public class GerenciarJogadorView extends JFrame {
     }
 
     private void carregarTabelaJogadores() {
-        modeloTabela.setRowCount(0);
-        String nomeSelecao = (String) comboSelecao.getSelectedItem();
+        modeloTabela.setRowCount(0);//limpa todas as linhas da tabela (JTable) que exibe os jogadores.
+        String nomeSelecao = (String) comboSelecao.getSelectedItem();//pega o nome da seleção que o usuário escolheu no JComboBox
         if (nomeSelecao == null) return;
-        selecaoAtual = gerenciador.buscarSelecaoPorNome(nomeSelecao);
+        selecaoAtual = gerenciador.buscarSelecaoPorNome(nomeSelecao);//procura na lista em memória e retorna o objeto Selecao correspondente.
         if (selecaoAtual == null) return;
 
-        List<Jogador> jogadores = selecaoAtual.getJogadores();
-        String filtro = txtBusca.getText().trim().toLowerCase();
+        String filtro = txtBusca.getText().trim(); 
+        List<Jogador> jogadoresFiltrados;
 
-        for (Jogador j : jogadores) {
-            if (filtro.isEmpty() || j.getNome().toLowerCase().contains(filtro)) {
-                modeloTabela.addRow(new Object[]{
-                        j.getNome(),
-                        j.getNumeracao(),
-                        j.getPosicao(),
-                        j.isTitular() ? "Sim" : "Não",
-                        j.getStatus()
-                });
-            }
+        if (filtro.isEmpty()) {
+            jogadoresFiltrados = selecaoAtual.getJogadores(); // todos
+        } else {
+            jogadoresFiltrados = selecaoAtual.buscarJogadoresPorNome(filtro);
+        }
+
+        for (Jogador j : jogadoresFiltrados) {
+            modeloTabela.addRow(new Object[]{
+                    j.getNome(),
+                    j.getNumeracao(),
+                    j.getPosicao(),
+                    j.isTitular() ? "Sim" : "Não",
+                    j.getStatus()
+            });
         }
     }
 
