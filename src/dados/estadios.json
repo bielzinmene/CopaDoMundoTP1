@@ -1,29 +1,14 @@
 [
   {
-    "id": 2,
-    "nome": "Estádio de Toronto",
-    "capacidade": 45000,
-    "cidade": "Toronto",
-    "estado": "Ontaro",
-    "pais": "CANADA",
-    "endereco": "Rua 2"
-  },
-  {
-    "id": 3,
-    "nome": "Estádio Guadalajara",
-    "capacidade": 48000,
-    "cidade": "Zapopan",
-    "estado": "Jalisco",
-    "pais": "MEXICO",
-    "endereco": "Rua 3"
-  },
-  {
-    "id": 4,
+    "id": 1,
     "nome": "Estádio Monterrey",
+    "localizacao": {
+      "cidade": "Guadalupe",
+      "estado": "Nuevo Léon",
+      "pais": "MEXICO",
+      "endereco": "Av. Pablo Livas 2011, Colônia La Pastora"
+    },
     "capacidade": 53500,
-    "cidade": "Guadalupe",
-    "estado": "Nuevo León",
-    "pais": "MEXICO",
-    "endereco": "novo mexico"
+    "partidasSediadas": []
   }
 ]

@@ -7,6 +7,8 @@ import br.unb.cic.copa.model.aluno4.Partida;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import java.awt.Image;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.io.IOException;
@@ -24,7 +26,7 @@ public class ConsultarEscalaArbitroView extends JFrame {
     private final PartidaController partidaController = new PartidaController();
 
     private static final Color COR_FUNDO     = new Color(245, 245, 250);
-    private static final Color COR_HEADER    = new Color(30, 60, 120);
+    private static final Color COR_HEADER    = Color.BLACK;
     private static final Color COR_BUSCAR    = new Color(30, 100, 180);
     private static final Color COR_CANCELAR  = new Color(180, 40, 40);
     private static final Color COR_TEXTO_BTN = Color.WHITE;
@@ -42,6 +44,11 @@ public class ConsultarEscalaArbitroView extends JFrame {
         getContentPane().setBackground(COR_FUNDO);
         setLayout(new BorderLayout());
 
+        try {
+            java.net.URL imgUrl = getClass().getClassLoader().getResource("resources/copa2026.jpg");
+            if (imgUrl != null) setIconImage(new ImageIcon(imgUrl).getImage());
+        } catch (Exception ignored) {}
+
         add(criarHeader(), BorderLayout.NORTH);
         add(criarCorpo(), BorderLayout.CENTER);
         add(criarRodape(), BorderLayout.SOUTH);
@@ -52,12 +59,22 @@ public class ConsultarEscalaArbitroView extends JFrame {
     private JPanel criarHeader() {
         JPanel header = new JPanel(new BorderLayout());
         header.setBackground(COR_HEADER);
-        header.setBorder(new EmptyBorder(15, 20, 15, 20));
+        header.setBorder(new EmptyBorder(10, 20, 10, 20));
 
-        JLabel titulo = new JLabel("⚽  Escala do Árbitro");
+        JLabel titulo = new JLabel("Escala do Árbitro");
         titulo.setFont(FONTE_TITULO);
         titulo.setForeground(Color.WHITE);
         header.add(titulo, BorderLayout.WEST);
+
+        try {
+            java.net.URL imgUrl = getClass().getClassLoader().getResource("resources/copa_3.png");
+            if (imgUrl != null) {
+                ImageIcon icone = new ImageIcon(imgUrl);
+                Image img = icone.getImage().getScaledInstance(50, 60, Image.SCALE_SMOOTH);
+                JLabel lblImagem = new JLabel(new ImageIcon(img));
+                header.add(lblImagem, BorderLayout.EAST);
+            }
+        } catch (Exception ignored) {}
 
         return header;
     }
@@ -128,6 +145,16 @@ public class ConsultarEscalaArbitroView extends JFrame {
         tabela.getTableHeader().setBackground(COR_HEADER);
         tabela.getTableHeader().setForeground(Color.WHITE);
         tabela.setSelectionBackground(new Color(200, 220, 255));
+        tabela.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                if (!isSelected) {
+                    c.setBackground(row % 2 == 0 ? Color.WHITE : new Color(240, 240, 248));
+                }
+                return c;
+            }
+        });
 
         return new JScrollPane(tabela);
     }
@@ -188,6 +215,10 @@ public class ConsultarEscalaArbitroView extends JFrame {
         btn.setBorderPainted(false);
         btn.setPreferredSize(new Dimension(110, 36));
         btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent e) { btn.setBackground(cor.darker()); }
+            public void mouseExited(java.awt.event.MouseEvent e) { btn.setBackground(cor); }
+        });
         return btn;
     }
 }

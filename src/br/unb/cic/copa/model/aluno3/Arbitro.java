@@ -32,12 +32,13 @@ public class Arbitro extends Usuario implements Serializable {
         this.partidasDesignadas = new ArrayList<>();
     }
 
-    // Construtor simplificado
+    // Construtor simplificado (para ser chamado em partida)
     public Arbitro(int id, String nome, String email, String login,
                    String senha, String cpf, String pais) throws ExperienciaInvalidaException {
         this(id, nome, email, login, senha, cpf, pais, pais, 0);
     }
 
+    //getters e setters
     public String getNacionalidade() {
         return nacionalidade;
     }

@@ -12,6 +12,7 @@ public class Localizacao implements Serializable {
     private PaisSede pais; // país sede da Copa onde o estádio está localizado
     private String endereco;
 
+    //construtor
     public Localizacao(String cidade, String estado, PaisSede pais, String endereco) {
         this.cidade = cidade;
         this.estado = estado;
@@ -19,6 +20,7 @@ public class Localizacao implements Serializable {
         this.endereco = endereco;
     }
 
+    //getters e setters
     public String getCidade() {
         return cidade;
     }
