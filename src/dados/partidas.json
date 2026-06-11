@@ -58,5 +58,15 @@
     "selecao1Nome": "Japão",
     "selecao2Nome": "Colômbia",
     "estadioNome": "Estádio Guadalajara"
+  },
+  {
+    "id": 7,
+    "arbitroId": 1,
+    "fase": "GRUPOS",
+    "status": "AGENDADA",
+    "data": "11/06/2026",
+    "selecao1Nome": "Egito",
+    "selecao2Nome": "Marrocos",
+    "estadioNome": "Estádio Monterrey"
   }
 ]

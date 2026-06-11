@@ -1,143 +1,106 @@
 package br.unb.cic.copa.model.aluno3.repository;
 
 import br.unb.cic.copa.model.aluno3.Arbitro;
-import br.unb.cic.copa.model.aluno3.exception.ExperienciaInvalidaException;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-// Persiste árbitros em arquivo JSON
+// Persiste árbitros em arquivo JSON usando Gson
 public class ArbitroRepository implements Repositorio<Arbitro> {
 
     private final String caminhoArquivo;
+    private final Gson gson;
 
     public ArbitroRepository(String caminhoArquivo) {
         this.caminhoArquivo = caminhoArquivo;
+        // setPrettyPrinting deixa o JSON formatado
+        this.gson = new GsonBuilder().setPrettyPrinting().create();
     }
 
     @Override
     public void salvar(Arbitro arbitro) throws IOException {
+        // carrega todos os árbitros já existentes no arquivo
         List<Arbitro> lista = listarTodos();
 
         boolean atualizado = false;
+        // procura na lista um árbitro com o mesmo id do que está sendo salvo
         for (int i = 0; i < lista.size(); i++) {
             if (lista.get(i).getId() == arbitro.getId()) {
+                //se encontrou substitui pelo atual
                 lista.set(i, arbitro);
                 atualizado = true;
                 break;
             }
         }
+        //cadastro novo, add ao final da lista
         if (!atualizado) {
             lista.add(arbitro);
         }
-
+        //grava no json de novo
         escreverJson(lista);
     }
 
     @Override
     public Arbitro buscarPorId(int id) throws IOException {
+        //percorre todos os arbitros procurando o id
         for (Arbitro a : listarTodos()) {
             if (a.getId() == id) return a;
         }
+        //se não achou lança uma exceçao
         throw new IOException("Árbitro com id " + id + " não encontrado.");
     }
 
+    //percorre todos os arbitros procurando o login (ignorando maiúsculas/minúsculas)
     public Arbitro buscarPorLogin(String login) throws IOException {
         for (Arbitro a : listarTodos()) {
             if (a.getLogin().equalsIgnoreCase(login)) return a;
         }
+        //se não achou lança uma exceçao
         throw new IOException("Árbitro com login '" + login + "' não encontrado.");
     }
 
     @Override
     public List<Arbitro> listarTodos() throws IOException {
         File arquivo = new File(caminhoArquivo);
+        //verifica se arquivo existe se não existe retorna lista vazia
         if (!arquivo.exists()) return new ArrayList<>();
 
-        String conteudo = new String(Files.readAllBytes(Paths.get(caminhoArquivo)));
-        return parseJson(conteudo);
+        //lê o conteudo e verifica se está cadastrado
+        String json = new String(Files.readAllBytes(Paths.get(caminhoArquivo))).trim();
+        if (json.isEmpty() || json.equals("[]")) return new ArrayList<>();
+
+        // TypeToken é necessário porque o Gson precisa saber o tipo genérico exato para converter
+        Type tipoLista = new TypeToken<ArrayList<Arbitro>>() {}.getType();
+        //converte json para lista de objetos
+        List<Arbitro> lista = gson.fromJson(json, tipoLista);
+        //se json era null, retorna lista vazia
+        return lista != null ? lista : new ArrayList<>();
     }
 
     @Override
     public void remover(int id) throws IOException {
+        //pega todos os arbitros cadastrados
         List<Arbitro> lista = listarTodos();
+        //se o id for igual ao informado remove da lista e retorna true
         boolean removido = lista.removeIf(a -> a.getId() == id);
         if (!removido) throw new IOException("Árbitro com id " + id + " não encontrado.");
         escreverJson(lista);
     }
 
-    // Converte lista de árbitros para JSON e salva no arquivo
+    //converte a lista para json e sobrescreve o conteudo anterior
     private void escreverJson(List<Arbitro> lista) throws IOException {
-        StringBuilder sb = new StringBuilder();
-        sb.append("[\n");
-        for (int i = 0; i < lista.size(); i++) {
-            Arbitro a = lista.get(i);
-            sb.append("  {\n");
-            sb.append("    \"id\": ").append(a.getId()).append(",\n");
-            sb.append("    \"nome\": \"").append(a.getNome()).append("\",\n");
-            sb.append("    \"email\": \"").append(a.getEmail()).append("\",\n");
-            sb.append("    \"login\": \"").append(a.getLogin()).append("\",\n");
-            sb.append("    \"senha\": \"").append(a.getSenha()).append("\",\n");
-            sb.append("    \"cpf\": \"").append(a.getCpf()).append("\",\n");
-            sb.append("    \"pais\": \"").append(a.getPais()).append("\",\n");
-            sb.append("    \"nacionalidade\": \"").append(a.getNacionalidade()).append("\",\n");
-            sb.append("    \"experiencia\": ").append(a.getExperiencia()).append("\n");
-            sb.append("  }");
-            if (i < lista.size() - 1) sb.append(",");
-            sb.append("\n");
-        }
-        sb.append("]");
-
-        new File(caminhoArquivo).getParentFile().mkdirs();
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(caminhoArquivo))) {
-            writer.write(sb.toString());
-        }
-    }
-
-    // Lê o JSON e converte para lista de árbitros
-    private List<Arbitro> parseJson(String json) throws IOException {
-        List<Arbitro> lista = new ArrayList<>();
-        json = json.trim();
-        if (json.equals("[]") || json.isEmpty()) return lista;
-
-        json = json.substring(1, json.lastIndexOf("]")).trim();
-        String[] objetos = json.split("\\},\\s*\\{");
-
-        for (String obj : objetos) {
-            obj = obj.replace("{", "").replace("}", "").trim();
-            int id = 0, experiencia = 0;
-            String nome = "", email = "", login = "", senha = "", cpf = "", pais = "", nacionalidade = "";
-
-            for (String linha : obj.split(",\\s*\\r?\\n")) {
-                linha = linha.trim();
-                if (linha.isEmpty()) continue;
-                int colonPos = linha.indexOf(":");
-                if (colonPos == -1) continue;
-                String chave = linha.substring(0, colonPos).trim().replace("\"", "");
-                String valor = linha.substring(colonPos + 1).trim().replaceAll("^\"|\"$|\",$|,$", "").trim();
-
-                switch (chave) {
-                    case "id":           id = Integer.parseInt(valor); break;
-                    case "nome":         nome = valor; break;
-                    case "email":        email = valor; break;
-                    case "login":        login = valor; break;
-                    case "senha":        senha = valor; break;
-                    case "cpf":          cpf = valor; break;
-                    case "pais":         pais = valor; break;
-                    case "nacionalidade": nacionalidade = valor; break;
-                    case "experiencia":  experiencia = Integer.parseInt(valor); break;
-                }
-            }
-
-            try {
-                lista.add(new Arbitro(id, nome, email, login, senha, cpf, pais, nacionalidade, experiencia));
-            } catch (ExperienciaInvalidaException e) {
-                throw new IOException("Erro ao carregar árbitro: " + e.getMessage(), e);
-            }
-        }
-        return lista;
+        String json = gson.toJson(lista);
+        File arquivo = new File(caminhoArquivo);
+        //garante a existencia das pastas no caminho
+        arquivo.getParentFile().mkdirs();
+        Files.write(Paths.get(caminhoArquivo), json.getBytes());
     }
 }

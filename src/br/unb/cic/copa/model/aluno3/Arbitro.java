@@ -13,7 +13,7 @@ import java.util.List;
 // Árbitro é um tipo de Usuario do sistema, com atributos e regras específicas de arbitragem
 public class Arbitro extends Usuario implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L; //identificador de versão usado na serealização
 
     private String nacionalidade;
     private int experiencia; // anos de experiência
@@ -23,7 +23,8 @@ public class Arbitro extends Usuario implements Serializable {
     public Arbitro(int id, String nome, String email, String login,
                    String senha, String cpf, String pais,
                    String nacionalidade, int experiencia) throws ExperienciaInvalidaException {
-        super(id, nome, email, login, senha, cpf, pais, "Arbitro");
+        super(id, nome, email, login, senha, cpf, pais, "Arbitro"); // chama a superclasse usuario
+       //validação de regra de negocio da experiencia
         if (experiencia < 0) {
             throw new ExperienciaInvalidaException(experiencia);
         }
@@ -32,12 +33,13 @@ public class Arbitro extends Usuario implements Serializable {
         this.partidasDesignadas = new ArrayList<>();
     }
 
-    // Construtor simplificado
+    // Construtor simplificado (para ser chamado em partida)
     public Arbitro(int id, String nome, String email, String login,
                    String senha, String cpf, String pais) throws ExperienciaInvalidaException {
         this(id, nome, email, login, senha, cpf, pais, pais, 0);
     }
 
+    //getters e setters
     public String getNacionalidade() {
         return nacionalidade;
     }
@@ -50,6 +52,7 @@ public class Arbitro extends Usuario implements Serializable {
         return experiencia;
     }
 
+    //tambem valida a regra de negocio
     public void setExperiencia(int experiencia) throws ExperienciaInvalidaException {
         if (experiencia < 0) {
             throw new ExperienciaInvalidaException(experiencia);
@@ -74,6 +77,7 @@ public class Arbitro extends Usuario implements Serializable {
 
     // Designa o árbitro para a partida apenas se passar na validação de nacionalidade
     public void designarParaPartida(Partida partida) throws ArbitroNacionalidadeException {
+        //Avalia se arbitro pode apitar, se não poder entra no if
         if (!validarNacionalidade(partida)) {
             throw new ArbitroNacionalidadeException(this.getNome(), this.nacionalidade);
         }

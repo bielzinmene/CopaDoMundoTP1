@@ -1,136 +1,98 @@
 package br.unb.cic.copa.model.aluno3.repository;
 
 import br.unb.cic.copa.model.aluno3.Estadio;
-import br.unb.cic.copa.model.aluno3.Localizacao;
-import br.unb.cic.copa.model.aluno3.PaisSede;
-import br.unb.cic.copa.model.aluno3.exception.CapacidadeInvalidaException;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-// Persiste estádios em arquivo JSON
+// Persiste estádios em arquivo JSON usando Gson
 public class EstadioRepository implements Repositorio<Estadio> {
 
     private final String caminhoArquivo;
+    private final Gson gson;
 
     public EstadioRepository(String caminhoArquivo) {
         this.caminhoArquivo = caminhoArquivo;
+        // setPrettyPrinting deixa o JSON formatado
+        this.gson = new GsonBuilder().setPrettyPrinting().create();
     }
 
     @Override
     public void salvar(Estadio estadio) throws IOException {
+        // carrega todos os estádios já existentes no arquivo
         List<Estadio> lista = listarTodos();
 
         boolean atualizado = false;
+        // procura na lista um estádio com o mesmo id do que está sendo salvo
         for (int i = 0; i < lista.size(); i++) {
             if (lista.get(i).getId() == estadio.getId()) {
+                //se encontrou substitui pelo atual
                 lista.set(i, estadio);
                 atualizado = true;
                 break;
             }
         }
+        //cadastro novo, add ao final da lista
         if (!atualizado) {
             lista.add(estadio);
         }
-
+        //grava no json de novo
         escreverJson(lista);
     }
 
     @Override
     public Estadio buscarPorId(int id) throws IOException {
+        //percorre todos os estadios procurando o id
         for (Estadio e : listarTodos()) {
             if (e.getId() == id) return e;
         }
+        //se não achou lança uma exceçao
         throw new IOException("Estádio com id " + id + " não encontrado.");
     }
 
     @Override
     public List<Estadio> listarTodos() throws IOException {
         File arquivo = new File(caminhoArquivo);
+        //verifica se arquivo existe se não existe retorna lista vazia
         if (!arquivo.exists()) return new ArrayList<>();
 
-        String conteudo = new String(Files.readAllBytes(Paths.get(caminhoArquivo)));
-        return parseJson(conteudo);
+        //lê o conteudo e verifica se está cadastrado
+        String json = new String(Files.readAllBytes(Paths.get(caminhoArquivo))).trim();
+        if (json.isEmpty() || json.equals("[]")) return new ArrayList<>();
+
+        // TypeToken é necessário porque o Gson precisa saber o tipo genérico exato para converter
+        Type tipoLista = new TypeToken<ArrayList<Estadio>>() {}.getType();
+        //converte json para lista de objetos
+        List<Estadio> lista = gson.fromJson(json, tipoLista);
+        //se json era null, retorna lista vazia
+        return lista != null ? lista : new ArrayList<>();
     }
 
     @Override
     public void remover(int id) throws IOException {
+        //pega todos os estadios cadastrados
         List<Estadio> lista = listarTodos();
+        //se o id for igual ao informado remove da lista e retorna true
         boolean removido = lista.removeIf(e -> e.getId() == id);
         if (!removido) throw new IOException("Estádio com id " + id + " não encontrado.");
         escreverJson(lista);
     }
 
-    // Converte lista de estádios para JSON e salva no arquivo
+
+    //converte a lista para json na lista e sobrescreve o conteudo anterior
     private void escreverJson(List<Estadio> lista) throws IOException {
-        StringBuilder sb = new StringBuilder();
-        sb.append("[\n");
-        for (int i = 0; i < lista.size(); i++) {
-            Estadio e = lista.get(i);
-            Localizacao loc = e.getLocalizacao();
-            sb.append("  {\n");
-            sb.append("    \"id\": ").append(e.getId()).append(",\n");
-            sb.append("    \"nome\": \"").append(e.getNome()).append("\",\n");
-            sb.append("    \"capacidade\": ").append(e.getCapacidade()).append(",\n");
-            sb.append("    \"cidade\": \"").append(loc.getCidade()).append("\",\n");
-            sb.append("    \"estado\": \"").append(loc.getEstado()).append("\",\n");
-            sb.append("    \"pais\": \"").append(loc.getPais()).append("\",\n");
-            sb.append("    \"endereco\": \"").append(loc.getEndereco()).append("\"\n");
-            sb.append("  }");
-            if (i < lista.size() - 1) sb.append(",");
-            sb.append("\n");
-        }
-        sb.append("]");
-
-        new File(caminhoArquivo).getParentFile().mkdirs();
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(caminhoArquivo))) {
-            writer.write(sb.toString());
-        }
-    }
-
-    // Lê o JSON e converte para lista de estádios
-    private List<Estadio> parseJson(String json) throws IOException {
-        List<Estadio> lista = new ArrayList<>();
-        json = json.trim();
-        if (json.equals("[]") || json.isEmpty()) return lista;
-
-        json = json.substring(1, json.lastIndexOf("]")).trim();
-        String[] objetos = json.split("\\},\\s*\\{");
-
-        for (String obj : objetos) {
-            obj = obj.replace("{", "").replace("}", "").trim();
-            int id = 0, capacidade = 0;
-            String nome = "", cidade = "", estado = "", pais = "", endereco = "";
-
-            for (String linha : obj.split(",\\s*\\r?\\n")) {
-                linha = linha.trim();
-                if (linha.isEmpty()) continue;
-                int colonPos = linha.indexOf(":");
-                if (colonPos == -1) continue;
-                String chave = linha.substring(0, colonPos).trim().replace("\"", "");
-                String valor = linha.substring(colonPos + 1).trim().replaceAll("^\"|\"$|\",$|,$", "").trim();
-
-                switch (chave) {
-                    case "id":         id        = Integer.parseInt(valor); break;
-                    case "nome":       nome      = valor; break;
-                    case "capacidade": capacidade = Integer.parseInt(valor); break;
-                    case "cidade":     cidade    = valor; break;
-                    case "estado":     estado    = valor; break;
-                    case "pais":       pais      = valor; break;
-                    case "endereco":   endereco  = valor; break;
-                }
-            }
-
-            try {
-                Localizacao loc = new Localizacao(cidade, estado, PaisSede.valueOf(pais), endereco);
-                lista.add(new Estadio(id, nome, loc, capacidade));
-            } catch (CapacidadeInvalidaException ex) {
-                throw new IOException("Erro ao carregar estádio: " + ex.getMessage(), ex);
-            }
-        }
-        return lista;
+        String json = gson.toJson(lista);
+        File arquivo = new File(caminhoArquivo);
+        //garante a existencia das pastas no caminho
+        arquivo.getParentFile().mkdirs();
+        Files.write(Paths.get(caminhoArquivo), json.getBytes());
     }
 }

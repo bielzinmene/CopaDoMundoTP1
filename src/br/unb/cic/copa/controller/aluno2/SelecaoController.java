@@ -108,8 +108,7 @@ public class SelecaoController {
         salvar();
     }
 
-    public void editarJogador(String nomeSelecao, String nomeJogadorAtual,
-                              String novoNome, int novaNum, Posicao novaPos,
+    public void editarJogador(String nomeSelecao, String nomeJogadorAtual, String novoNome, int novaNum, Posicao novaPos,
                               boolean novoTitular, StatusJogador novoStatus) throws CopaException {
         Selecao s = buscarSelecaoPorNome(nomeSelecao);
         if (s == null) throw new CopaException("Seleção não encontrada");
