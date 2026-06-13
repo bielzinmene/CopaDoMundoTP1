@@ -1,25 +1,5 @@
 [
   {
-    "id": 3,
-    "arbitroId": 7,
-    "fase": "GRUPOS",
-    "status": "AGENDADA",
-    "data": "12/06/2026",
-    "selecao1Nome": "Egito",
-    "selecao2Nome": "Marrocos",
-    "estadioNome": "Estádio de Toronto"
-  },
-  {
-    "id": 4,
-    "arbitroId": 7,
-    "fase": "GRUPOS",
-    "status": "AGENDADA",
-    "data": "23/03/2026",
-    "selecao1Nome": "Egito",
-    "selecao2Nome": "Senegal",
-    "estadioNome": "Estadio Monterrey"
-  },
-  {
     "id": 1,
     "arbitroId": 6,
     "fase": "GRUPOS",
@@ -68,5 +48,15 @@
     "selecao1Nome": "Egito",
     "selecao2Nome": "Marrocos",
     "estadioNome": "Estádio Monterrey"
+  },
+  {
+    "id": 4,
+    "arbitroId": 7,
+    "fase": "GRUPOS",
+    "status": "FINALIZADA",
+    "data": "23/03/2026",
+    "selecao1Nome": "Egito",
+    "selecao2Nome": "Senegal",
+    "estadioNome": "Estadio Monterrey"
   }
 ]

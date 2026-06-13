@@ -10,6 +10,7 @@ import br.unb.cic.copa.view.aluno5.VendaIngressoView;
 import br.unb.cic.copa.view.aluno3.ConsultarEscalaArbitroView;
 import br.unb.cic.copa.model.aluno1.SessaoUsuario;
 import br.unb.cic.copa.view.aluno1.RelatorioView;
+import br.unb.cic.copa.view.aluno4.RegistrarResultadoView;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -75,7 +76,7 @@ public class MenuPrincipalView extends JFrame {
         corpo.setBackground(COR_FUNDO);
         corpo.setBorder(new EmptyBorder(30, 40, 30, 40));
 
-        JPanel grade = new JPanel(new GridLayout(3, 3, 25, 25));
+        JPanel grade = new JPanel(new GridLayout(4, 3, 25, 25));
         grade.setBackground(COR_FUNDO);
 
         JButton btnUsuarios   = criarBotao(" Gestão de Usuários", COR_BOTAO);
@@ -84,12 +85,13 @@ public class MenuPrincipalView extends JFrame {
         JButton btnEstadios   = criarBotao(" Gerenciar Estádios", COR_BOTAO);
         JButton btnArbitros   = criarBotao(" Gerenciar Árbitros", COR_BOTAO);
         JButton btnPartidas   = criarBotao(" Gerenciar Partidas", COR_BOTAO);
+        JButton btnResultado  = criarBotao(" Registrar Resultado", COR_BOTAO);
         JButton btnIngressos  = criarBotao(" Gerenciar Ingressos", COR_BOTAO);
         JButton btnRelatorios = criarBotao(" Relatórios", COR_BOTAO);
         JButton btnSair       = criarBotao(" Sair / Logout", COR_SAIR);
 
         configurarAcesso(btnUsuarios, btnSelecoes, btnJogadores,
-                btnEstadios, btnArbitros, btnPartidas,
+                btnEstadios, btnArbitros, btnPartidas, btnResultado,
                 btnIngressos, btnRelatorios);
 
         // Listeners
@@ -115,6 +117,10 @@ public class MenuPrincipalView extends JFrame {
         });
         btnPartidas.addActionListener(evt -> {
             new PartidaView().setVisible(true);
+            dispose();
+        });
+        btnResultado.addActionListener(evt -> {
+            new RegistrarResultadoView().setVisible(true);
             dispose();
         });
         btnIngressos.addActionListener(evt -> {
@@ -143,6 +149,7 @@ public class MenuPrincipalView extends JFrame {
         grade.add(btnEstadios);
         grade.add(btnArbitros);
         grade.add(btnPartidas);
+        grade.add(btnResultado);
         grade.add(btnIngressos);
         grade.add(btnRelatorios);
         grade.add(btnSair);
@@ -154,7 +161,7 @@ public class MenuPrincipalView extends JFrame {
 
     private void configurarAcesso(JButton btnUsuarios, JButton btnSelecoes,
                                   JButton btnJogadores, JButton btnEstadios,
-                                  JButton btnArbitros, JButton btnPartidas,
+                                  JButton btnArbitros, JButton btnPartidas, JButton btnResultado,
                                   JButton btnIngressos, JButton btnRelatorios) {
         btnUsuarios.setEnabled(false);
         btnSelecoes.setEnabled(false);
@@ -162,6 +169,7 @@ public class MenuPrincipalView extends JFrame {
         btnEstadios.setEnabled(false);
         btnArbitros.setEnabled(false);
         btnPartidas.setEnabled(false);
+        btnResultado.setEnabled(false);
         btnIngressos.setEnabled(false);
         btnRelatorios.setEnabled(false);
 
@@ -172,6 +180,7 @@ public class MenuPrincipalView extends JFrame {
             btnEstadios.setEnabled(true);
             btnArbitros.setEnabled(true);
             btnPartidas.setEnabled(true);
+            btnResultado.setEnabled(true);
             btnIngressos.setEnabled(true);
             btnRelatorios.setEnabled(true);
         } else if (usuarioLogado instanceof Organizador) {
@@ -180,6 +189,7 @@ public class MenuPrincipalView extends JFrame {
             btnEstadios.setEnabled(true);
             btnArbitros.setEnabled(true);
             btnPartidas.setEnabled(true);
+            btnResultado.setEnabled(true);
         } else if (usuarioLogado instanceof Operador) {
             btnIngressos.setEnabled(true);
         } else {

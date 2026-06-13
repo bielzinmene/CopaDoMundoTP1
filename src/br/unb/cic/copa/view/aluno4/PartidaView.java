@@ -46,7 +46,6 @@ public class PartidaView extends JFrame {
     private static final Color COR_HEADER    = new Color(30, 60, 120);
     private static final Color COR_SALVAR    = new Color(34, 139, 34);
     private static final Color COR_CANCELAR  = new Color(180, 40, 40);
-    private static final Color COR_BUSCA     = new Color(30, 100, 180);
     private static final Color COR_TEXTO_BTN = Color.WHITE;
     private static final Font  FONTE_LABEL   = new Font("Segoe UI", Font.PLAIN, 13);
     private static final Font  FONTE_CAMPO   = new Font("Segoe UI", Font.PLAIN, 13);
@@ -149,35 +148,6 @@ public class PartidaView extends JFrame {
         JPanel painel = new JPanel(new BorderLayout(0, 8));
         painel.setBackground(COR_FUNDO);
 
-        JPanel painelResultado = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
-        painelResultado.setBackground(COR_FUNDO);
-        painelResultado.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createLineBorder(new Color(200, 200, 220)),
-                "Registrar Resultado",
-                javax.swing.border.TitledBorder.LEFT,
-                javax.swing.border.TitledBorder.TOP,
-                new Font("Segoe UI", Font.BOLD, 12),
-                COR_HEADER
-        ));
-
-        JTextField campoGols1 = criarCampoPequeno();
-        JTextField campoGols2 = criarCampoPequeno();
-        JButton btnResultado  = criarBotao("Registrar", COR_BUSCA);
-        btnResultado.setPreferredSize(new Dimension(100, 32));
-
-        JLabel lGols1 = new JLabel("Gols Seleção 1:");
-        lGols1.setFont(FONTE_LABEL);
-        lGols1.setForeground(new Color(50, 50, 80));
-        JLabel lGols2 = new JLabel("Gols Seleção 2:");
-        lGols2.setFont(FONTE_LABEL);
-        lGols2.setForeground(new Color(50, 50, 80));
-
-        painelResultado.add(lGols1);
-        painelResultado.add(campoGols1);
-        painelResultado.add(lGols2);
-        painelResultado.add(campoGols2);
-        painelResultado.add(btnResultado);
-
         modeloTabela = new DefaultTableModel(
                 new String[]{"ID", "Seleção 1", "Seleção 2", "Data", "Fase", "Status", "ID Árbitro"}, 0) {
             public boolean isCellEditable(int row, int col) { return false; }
@@ -206,39 +176,6 @@ public class PartidaView extends JFrame {
         painelExcluir.setBackground(COR_FUNDO);
         painelExcluir.add(btnExcluir);
 
-        btnResultado.addActionListener(e -> {
-            int linha = tabela.getSelectedRow();
-            if (linha < 0) {
-                JOptionPane.showMessageDialog(this, "Selecione uma partida na tabela.", "Aviso", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-            try {
-                int idPartida = (int) modeloTabela.getValueAt(linha, 0);
-                int gols1 = Integer.parseInt(campoGols1.getText().trim());
-                int gols2 = Integer.parseInt(campoGols2.getText().trim());
-
-                Partida partida = partidaController.buscarPorId(idPartida);
-                if (partida == null) {
-                    JOptionPane.showMessageDialog(this, "Partida não encontrada.", "Erro", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-                partida.iniciarPartida();
-                partida.finalizarPartida(new br.unb.cic.copa.model.aluno4.Resultado(gols1, gols2));
-                partidaController.salvarPartida(partida);
-
-                JOptionPane.showMessageDialog(this, "Resultado registrado com sucesso!");
-                campoGols1.setText("");
-                campoGols2.setText("");
-                carregarTabela();
-
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(this, "Gols devem ser números inteiros.", "Erro", JOptionPane.ERROR_MESSAGE);
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Erro: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
-            }
-        });
-
-        painel.add(painelResultado, BorderLayout.NORTH);
         painel.add(scroll, BorderLayout.CENTER);
         painel.add(painelExcluir, BorderLayout.SOUTH);
 
@@ -425,17 +362,6 @@ public class PartidaView extends JFrame {
         };
         campo.setFont(FONTE_CAMPO);
         campo.setPreferredSize(new Dimension(250, 32));
-        campo.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(180, 180, 210)),
-                new EmptyBorder(4, 8, 4, 8)
-        ));
-        return campo;
-    }
-
-    private JTextField criarCampoPequeno() {
-        JTextField campo = new JTextField();
-        campo.setFont(FONTE_CAMPO);
-        campo.setPreferredSize(new Dimension(50, 32));
         campo.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(180, 180, 210)),
                 new EmptyBorder(4, 8, 4, 8)
