@@ -7,7 +7,7 @@ import br.unb.cic.copa.model.aluno1.*;
 import br.unb.cic.copa.model.aluno2.Selecao;
 import br.unb.cic.copa.model.aluno4.Partida;
 
-import java.util.List;
+import java.util.*;
 
 public class RelatorioController {
 
@@ -32,42 +32,143 @@ public class RelatorioController {
         return instancia;
     }
 
+    public List<Usuario> getUsuarios() {
+        return usuarioController.listarUsuarios();
+    }
+
+    public Map<String, Long> getResumoUsuarios() {
+        List<Usuario> usuarios = usuarioController.listarUsuarios();
+        Map<String, Long> resumo = new LinkedHashMap<>();
+        resumo.put("Total", (long) usuarios.size());
+        resumo.put("Administradores",
+                usuarios.stream().filter(u -> u instanceof Administrador).count());
+        resumo.put("Organizadores",
+                usuarios.stream().filter(u -> u instanceof Organizador).count());
+        resumo.put("Operadores",
+                usuarios.stream().filter(u -> u instanceof Operador).count());
+        resumo.put("Arbitros",
+                usuarios.stream().filter(u -> u.getFuncao().equals("Arbitro")).count());
+        return resumo;
+    }
+
+    public List<Object[]> getDesempenhoSelecoes() {
+        List<Selecao> selecoes = selecaoController.listarTodas();
+        List<Partida> partidas = partidaController.listarTodasPartidas();
+
+        List<Object[]> resultado = new ArrayList<>();
+
+        for (Selecao s : selecoes) {
+            int golsFeitos = 0;
+            int golsSofridos = 0;
+
+            for (Partida p : partidas) {
+                if (!p.isFinalizada()) continue;
+
+                boolean s1 = p.getSelecao1().getNome().equals(s.getNome());
+                boolean s2 = p.getSelecao2().getNome().equals(s.getNome());
+
+                if (s1) {
+                    golsFeitos   += p.getGolsSelecao1();
+                    golsSofridos += p.getGolsSelecao2();
+                } else if (s2) {
+                    golsFeitos   += p.getGolsSelecao2();
+                    golsSofridos += p.getGolsSelecao1();
+                }
+            }
+
+            resultado.add(new Object[]{s.getNome(), golsFeitos, golsSofridos});
+        }
+
+        return resultado;
+    }
+
+    public List<Object[]> getResultadosPartidas() {
+        List<Partida> partidas = partidaController.listarTodasPartidas();
+        List<Object[]> resultado = new ArrayList<>();
+
+        for (Partida p : partidas) {
+            String placar;
+            if (p.isFinalizada() && p.getResultado() != null) {
+                placar = p.getGolsSelecao1() + " x " + p.getGolsSelecao2();
+            } else if (p.isFinalizada()) {
+                placar = "- x -";
+            } else {
+                placar = "- x -";
+            }
+
+            resultado.add(new Object[]{
+                    p.getSelecao1().getNome(),
+                    placar,
+                    p.getSelecao2().getNome(),
+                    p.getData(),
+                    p.getEstadio().getNome(),
+                    p.getStatus().toString()
+            });
+        }
+
+        return resultado;
+    }
+
+    public Map<String, Integer> getResumoPartidas() {
+        List<Partida> partidas = partidaController.listarTodasPartidas();
+        int totalGols = 0;
+
+        long finalizadas = partidas.stream()
+                .filter(Partida::isFinalizada).count();
+        long agendadas   = partidas.stream()
+                .filter(p -> p.getStatus().toString().equals("AGENDADA")).count();
+        long emAndamento = partidas.stream()
+                .filter(p -> p.getStatus().toString().equals("EM_ANDAMENTO")).count();
+
+        for (Partida p : partidas) {
+            if (p.isFinalizada() && p.getResultado() != null) {
+                totalGols += p.getGolsSelecao1() + p.getGolsSelecao2();
+            }
+        }
+
+        Map<String, Integer> resumo = new LinkedHashMap<>();
+        resumo.put("Total", partidas.size());
+        resumo.put("Finalizadas", (int) finalizadas);
+        resumo.put("Agendadas", (int) agendadas);
+        resumo.put("Em Andamento", (int) emAndamento);
+        resumo.put("Total de Gols", totalGols);
+        return resumo;
+    }
+
+    public Map<String, String> getResumoIngressos() {
+        Map<String, String> resumo = new LinkedHashMap<>();
+        resumo.put("Ingressos Vendidos",
+                String.valueOf(ingressosController.getTotalIngressosVendidos()));
+        resumo.put("Total Arrecadado",
+                String.format("R$ %.2f", ingressosController.getValorTotalArrecadado()));
+        return resumo;
+    }
+
     public String gerarRelatorioUsuarios() {
         List<Usuario> usuarios = usuarioController.listarUsuarios();
-
-        long admins        = usuarios.stream()
-                .filter(u -> u instanceof Administrador).count();
-        long organizadores = usuarios.stream()
-                .filter(u -> u instanceof Organizador).count();
-        long operadores    = usuarios.stream()
-                .filter(u -> u instanceof Operador).count();
-        long arbitros      = usuarios.stream()
-                .filter(u -> u.getFuncao().equals("Arbitro")).count();
+        long admins        = usuarios.stream().filter(u -> u instanceof Administrador).count();
+        long organizadores = usuarios.stream().filter(u -> u instanceof Organizador).count();
+        long operadores    = usuarios.stream().filter(u -> u instanceof Operador).count();
+        long arbitros      = usuarios.stream().filter(u -> u.getFuncao().equals("Arbitro")).count();
 
         StringBuilder sb = new StringBuilder();
         sb.append("RELATORIO DE USUARIOS DO SISTEMA\n");
         sb.append("Copa do Mundo 2026\n");
         sb.append("-".repeat(65)).append("\n\n");
-
         sb.append(String.format("%-5s  %-20s  %-28s  %-14s  %-8s\n",
                 "ID", "Nome", "Email", "Perfil", "Status"));
         sb.append("-".repeat(65)).append("\n");
-
         for (Usuario u : usuarios) {
             sb.append(String.format("%-5d  %-20s  %-28s  %-14s  %-8s\n",
-                    u.getId(), u.getNome(), u.getEmail(),
-                    u.getFuncao(), u.getStatus()));
+                    u.getId(), u.getNome(), u.getEmail(), u.getFuncao(), u.getStatus()));
         }
-
         sb.append("-".repeat(65)).append("\n\n");
-        sb.append("RESUMO\n");
-        sb.append("-".repeat(35)).append("\n");
+        sb.append("RESUMO\n").append("-".repeat(35)).append("\n");
         sb.append(String.format("  %-28s %d\n", "Total de usuarios:", usuarios.size()));
         sb.append(String.format("    %-26s %d\n", "Administradores:", admins));
         sb.append(String.format("    %-26s %d\n", "Organizadores:", organizadores));
         sb.append(String.format("    %-26s %d\n", "Operadores:", operadores));
         sb.append(String.format("    %-26s %d\n", "Arbitros:", arbitros));
-
         return sb.toString();
     }
 
@@ -77,10 +178,8 @@ public class RelatorioController {
         sb.append("Copa do Mundo 2026\n");
         sb.append("-".repeat(65)).append("\n\n");
 
-
         List<Usuario> usuarios = usuarioController.listarUsuarios();
-        sb.append("1. USUARIOS DO SISTEMA\n");
-        sb.append("-".repeat(35)).append("\n");
+        sb.append("1. USUARIOS DO SISTEMA\n").append("-".repeat(35)).append("\n");
         sb.append(String.format("  %-28s %d\n", "Total de usuarios:", usuarios.size()));
         sb.append(String.format("    %-26s %d\n", "Administradores:",
                 usuarios.stream().filter(u -> u instanceof Administrador).count()));
@@ -90,17 +189,13 @@ public class RelatorioController {
                 usuarios.stream().filter(u -> u instanceof Operador).count()));
         sb.append("\n");
 
-
         List<Selecao> selecoes = selecaoController.listarTodas();
         int totalJogadores = 0;
         for (Selecao s : selecoes) totalJogadores += s.getJogadores().size();
-
-        sb.append("2. SELECOES E JOGADORES\n");
-        sb.append("-".repeat(35)).append("\n");
+        sb.append("2. SELECOES E JOGADORES\n").append("-".repeat(35)).append("\n");
         sb.append(String.format("  %-28s %d\n", "Total de selecoes:", selecoes.size()));
         sb.append(String.format("  %-28s %d\n", "Total de jogadores:", totalJogadores));
         sb.append("\n");
-
 
         List<Partida> partidas = partidaController.listarTodasPartidas();
         long finalizadas = partidas.stream().filter(Partida::isFinalizada).count();
@@ -110,12 +205,10 @@ public class RelatorioController {
                 .filter(p -> p.getStatus().toString().equals("EM_ANDAMENTO")).count();
         int totalGols = 0;
         for (Partida p : partidas) {
-            if (p.isFinalizada())
+            if (p.isFinalizada() && p.getResultado() != null)
                 totalGols += p.getGolsSelecao1() + p.getGolsSelecao2();
         }
-
-        sb.append("3. PARTIDAS\n");
-        sb.append("-".repeat(35)).append("\n");
+        sb.append("3. PARTIDAS\n").append("-".repeat(35)).append("\n");
         sb.append(String.format("  %-28s %d\n", "Total de partidas:", partidas.size()));
         sb.append(String.format("    %-26s %d\n", "Finalizadas:", finalizadas));
         sb.append(String.format("    %-26s %d\n", "Agendadas:", agendadas));
@@ -123,59 +216,11 @@ public class RelatorioController {
         sb.append(String.format("  %-28s %d\n", "Total de gols:", totalGols));
         sb.append("\n");
 
-
-        if (!selecoes.isEmpty() && !partidas.isEmpty()) {
-            sb.append("4. DESEMPENHO DAS SELECOES\n");
-            sb.append("-".repeat(35)).append("\n");
-            sb.append("  Colunas:\n");
-            sb.append("    PJ = Partidas Jogadas\n");
-            sb.append("    V  = Vitorias\n");
-            sb.append("    E  = Empates\n");
-            sb.append("    D  = Derrotas\n");
-            sb.append("    GM = Gols Marcados\n");
-            sb.append("    GS = Gols Sofridos\n");
-            sb.append("    SG = Saldo de Gols\n");
-            sb.append("    PT = Pontos totais\n\n");
-
-            sb.append(String.format("  %-22s  %3s  %3s  %3s  %3s  %3s  %3s  %4s  %3s\n",
-                    "Selecao", " PJ", " V", " E", " D", "GM", "GS", "  SG", "PT"));
-            sb.append("  ").append("-".repeat(58)).append("\n");
-
-            for (Selecao s : selecoes) {
-                int pj = 0, v = 0, e = 0, d = 0, gm = 0, gs = 0, pts = 0;
-
-                for (Partida p : partidas) {
-                    if (!p.isFinalizada()) continue;
-                    boolean s1 = p.getSelecao1().getNome().equals(s.getNome());
-                    boolean s2 = p.getSelecao2().getNome().equals(s.getNome());
-                    if (!s1 && !s2) continue;
-
-                    pj++;
-                    int golsPro = s1 ? p.getGolsSelecao1() : p.getGolsSelecao2();
-                    int golsCon = s1 ? p.getGolsSelecao2() : p.getGolsSelecao1();
-                    gm += golsPro;
-                    gs += golsCon;
-
-                    if (golsPro > golsCon)      { v++;  pts += 3; }
-                    else if (golsPro == golsCon) { e++;  pts += 1; }
-                    else                         { d++; }
-                }
-
-                sb.append(String.format("  %-22s  %3d  %3d  %3d  %3d  %3d  %3d  %4d  %3d\n",
-                        s.getNome(), pj, v, e, d, gm, gs, (gm - gs), pts));
-            }
-            sb.append("\n");
-        }
-
-        //testando
-
-        sb.append("5. INGRESSOS E PUBLICO\n");
-        sb.append("-".repeat(35)).append("\n");
+        sb.append("4. INGRESSOS E PUBLICO\n").append("-".repeat(35)).append("\n");
         sb.append(String.format("  %-28s %d\n", "Ingressos vendidos:",
                 ingressosController.getTotalIngressosVendidos()));
         sb.append(String.format("  %-28s R$ %.2f\n", "Total arrecadado:",
                 ingressosController.getValorTotalArrecadado()));
-
         return sb.toString();
     }
 }

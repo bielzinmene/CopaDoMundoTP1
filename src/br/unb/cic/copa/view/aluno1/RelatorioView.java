@@ -2,25 +2,40 @@ package br.unb.cic.copa.view.aluno1;
 
 import br.unb.cic.copa.controller.aluno1.RelatorioController;
 import br.unb.cic.copa.model.aluno1.Usuario;
+import br.unb.cic.copa.model.aluno4.Partida;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class RelatorioView extends JFrame {
 
     private final Usuario usuarioLogado;
     private final RelatorioController controller = RelatorioController.getInstancia();
-    private JTextArea areaTexto;
+    private JPanel painelConteudo;
+    private JScrollPane scrollPrincipal;
 
-    private static final Color COR_FUNDO      = new Color(245, 245, 250);
-    private static final Color COR_HEADER     = Color.BLACK;
-    private static final Color COR_BOTAO      = Color.BLACK;
-    private static final Color COR_CANCELAR   = new Color(180, 40, 40);
-    private static final Color COR_TEXTO_BTN  = Color.WHITE;
-    private static final Font  FONTE_TITULO   = new Font("Segoe UI", Font.BOLD, 16);
-    private static final Font  FONTE_TEXTO    = new Font("Consolas", Font.PLAIN, 13);
-    private static final Font  FONTE_BOTAO    = new Font("Segoe UI", Font.BOLD, 13);
+    private static final Color COR_FUNDO        = new Color(245, 245, 250);
+    private static final Color COR_HEADER       = Color.BLACK;
+    private static final Color COR_BOTAO        = Color.BLACK;
+    private static final Color COR_CANCELAR     = new Color(180, 40, 40);
+    private static final Color COR_TEXTO_BTN    = Color.WHITE;
+    private static final Color COR_TITULO_GRUPO = new Color(30, 60, 120);
+    private static final Color COR_HEADER_TAB   = new Color(50, 50, 50);
+    private static final Color COR_LINHA_PAR    = Color.WHITE;
+    private static final Color COR_LINHA_IMPAR  = new Color(240, 242, 248);
+
+    private static final Font FONTE_TITULO    = new Font("Segoe UI", Font.BOLD, 16);
+    private static final Font FONTE_BOTAO     = new Font("Segoe UI", Font.BOLD, 13);
+    private static final Font FONTE_CABECALHO = new Font("Segoe UI", Font.BOLD, 11);
+    private static final Font FONTE_TABELA    = new Font("Segoe UI", Font.PLAIN, 13);
+    private static final Font FONTE_RESUMO    = new Font("Segoe UI", Font.PLAIN, 13);
 
     public RelatorioView(Usuario usuarioLogado) {
         this.usuarioLogado = usuarioLogado;
@@ -59,8 +74,7 @@ public class RelatorioView extends JFrame {
                 ImageIcon icone = new ImageIcon(imgUrl);
                 Image img = icone.getImage()
                         .getScaledInstance(50, 60, Image.SCALE_SMOOTH);
-                JLabel lblImagem = new JLabel(new ImageIcon(img));
-                header.add(lblImagem, BorderLayout.EAST);
+                header.add(new JLabel(new ImageIcon(img)), BorderLayout.EAST);
             }
         } catch (Exception ignored) {}
 
@@ -68,7 +82,7 @@ public class RelatorioView extends JFrame {
     }
 
     private JPanel criarCorpo() {
-        JPanel corpo = new JPanel(new BorderLayout(0, 0));
+        JPanel corpo = new JPanel(new BorderLayout());
         corpo.setBackground(COR_FUNDO);
 
         JPanel painelBotoes = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
@@ -80,7 +94,7 @@ public class RelatorioView extends JFrame {
         lblMenu.setFont(new Font("Segoe UI", Font.PLAIN, 13));
         lblMenu.setForeground(new Color(50, 50, 80));
 
-        JButton btnInicio      = criarBotao("Inicio", Color.BLACK);
+        JButton btnInicio      = criarBotao("Inicio", COR_BOTAO);
         JButton btnUsuarios    = criarBotao("Usuarios do Sistema", COR_BOTAO);
         JButton btnConsolidado = criarBotao("Relatorio Consolidado", COR_BOTAO);
 
@@ -88,16 +102,12 @@ public class RelatorioView extends JFrame {
             mostrarPaginaInicial();
             destacarBotao(btnInicio, btnUsuarios, btnConsolidado);
         });
-
         btnUsuarios.addActionListener(e -> {
-            areaTexto.setText(controller.gerarRelatorioUsuarios());
-            areaTexto.setCaretPosition(0);
+            mostrarRelatorioUsuarios();
             destacarBotao(btnUsuarios, btnInicio, btnConsolidado);
         });
-
         btnConsolidado.addActionListener(e -> {
-            areaTexto.setText(controller.gerarRelatorioConsolidado());
-            areaTexto.setCaretPosition(0);
+            mostrarRelatorioConsolidado();
             destacarBotao(btnConsolidado, btnInicio, btnUsuarios);
         });
 
@@ -106,50 +116,210 @@ public class RelatorioView extends JFrame {
         painelBotoes.add(btnUsuarios);
         painelBotoes.add(btnConsolidado);
 
+        painelConteudo = new JPanel();
+        painelConteudo.setLayout(new BoxLayout(painelConteudo, BoxLayout.Y_AXIS));
+        painelConteudo.setBackground(COR_FUNDO);
+        painelConteudo.setBorder(new EmptyBorder(20, 30, 20, 30));
 
-        areaTexto = new JTextArea();
-        areaTexto.setFont(FONTE_TEXTO);
-        areaTexto.setEditable(false);
-        areaTexto.setBackground(Color.WHITE);
-        areaTexto.setBorder(new EmptyBorder(15, 15, 15, 15));
-        areaTexto.setLineWrap(false);
+        scrollPrincipal = new JScrollPane(painelConteudo);
+        scrollPrincipal.setBorder(null);
+        scrollPrincipal.getVerticalScrollBar().setUnitIncrement(16);
 
         mostrarPaginaInicial();
         destacarBotao(btnInicio, btnUsuarios, btnConsolidado);
 
-        JScrollPane scroll = new JScrollPane(areaTexto);
-        scroll.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 220)));
-        scroll.setHorizontalScrollBarPolicy(
-                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-
         corpo.add(painelBotoes, BorderLayout.NORTH);
-        corpo.add(scroll, BorderLayout.CENTER);
+        corpo.add(scrollPrincipal, BorderLayout.CENTER);
 
         return corpo;
     }
 
+
+
     private void mostrarPaginaInicial() {
-        areaTexto.setText(
+        painelConteudo.removeAll();
 
-                        "---------------------------------------------\n\n" +
+        JPanel painel = new JPanel(new GridBagLayout());
+        painel.setBackground(COR_FUNDO);
+        painel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        painel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+
+        JTextArea txt = new JTextArea();
+        txt.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        txt.setEditable(false);
+        txt.setBackground(COR_FUNDO);
+        txt.setBorder(new EmptyBorder(10, 0, 10, 0));
+        txt.setText(
+                "Selecione um relatorio no menu acima:\n\n" +
                         "  USUARIOS DO SISTEMA\n" +
-                        "  Exibe todos os usuarios cadastrados no\n" +
-                        "  sistema com seus perfis e status.\n" +
-                        "  Inclui um resumo com totais por perfil.\n\n" +
-                        "---------------------------------------------\n\n" +
+                        "  Exibe todos os usuarios cadastrados com perfis e status.\n\n" +
                         "  RELATORIO CONSOLIDADO\n" +
-                        "  Exibe um panorama geral da competicao:\n\n" +
-                        "    - Usuarios do sistema\n" +
-                        "    - Selecoes e jogadores cadastrados\n" +
-                        "    - Partidas (total, finalizadas, agendadas)\n" +
-                        "    - Total de gols da competicao\n" +
-                        "    - Desempenho de cada selecao\n" +
-                        "      (vitorias, empates, derrotas, gols, pontos)\n" +
-                        "    - Ingressos vendidos e arrecadacao total\n\n"
-
+                        "  Exibe panorama geral: usuarios, selecoes, partidas,\n" +
+                        "  desempenho de selecoes e ingressos vendidos."
         );
-        areaTexto.setCaretPosition(0);
+        painel.add(txt);
+        painelConteudo.add(painel);
+        atualizarConteudo();
     }
+
+    private void mostrarRelatorioUsuarios() {
+        painelConteudo.removeAll();
+
+        painelConteudo.add(criarTituloSecao("USUARIOS DO SISTEMA"));
+        painelConteudo.add(Box.createVerticalStrut(10));
+
+        String[] colunas = {"ID", "Nome", "Email", "Login", "Perfil", "Pais", "Status"};
+        List<Usuario> usuarios = controller.getUsuarios();
+        Object[][] dados = new Object[usuarios.size()][7];
+        for (int i = 0; i < usuarios.size(); i++) {
+            Usuario u = usuarios.get(i);
+            dados[i] = new Object[]{
+                    u.getId(), u.getNome(), u.getEmail(),
+                    u.getLogin(), u.getFuncao(), u.getPais(), u.getStatus()
+            };
+        }
+
+        painelConteudo.add(criarPainelTabela(colunas, dados));
+        painelConteudo.add(Box.createVerticalStrut(20));
+
+        painelConteudo.add(criarTituloSecao("RESUMO"));
+        painelConteudo.add(Box.createVerticalStrut(10));
+
+        Map<String, Long> resumo = controller.getResumoUsuarios();
+        String[] colunasResumo = {"Perfil", "Quantidade"};
+        Object[][] dadosResumo = new Object[resumo.size()][2];
+        int i = 0;
+        for (Map.Entry<String, Long> entry : resumo.entrySet()) {
+            dadosResumo[i++] = new Object[]{entry.getKey(), entry.getValue()};
+        }
+        painelConteudo.add(criarPainelTabela(colunasResumo, dadosResumo));
+
+        atualizarConteudo();
+    }
+
+    private void mostrarRelatorioConsolidado() {
+        painelConteudo.removeAll();
+
+        painelConteudo.add(criarTituloSecao("1. USUARIOS DO SISTEMA"));
+        painelConteudo.add(Box.createVerticalStrut(10));
+        Map<String, Long> resumoUsuarios = controller.getResumoUsuarios();
+        String[] colUsuarios = {"Perfil", "Quantidade"};
+        Object[][] dadosUsuarios = new Object[resumoUsuarios.size()][2];
+        int i = 0;
+        for (Map.Entry<String, Long> e : resumoUsuarios.entrySet()) {
+            dadosUsuarios[i++] = new Object[]{e.getKey(), e.getValue()};
+        }
+        painelConteudo.add(criarPainelTabela(colUsuarios, dadosUsuarios));
+        painelConteudo.add(Box.createVerticalStrut(25));
+
+        painelConteudo.add(criarTituloSecao("2. PARTIDAS"));
+        painelConteudo.add(Box.createVerticalStrut(10));
+        Map<String, Integer> resumoPartidas = controller.getResumoPartidas();
+        String[] colPartidas = {"Informacao", "Valor"};
+        Object[][] dadosPartidas = new Object[resumoPartidas.size()][2];
+        int j = 0;
+        for (Map.Entry<String, Integer> e : resumoPartidas.entrySet()) {
+            dadosPartidas[j++] = new Object[]{e.getKey(), e.getValue()};
+        }
+        painelConteudo.add(criarPainelTabela(colPartidas, dadosPartidas));
+        painelConteudo.add(Box.createVerticalStrut(25));
+
+        painelConteudo.add(criarTituloSecao("3. DESEMPENHO DAS SELECOES"));
+        painelConteudo.add(Box.createVerticalStrut(10));
+
+        List<Object[]> desempenho = controller.getDesempenhoSelecoes();
+
+        if (desempenho.isEmpty()) {
+            JLabel lblSemDados = new JLabel("  Nenhuma selecao cadastrada.");
+            lblSemDados.setFont(FONTE_RESUMO);
+            lblSemDados.setAlignmentX(Component.LEFT_ALIGNMENT);
+            painelConteudo.add(lblSemDados);
+        } else {
+            String[] colSelecoes = {"Selecao", "Gols Feitos", "Gols Sofridos"};
+            Object[][] dadosSelecoes = desempenho.toArray(new Object[0][]);
+            painelConteudo.add(criarPainelTabela(colSelecoes, dadosSelecoes));
+        }
+
+        painelConteudo.add(Box.createVerticalStrut(25));
+
+
+        painelConteudo.add(criarTituloSecao("4. INGRESSOS E PUBLICO"));
+        painelConteudo.add(Box.createVerticalStrut(10));
+        Map<String, String> resumoIngressos = controller.getResumoIngressos();
+        String[] colIngressos = {"Informacao", "Valor"};
+        Object[][] dadosIngressos = new Object[resumoIngressos.size()][2];
+        int k = 0;
+        for (Map.Entry<String, String> e : resumoIngressos.entrySet()) {
+            dadosIngressos[k++] = new Object[]{e.getKey(), e.getValue()};
+        }
+        painelConteudo.add(criarPainelTabela(colIngressos, dadosIngressos));
+
+        atualizarConteudo();
+    }
+
+
+    private JLabel criarTituloSecao(String texto) {
+        JLabel lbl = new JLabel(texto);
+        lbl.setFont(new Font("Segoe UI", Font.BOLD, 15));
+        lbl.setForeground(COR_TITULO_GRUPO);
+        lbl.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, COR_TITULO_GRUPO));
+        lbl.setAlignmentX(Component.LEFT_ALIGNMENT);
+        lbl.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
+        return lbl;
+    }
+
+    private JPanel criarPainelTabela(String[] colunas, Object[][] dados) {
+        DefaultTableModel modelo = new DefaultTableModel(dados, colunas) {
+            public boolean isCellEditable(int r, int c) { return false; }
+        };
+
+        JTable tabela = new JTable(modelo);
+        tabela.setFont(FONTE_TABELA);
+        tabela.setRowHeight(30);
+        tabela.setShowGrid(false);
+        tabela.setIntercellSpacing(new Dimension(0, 0));
+        tabela.setSelectionBackground(new Color(200, 220, 255));
+
+        JTableHeader header = tabela.getTableHeader();
+        header.setFont(FONTE_CABECALHO);
+        header.setBackground(COR_HEADER_TAB);
+        header.setForeground(Color.WHITE);
+        header.setPreferredSize(new Dimension(0, 32));
+        header.setBorder(null);
+
+        tabela.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable t, Object v,
+                                                           boolean sel, boolean foc, int row, int col) {
+                Component c = super.getTableCellRendererComponent(t, v, sel, foc, row, col);
+                if (!sel) {
+                    c.setBackground(row % 2 == 0 ? COR_LINHA_PAR : COR_LINHA_IMPAR);
+                }
+                setBorder(new EmptyBorder(0, 10, 0, 10));
+                return c;
+            }
+        });
+
+        JPanel painel = new JPanel(new BorderLayout());
+        painel.setBackground(COR_FUNDO);
+        painel.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 220)));
+        painel.add(header, BorderLayout.NORTH);
+        painel.add(tabela, BorderLayout.CENTER);
+        painel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        painel.setMaximumSize(new Dimension(Integer.MAX_VALUE,
+                header.getPreferredSize().height + dados.length * 30 + 2));
+
+        return painel;
+    }
+
+    private void atualizarConteudo() {
+        painelConteudo.revalidate();
+        painelConteudo.repaint();
+        SwingUtilities.invokeLater(() ->
+                scrollPrincipal.getVerticalScrollBar().setValue(0));
+    }
+
+
 
     private void destacarBotao(JButton ativo, JButton... outros) {
         ativo.setBackground(new Color(20, 70, 130));
@@ -215,4 +385,4 @@ public class RelatorioView extends JFrame {
         });
         return btn;
     }
-}//testando
+}

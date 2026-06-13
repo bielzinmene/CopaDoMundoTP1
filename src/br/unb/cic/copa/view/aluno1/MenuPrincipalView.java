@@ -7,9 +7,8 @@ import br.unb.cic.copa.view.aluno3.GerenciarArbitroView;
 import br.unb.cic.copa.view.aluno3.GerenciarEstadioView;
 import br.unb.cic.copa.view.aluno4.PartidaView;
 import br.unb.cic.copa.view.aluno5.VendaIngressoView;
-import br.unb.cic.copa.view.aluno3.ConsultarEscalaArbitroView;
 import br.unb.cic.copa.model.aluno1.SessaoUsuario;
-import br.unb.cic.copa.view.aluno1.RelatorioView;
+import br.unb.cic.copa.view.aluno4.RegistrarResultadoView;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -89,7 +88,7 @@ public class MenuPrincipalView extends JFrame {
         corpo.setBackground(COR_FUNDO);
         corpo.setBorder(new EmptyBorder(40, 50, 40, 50));
 
-        JPanel grade = new JPanel(new GridLayout(3, 3, 30, 30));
+        JPanel grade = new JPanel(new GridLayout(4, 3, 30, 30));
         grade.setBackground(COR_FUNDO);
         grade.setOpaque(false);
 
@@ -99,6 +98,7 @@ public class MenuPrincipalView extends JFrame {
         JButton btnEstadios   = criarBotao("Gerenciar Estádios", COR_BOTAO, COR_BOTAO_HOVER);
         JButton btnArbitros   = criarBotao("Gerenciar Árbitros", COR_BOTAO, COR_BOTAO_HOVER);
         JButton btnPartidas   = criarBotao("Gerenciar Partidas", COR_BOTAO, COR_BOTAO_HOVER);
+        JButton btnResultados   = criarBotao("Gerenciar Resultados", COR_BOTAO, COR_BOTAO_HOVER);
         JButton btnIngressos  = criarBotao("Gerenciar Ingressos", COR_BOTAO, COR_BOTAO_HOVER);
         JButton btnRelatorios = criarBotao("Relatórios", COR_BOTAO, COR_BOTAO_HOVER);
         JButton btnSair       = criarBotao("Sair / Logout", COR_SAIR, COR_SAIR_HOVER);
@@ -140,6 +140,11 @@ public class MenuPrincipalView extends JFrame {
             new RelatorioView(usuarioLogado).setVisible(true);
             dispose();
         });
+        btnResultados.addActionListener(evt -> {
+            new RegistrarResultadoView().setVisible(true);
+            dispose();
+        });
+
         btnSair.addActionListener(evt -> {
             int confirmacao = JOptionPane.showConfirmDialog(this,
                     "Deseja realmente sair do sistema?",
@@ -160,7 +165,10 @@ public class MenuPrincipalView extends JFrame {
         grade.add(btnPartidas);
         grade.add(btnIngressos);
         grade.add(btnRelatorios);
+        grade.add(btnResultados);
+        grade.add(new JLabel());
         grade.add(btnSair);
+        grade.add(new JLabel());
 
         corpo.add(grade);
         return corpo;
