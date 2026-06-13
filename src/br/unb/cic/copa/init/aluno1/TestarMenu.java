@@ -1,4 +1,4 @@
-package br.unb.cic.copa.testes.aluno1;
+package br.unb.cic.copa.init.aluno1;
 
 import br.unb.cic.copa.model.aluno1.Administrador;
 import br.unb.cic.copa.view.aluno1.MenuPrincipalView;

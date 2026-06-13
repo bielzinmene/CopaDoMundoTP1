@@ -1,4 +1,4 @@
-package br.unb.cic.copa.testes.aluno3;
+package br.unb.cic.copa.init.aluno3;
 
 import br.unb.cic.copa.model.aluno2.Selecao;
 import br.unb.cic.copa.model.aluno3.Estadio;

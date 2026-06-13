@@ -26,6 +26,43 @@
         "posicao": "MEIO_CAMPO",
         "titular": true,
         "status": "ATIVO"
+      },
+      {
+        "nome": "LOok its me",
+        "numeracao": 13,
+        "posicao": "ATACANTE",
+        "titular": true,
+        "status": "ATIVO"
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "nome": "Chile",
+    "grupo": "C",
+    "tecnico": "Young Lee",
+    "jogadores": [
+      {
+        "nome": "Xing Xing",
+        "numeracao": 3,
+        "posicao": "ZAGUEIRO",
+        "titular": true,
+        "status": "ATIVO"
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "nome": "Egito",
+    "grupo": "B",
+    "tecnico": "Lory",
+    "jogadores": [
+      {
+        "nome": "Egipcio",
+        "numeracao": 9,
+        "posicao": "MEIO_CAMPO",
+        "titular": true,
+        "status": "LESIONADO"
       }
     ]
   }

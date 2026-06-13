@@ -1,4 +1,4 @@
-package br.unb.cic.copa.testes.aluno5;
+package br.unb.cic.copa.init.aluno5;
 
 import br.unb.cic.copa.view.aluno5.VendaIngressoView;
 
