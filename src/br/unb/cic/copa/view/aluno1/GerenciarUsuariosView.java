@@ -6,13 +6,13 @@ import br.unb.cic.copa.model.aluno1.exception.*;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.io.IOException;
 import java.util.List;
 
 public class GerenciarUsuariosView extends JFrame {
-
 
     private JTextField txtId;
     private JTextField txtNome;
@@ -33,8 +33,9 @@ public class GerenciarUsuariosView extends JFrame {
     private final Usuario usuarioLogado;
     private final UsuarioController controller = UsuarioController.getInstancia();
 
+
     private static final Color COR_FUNDO     = new Color(245, 245, 250);
-    private static final Color COR_HEADER    = new Color(30, 60, 120);
+    private static final Color COR_HEADER    = Color.BLACK;
     private static final Color COR_SALVAR    = new Color(34, 139, 34);
     private static final Color COR_CANCELAR  = new Color(180, 40, 40);
     private static final Color COR_BUSCA     = new Color(30, 100, 180);
@@ -52,6 +53,12 @@ public class GerenciarUsuariosView extends JFrame {
         getContentPane().setBackground(COR_FUNDO);
         setLayout(new BorderLayout());
 
+
+        try {
+            java.net.URL imgUrl = getClass().getClassLoader().getResource("resources/copa2026.jpg");
+            if (imgUrl != null) setIconImage(new ImageIcon(imgUrl).getImage());
+        } catch (Exception ignored) {}
+
         add(criarHeader(), BorderLayout.NORTH);
         add(criarCorpo(), BorderLayout.CENTER);
         add(criarRodape(), BorderLayout.SOUTH);
@@ -62,12 +69,23 @@ public class GerenciarUsuariosView extends JFrame {
     private JPanel criarHeader() {
         JPanel header = new JPanel(new BorderLayout());
         header.setBackground(COR_HEADER);
-        header.setBorder(new EmptyBorder(15, 20, 15, 20));
+        header.setBorder(new EmptyBorder(10, 20, 10, 20));
 
-        JLabel titulo = new JLabel(" Gestão de Usuários");
+        JLabel titulo = new JLabel("Gestão de Usuários");
         titulo.setFont(FONTE_TITULO);
         titulo.setForeground(Color.WHITE);
         header.add(titulo, BorderLayout.WEST);
+
+
+        try {
+            java.net.URL imgUrl = getClass().getClassLoader().getResource("resources/copa_3.png");
+            if (imgUrl != null) {
+                ImageIcon icone = new ImageIcon(imgUrl);
+                Image img = icone.getImage().getScaledInstance(50, 60, Image.SCALE_SMOOTH);
+                JLabel lblImagem = new JLabel(new ImageIcon(img));
+                header.add(lblImagem, BorderLayout.EAST);
+            }
+        } catch (Exception ignored) {}
 
         return header;
     }
@@ -89,7 +107,6 @@ public class GerenciarUsuariosView extends JFrame {
         return corpo;
     }
 
-
     private JPanel criarFormulario() {
         JPanel principal = new JPanel(new GridLayout(1, 2, 15, 0));
         principal.setBackground(COR_FUNDO);
@@ -104,17 +121,19 @@ public class GerenciarUsuariosView extends JFrame {
         gc.weightx = 0;
         gc.weighty = 0;
 
-        txtId   = criarCampo(200);
-        txtNome = criarCampo(200);
-        txtEmail = criarCampo(200);
-        txtLogin = criarCampo(200);
+        txtId   = criarCampoComPlaceholder("(gerado automaticamente)");
+        txtNome = criarCampoComPlaceholder("Ex: João Silva");
+        txtEmail = criarCampoComPlaceholder("Ex: joao@email.com");
+        txtLogin = criarCampoComPlaceholder("Ex: joao.silva");
         txtSenha = new JPasswordField();
+        txtSenha.setFont(FONTE_CAMPO);
         txtSenha.setPreferredSize(new Dimension(200, 32));
         txtSenha.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(180, 180, 210)),
                 new EmptyBorder(4, 8, 4, 8)));
-        txtCpf  = criarCampo(200);
-        txtPais = criarCampo(200);
+        txtCpf  = criarCampoComPlaceholder("000.000.000-00");
+        txtPais = criarCampoComPlaceholder("Ex: Brasil");
+
         cbFuncao = new JComboBox<>(new String[]{"Administrador", "Organizador", "Operador", "Arbitro"});
         cbFuncao.setPreferredSize(new Dimension(200, 32));
         cbStatus = new JComboBox<>(new String[]{"Ativo", "Inativo"});
@@ -157,25 +176,23 @@ public class GerenciarUsuariosView extends JFrame {
         painel.add(componente, gc);
     }
 
-
     private JPanel criarPainelBusca() {
         JPanel painel = new JPanel(new BorderLayout(5, 5));
         painel.setBackground(COR_FUNDO);
         painel.setBorder(BorderFactory.createTitledBorder("Filtros de Busca"));
 
-        // Usar GridBagLayout para controle de largura
         JPanel filtros = new JPanel(new GridBagLayout());
         filtros.setBackground(COR_FUNDO);
         GridBagConstraints g = new GridBagConstraints();
         g.insets = new Insets(5, 5, 5, 5);
         g.anchor = GridBagConstraints.WEST;
-        g.fill = GridBagConstraints.NONE; // NÃO expandir horizontalmente
+        g.fill = GridBagConstraints.NONE;
 
-        // Linha 1: Nome + campo (largura 150) + Perfil + combo
+        // Linha 1
         g.gridx = 0; g.gridy = 0; g.weightx = 0;
         filtros.add(new JLabel("Nome:"), g);
         g.gridx = 1; g.weightx = 0;
-        txtBusca = criarCampo(150); // largura reduzida
+        txtBusca = criarCampoComPlaceholder("Nome do usuário");
         filtros.add(txtBusca, g);
         g.gridx = 2; g.weightx = 0;
         filtros.add(new JLabel("Perfil:"), g);
@@ -184,11 +201,11 @@ public class GerenciarUsuariosView extends JFrame {
         cbFiltroPerfil.setPreferredSize(new Dimension(150, 30));
         filtros.add(cbFiltroPerfil, g);
 
-        // Linha 2: País + campo (largura 150) + Status + combo
+
         g.gridx = 0; g.gridy = 1; g.weightx = 0;
         filtros.add(new JLabel("País:"), g);
         g.gridx = 1; g.weightx = 0;
-        txtFiltroPais = criarCampo(150); // largura reduzida
+        txtFiltroPais = criarCampoComPlaceholder("País");
         filtros.add(txtFiltroPais, g);
         g.gridx = 2; g.weightx = 0;
         filtros.add(new JLabel("Status:"), g);
@@ -197,7 +214,7 @@ public class GerenciarUsuariosView extends JFrame {
         cbFiltroStatus.setPreferredSize(new Dimension(150, 30));
         filtros.add(cbFiltroStatus, g);
 
-        // Botões
+
         JPanel botoes = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
         JButton btnBuscar = criarBotao("Buscar", COR_BUSCA);
         JButton btnLimparFiltros = criarBotao("Limpar Filtros", COR_BUSCA);
@@ -207,7 +224,7 @@ public class GerenciarUsuariosView extends JFrame {
         painel.add(filtros, BorderLayout.CENTER);
         painel.add(botoes, BorderLayout.SOUTH);
 
-        // Listeners
+
         btnBuscar.addActionListener(e -> aplicarFiltros());
         btnLimparFiltros.addActionListener(e -> {
             txtBusca.setText("");
@@ -228,7 +245,6 @@ public class GerenciarUsuariosView extends JFrame {
         return painel;
     }
 
-
     private JScrollPane criarPainelTabela() {
         configurarTabela();
         JScrollPane scroll = new JScrollPane(tabela);
@@ -247,7 +263,20 @@ public class GerenciarUsuariosView extends JFrame {
         tabela.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 12));
         tabela.getTableHeader().setBackground(COR_HEADER);
         tabela.getTableHeader().setForeground(Color.WHITE);
-        tabela.setSelectionBackground(new Color(200, 220, 255));
+
+
+        tabela.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value,
+                                                           boolean isSelected, boolean hasFocus, int row, int column) {
+                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                if (!isSelected) {
+                    c.setBackground(row % 2 == 0 ? Color.WHITE : new Color(240, 240, 248));
+                }
+                return c;
+            }
+        });
+
         tabela.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent e) {
                 preencherFormulario();
@@ -290,6 +319,26 @@ public class GerenciarUsuariosView extends JFrame {
         return campo;
     }
 
+    private JTextField criarCampoComPlaceholder(String placeholder) {
+        JTextField campo = new JTextField() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                if (getText().isEmpty()) {
+                    g.setColor(new Color(180, 180, 200));
+                    g.setFont(getFont().deriveFont(Font.ITALIC));
+                    g.drawString(placeholder, 8, getHeight() / 2 + getFont().getSize() / 2 - 2);
+                }
+            }
+        };
+        campo.setFont(FONTE_CAMPO);
+        campo.setPreferredSize(new Dimension(200, 32));
+        campo.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(180, 180, 210)),
+                new EmptyBorder(4, 8, 4, 8)));
+        return campo;
+    }
+
     private JButton criarBotao(String texto, Color cor) {
         JButton btn = new JButton(texto);
         btn.setFont(new Font("Segoe UI", Font.BOLD, 13));
@@ -298,6 +347,10 @@ public class GerenciarUsuariosView extends JFrame {
         btn.setFocusPainted(false);
         btn.setBorderPainted(false);
         btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent e) { btn.setBackground(cor.darker()); }
+            public void mouseExited(java.awt.event.MouseEvent e) { btn.setBackground(cor); }
+        });
         return btn;
     }
 
