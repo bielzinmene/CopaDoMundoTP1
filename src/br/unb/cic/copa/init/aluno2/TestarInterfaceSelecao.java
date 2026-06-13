@@ -1,4 +1,4 @@
-package br.unb.cic.copa.testes.aluno2;
+package br.unb.cic.copa.init.aluno2;
 
 import br.unb.cic.copa.view.aluno2.GerenciarSelecaoView;
 import javax.swing.SwingUtilities;

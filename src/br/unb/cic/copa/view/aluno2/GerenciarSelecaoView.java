@@ -7,6 +7,8 @@ import br.unb.cic.copa.view.aluno1.MenuPrincipalView;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import java.awt.Image;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
@@ -21,10 +23,10 @@ public class GerenciarSelecaoView extends JFrame {
     private JTable tabela;
     private DefaultTableModel modeloTabela;
 
-    private final SelecaoController gerenciador = new SelecaoController();
+    private final SelecaoController gerenciador = new SelecaoController(); // controller para acesso à lógica de negócio
 
     private static final Color COR_FUNDO     = new Color(245, 245, 250);
-    private static final Color COR_HEADER    = new Color(30, 60, 120);
+    private static final Color COR_HEADER    = Color.BLACK;
     private static final Color COR_SALVAR    = new Color(34, 139, 34);
     private static final Color COR_CANCELAR  = new Color(180, 40, 40);
     private static final Color COR_BUSCA     = new Color(30, 100, 180);
@@ -41,24 +43,37 @@ public class GerenciarSelecaoView extends JFrame {
         setResizable(false);
         getContentPane().setBackground(COR_FUNDO);
         setLayout(new BorderLayout());
+        try{
+            java.net.URL imgURL = getClass().getClassLoader().getResource("resources/copa2026.jpg");
+            if(imgURL != null) setIconImage(new ImageIcon(imgURL).getImage());
+        }catch (Exception ignored){}
 
         add(criarHeader(), BorderLayout.NORTH);
         add(criarCorpo(), BorderLayout.CENTER);
         add(criarRodape(), BorderLayout.SOUTH);
 
-        carregarTabela("");
+        carregarTabela(""); // carrega todas as seleções ao abrir a tela
         setVisible(true);
     }
 
     private JPanel criarHeader() {
         JPanel header = new JPanel(new BorderLayout());
         header.setBackground(COR_HEADER);
-        header.setBorder(new EmptyBorder(15, 20, 15, 20));
+        header.setBorder(new EmptyBorder(10, 20, 10, 20));
 
-        JLabel titulo = new JLabel("🏆  Gerenciar Seleções");
+        JLabel titulo = new JLabel("Gerenciar Seleções");
         titulo.setFont(FONTE_TITULO);
         titulo.setForeground(Color.WHITE);
         header.add(titulo, BorderLayout.WEST);
+        try{
+            java.net.URL imgURL = getClass().getClassLoader().getResource("resources/copa_3.png");
+            if(imgURL != null){
+                ImageIcon icone = new ImageIcon(imgURL);
+                Image img = icone.getImage().getScaledInstance(50,60,Image.SCALE_SMOOTH);
+                JLabel lblImagem = new JLabel(new ImageIcon((img)));
+                header.add(lblImagem, BorderLayout.EAST);
+            }
+        } catch (Exception ignored) {}
 
         return header;
     }
@@ -112,11 +127,11 @@ public class GerenciarSelecaoView extends JFrame {
         txtBusca = criarCampo();
         JButton btnBuscar = criarBotao("Buscar", COR_BUSCA);
         btnBuscar.setPreferredSize(new Dimension(85, 32));
-        btnBuscar.addActionListener(e -> carregarTabela(txtBusca.getText().trim()));
+        btnBuscar.addActionListener(e -> carregarTabela(txtBusca.getText().trim())); // ao clicar, recarrega com filtro
 
         txtBusca.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent e) {
-                carregarTabela(txtBusca.getText().trim());
+                carregarTabela(txtBusca.getText().trim()); // filtro dinâmico ao digitar
             }
         });
 
@@ -134,9 +149,19 @@ public class GerenciarSelecaoView extends JFrame {
         tabela.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 12));
         tabela.getTableHeader().setBackground(COR_HEADER);
         tabela.getTableHeader().setForeground(Color.WHITE);
+        tabela.setDefaultRenderer(Object.class, new DefaultTableCellRenderer(){
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column){
+                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                if(!isSelected){
+                    c.setBackground(row % 2 == 0 ? Color.WHITE : new Color(240,240,248));
+                }
+                return c;
+            }
+        });
         tabela.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
-                carregarSelecaoSelecionada();
+                carregarSelecaoSelecionada(); // ao selecionar linha, carrega dados no formulário
             }
         });
 
@@ -146,7 +171,7 @@ public class GerenciarSelecaoView extends JFrame {
         // Botão excluir
         JButton btnExcluir = criarBotao("Excluir", COR_CANCELAR);
         btnExcluir.setPreferredSize(new Dimension(110, 32));
-        btnExcluir.addActionListener(e -> excluirSelecao());
+        btnExcluir.addActionListener(e -> excluirSelecao()); // ação de excluir a seleção selecionada
 
         JPanel painelExcluir = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 6));
         painelExcluir.setBackground(COR_FUNDO);
@@ -160,10 +185,10 @@ public class GerenciarSelecaoView extends JFrame {
     }
 
     private void carregarTabela(String filtro) {
-        modeloTabela.setRowCount(0);
-        List<Selecao> todas = gerenciador.listarTodas();
-        for (Selecao s : todas) {
-            if (filtro.isEmpty() || s.getNome().toLowerCase().contains(filtro.toLowerCase())) {
+        modeloTabela.setRowCount(0); // limpa a tabela
+        List<Selecao> todas = gerenciador.listarTodas(); // obtém todas as seleções do controller
+        for (Selecao s : todas) { // percorre a lista
+            if (filtro.isEmpty() || s.getNome().toLowerCase().contains(filtro.toLowerCase())) { // aplica filtro por nome
                 modeloTabela.addRow(new Object[]{
                         s.getId(), s.getNome(), s.getGrupo(), s.getTecnico()
                 });
@@ -174,6 +199,7 @@ public class GerenciarSelecaoView extends JFrame {
     private void carregarSelecaoSelecionada() {
         int linha = tabela.getSelectedRow();
         if (linha >= 0) {
+            // preenche os campos com os dados da linha selecionada (para edição)
             txtId.setText(String.valueOf(modeloTabela.getValueAt(linha, 0)));
             txtNome.setText((String) modeloTabela.getValueAt(linha, 1));
             txtGrupo.setText((String) modeloTabela.getValueAt(linha, 2));
@@ -212,12 +238,12 @@ public class GerenciarSelecaoView extends JFrame {
         JButton btnCancelar = criarBotao("Cancelar", COR_CANCELAR);
         JButton btnSalvarSel   = criarBotao("Salvar", COR_SALVAR);
 
-        btnCancelar.addActionListener(e -> {
-            new MenuPrincipalView().setVisible(true);
-            dispose();
+        btnCancelar.addActionListener(e -> { // ação do botão Cancelar
+            new MenuPrincipalView().setVisible(true); // retorna ao menu principal
+            dispose(); // fecha a janela atual
         });
 
-        btnSalvarSel.addActionListener(e -> salvarSelecao());
+        btnSalvarSel.addActionListener(e -> salvarSelecao()); // ação do botão Salvar: chama metodo SalvarSelecao
 
         rodape.add(btnCancelar);
         rodape.add(btnSalvarSel);
@@ -237,22 +263,21 @@ public class GerenciarSelecaoView extends JFrame {
     }
 
     private void excluirSelecao() {
-        int linha = tabela.getSelectedRow();
+        int linha = tabela.getSelectedRow(); // linha selecionada na tabela
         if (linha < 0) {
             JOptionPane.showMessageDialog(this, "Selecione uma seleção na tabela para excluir.", "Aviso", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        int id = (int) modeloTabela.getValueAt(linha, 0);
         String nome = (String) modeloTabela.getValueAt(linha, 1);
         int confirmacao = JOptionPane.showConfirmDialog(this,
                 "Deseja excluir a seleção '" + nome + "' e todos os seus jogadores?", "Confirmar exclusão", JOptionPane.YES_NO_OPTION);
-        if (confirmacao == JOptionPane.YES_OPTION) {
+        if (confirmacao == JOptionPane.YES_OPTION) { // usuário confirmou exclusão
             try {
-                gerenciador.removerSelecao(nome);
+                gerenciador.removerSelecao(nome); // chama controller para remover seleção (e desassociar jogadores)
                 JOptionPane.showMessageDialog(this, "Seleção excluída com sucesso!");
-                carregarTabela(txtBusca.getText().trim());
-                limparFormulario();
-            } catch (CopaException e) {
+                carregarTabela(txtBusca.getText().trim()); // recarrega a tabela
+                limparFormulario(); // limpa os campos do formulário
+            } catch (CopaException e) { // captura exceção de regra de negócio
                 JOptionPane.showMessageDialog(this, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
             }
         }
@@ -265,30 +290,30 @@ public class GerenciarSelecaoView extends JFrame {
             String grupo = txtGrupo.getText().trim();
             String tecnico = txtTecnico.getText().trim();
 
-            if (nome.isEmpty() || grupo.isEmpty() || tecnico.isEmpty()) {
+            if (nome.isEmpty() || grupo.isEmpty() || tecnico.isEmpty()) { // valida campos obrigatórios
                 JOptionPane.showMessageDialog(this, "Todos os campos são obrigatórios.", "Aviso", JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
             if (idStr.isEmpty()) {
-                // Novo
+                // Nova seleção
                 Selecao nova = new Selecao(nome, grupo, tecnico);
-                gerenciador.adicionarSelecao(nova);
+                gerenciador.adicionarSelecao(nova); // chama controller para adicionar
                 JOptionPane.showMessageDialog(this, "Seleção criada com sucesso!");
             } else {
-                // Edição – obtém o nome antigo da linha selecionada antes de alterar os campos
+                //edição – pega o nome antigo da linha selecionada antes de alterar os campos
                 int linha = tabela.getSelectedRow();
                 if (linha < 0) {
                     JOptionPane.showMessageDialog(this, "Selecione a seleção na tabela para editar.", "Aviso", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
                 String nomeAntigo = (String) modeloTabela.getValueAt(linha, 1);
-                gerenciador.editarSelecao(nomeAntigo, nome, grupo, tecnico);
+                gerenciador.editarSelecao(nomeAntigo, nome, grupo, tecnico); // chama controller para editar
                 JOptionPane.showMessageDialog(this, "Seleção atualizada com sucesso!");
             }
-            carregarTabela("");
-            limparFormulario();
-        } catch (CopaException | IllegalArgumentException e) {
+            carregarTabela(""); // recarrega a tabela (limpa filtro)
+            limparFormulario(); // limpa o formulário
+        } catch (CopaException | IllegalArgumentException e) { // captura exceções de regras de negócio
             JOptionPane.showMessageDialog(this, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -298,6 +323,6 @@ public class GerenciarSelecaoView extends JFrame {
         txtNome.setText("");
         txtGrupo.setText("");
         txtTecnico.setText("");
-        tabela.clearSelection();
+        tabela.clearSelection(); // remove a seleção da tabela
     }
 }

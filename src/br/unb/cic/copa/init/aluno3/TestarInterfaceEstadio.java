@@ -1,4 +1,4 @@
-package br.unb.cic.copa.testes.aluno3;
+package br.unb.cic.copa.init.aluno3;
 
 import br.unb.cic.copa.view.aluno3.GerenciarEstadioView;
 import javax.swing.SwingUtilities;
