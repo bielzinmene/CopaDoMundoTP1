@@ -57,6 +57,7 @@ public class Estadio implements Serializable {
     public int getCapacidade() {
         return capacidade;
     }
+
     //checa se a capacidade informada é válida
     public void setCapacidade(int capacidade) throws CapacidadeInvalidaException {
         if (capacidade <= 0) {

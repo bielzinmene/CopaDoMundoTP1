@@ -18,18 +18,22 @@ import java.util.List;
 
 public class GerenciarEstadioView extends JFrame {
 
+    //campos do formulário de cadastro de estádio
     private JTextField txtNome;
     private JTextField txtCapacidade;
     private JTextField txtCidade;
     private JTextField txtEstado;
     private JTextField txtEndereco;
-    private JComboBox<PaisSede> comboPais;
+    private JComboBox<PaisSede> comboPais; //lista suspensa com os países sede
+    //campo de busca e tabela de estádios já cadastrados
     private JTextField txtBusca;
     private JTable tabela;
     private DefaultTableModel modeloTabela;
 
+    //controller que faz a ponte com os dados dos estádios
     private final EstadioController controller = new EstadioController();
 
+    //cores e fontes usadas na tela
     private static final Color COR_FUNDO     = new Color(245, 245, 250);
     private static final Color COR_HEADER    = Color.BLACK;
     private static final Color COR_SALVAR    = new Color(34, 139, 34);
@@ -40,16 +44,18 @@ public class GerenciarEstadioView extends JFrame {
     private static final Font  FONTE_CAMPO   = new Font("Segoe UI", Font.PLAIN, 13);
     private static final Font  FONTE_TITULO  = new Font("Segoe UI", Font.BOLD, 16);
 
+    //construtor: configura a janela e monta as 3 partes da tela
     public GerenciarEstadioView() {
         setTitle("Gerenciar Estádio - Copa do Mundo 2026");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(600, 750);
         setLocationRelativeTo(null);
-        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setExtendedState(JFrame.MAXIMIZED_BOTH); //abre maximizada
         setResizable(true);
         getContentPane().setBackground(COR_FUNDO);
         setLayout(new BorderLayout());
 
+        //tenta colocar o ícone da janela
         try {
             java.net.URL imgUrl = getClass().getClassLoader().getResource("resources/copa2026.jpg");
             if (imgUrl != null) setIconImage(new ImageIcon(imgUrl).getImage());
@@ -59,10 +65,12 @@ public class GerenciarEstadioView extends JFrame {
         add(criarCorpo(), BorderLayout.CENTER);
         add(criarRodape(), BorderLayout.SOUTH);
 
+        //já carrega a tabela com todos os estádios ao abrir a tela
         carregarTabela("");
         setVisible(true);
     }
 
+    //monta o cabeçalho preto com título e imagem
     private JPanel criarHeader() {
         JPanel header = new JPanel(new BorderLayout());
         header.setBackground(COR_HEADER);
@@ -73,6 +81,7 @@ public class GerenciarEstadioView extends JFrame {
         titulo.setForeground(Color.WHITE);
         header.add(titulo, BorderLayout.WEST);
 
+        //tenta carregar e redimensionar a imagem do header
         try {
             java.net.URL imgUrl = getClass().getClassLoader().getResource("resources/copa_3.png");
             if (imgUrl != null) {
@@ -86,6 +95,7 @@ public class GerenciarEstadioView extends JFrame {
         return header;
     }
 
+    //monta o corpo: formulário em cima, painel de busca/tabela embaixo
     private JPanel criarCorpo() {
         JPanel corpo = new JPanel(new BorderLayout(0, 10));
         corpo.setBackground(COR_FUNDO);
@@ -97,6 +107,7 @@ public class GerenciarEstadioView extends JFrame {
         return corpo;
     }
 
+    //monta o formulário de cadastro com os campos do estádio
     private JPanel criarFormulario() {
         JPanel painel = new JPanel(new GridBagLayout());
         painel.setBackground(COR_FUNDO);
@@ -105,20 +116,24 @@ public class GerenciarEstadioView extends JFrame {
         gc.insets = new Insets(6, 5, 6, 5);
         gc.anchor = GridBagConstraints.WEST;
 
+        //cria os campos de texto e o combo de país
         txtNome       = criarCampo();
         txtCapacidade = criarCampo();
         txtCidade     = criarCampo();
         txtEstado     = criarCampo();
         txtEndereco   = criarCampo();
-        comboPais     = new JComboBox<>(PaisSede.values());
+        comboPais     = new JComboBox<>(PaisSede.values()); //preenche o combo com todos os valores do enum PaisSede
         comboPais.setFont(FONTE_CAMPO);
         comboPais.setPreferredSize(new Dimension(250, 32));
 
+        //adiciona os campos básicos (nome e capacidade)
         adicionarLinha(painel, gc, 0, "Nome:",       txtNome);
         adicionarLinha(painel, gc, 1, "Capacidade:", txtCapacidade);
 
+        //título separando a seção "Localização" do restante do formulário
         adicionarSeparador(painel, gc, 2, "Localização");
 
+        //adiciona os campos de localização
         adicionarLinha(painel, gc, 3, "Cidade:",     txtCidade);
         adicionarLinha(painel, gc, 4, "Estado:",     txtEstado);
         adicionarLinhaCombo(painel, gc, 5, "País Sede:", comboPais);
@@ -127,6 +142,7 @@ public class GerenciarEstadioView extends JFrame {
         return painel;
     }
 
+    //monta o painel com busca, tabela de estádios e botão excluir
     private JPanel criarPainelBusca() {
         JPanel painel = new JPanel(new BorderLayout(0, 8));
         painel.setBackground(COR_FUNDO);
@@ -144,7 +160,7 @@ public class GerenciarEstadioView extends JFrame {
         btnBuscar.setPreferredSize(new Dimension(85, 32));
         btnBuscar.addActionListener(e -> carregarTabela(txtBusca.getText().trim()));
 
-        // Busca em tempo real ao digitar
+        // Busca em tempo real ao digitar (sem precisar clicar no botão)
         txtBusca.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent e) {
                 carregarTabela(txtBusca.getText().trim());
@@ -155,7 +171,7 @@ public class GerenciarEstadioView extends JFrame {
         linhaBusca.add(txtBusca, BorderLayout.CENTER);
         linhaBusca.add(btnBuscar, BorderLayout.EAST);
 
-        // Tabela de resultados
+        // Tabela de resultados com as colunas que vão aparecer
         modeloTabela = new DefaultTableModel(new String[]{"ID", "Nome", "Capacidade", "Cidade", "País"}, 0) {
             public boolean isCellEditable(int row, int col) { return false; }
         };
@@ -165,6 +181,8 @@ public class GerenciarEstadioView extends JFrame {
         tabela.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 12));
         tabela.getTableHeader().setBackground(COR_HEADER);
         tabela.getTableHeader().setForeground(Color.WHITE);
+
+        //zebra striping: alterna cor de fundo das linhas pra facilitar leitura
         tabela.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
@@ -195,11 +213,13 @@ public class GerenciarEstadioView extends JFrame {
         return painel;
     }
 
+    //busca todos os estádios e preenche a tabela, filtrando pelo nome se houver filtro
     private void carregarTabela(String filtro) {
-        modeloTabela.setRowCount(0);
+        modeloTabela.setRowCount(0); //limpa a tabela antes de preencher
         try {
             List<Estadio> lista = controller.listarTodos();
             for (Estadio e : lista) {
+                //se o filtro estiver vazio mostra todos, senão só os que contém o texto digitado
                 if (filtro.isEmpty() || e.getNome().toLowerCase().contains(filtro.toLowerCase())) {
                     modeloTabela.addRow(new Object[]{
                             e.getId(), e.getNome(), e.getCapacidade(),
@@ -212,6 +232,7 @@ public class GerenciarEstadioView extends JFrame {
         }
     }
 
+    //metodo auxiliar pra adicionar um label + campo de texto numa linha do formulário (GridBagLayout)
     private void adicionarLinha(JPanel painel, GridBagConstraints gc, int linha, String labelTxt, JTextField campo) {
         JLabel label = new JLabel(labelTxt);
         label.setFont(FONTE_LABEL);
@@ -224,6 +245,7 @@ public class GerenciarEstadioView extends JFrame {
         painel.add(campo, gc);
     }
 
+    //mesma ideia do anterior, mas pra adicionar um label + combo (usado no campo "País Sede")
     private void adicionarLinhaCombo(JPanel painel, GridBagConstraints gc, int linha, String labelTxt, JComboBox<?> combo) {
         JLabel label = new JLabel(labelTxt);
         label.setFont(FONTE_LABEL);
@@ -236,21 +258,25 @@ public class GerenciarEstadioView extends JFrame {
         painel.add(combo, gc);
     }
 
+    //adiciona um título com uma linha embaixo, separando visualmente as seções do formulário
     private void adicionarSeparador(JPanel painel, GridBagConstraints gc, int linha, String titulo) {
         JLabel sep = new JLabel(titulo);
         sep.setFont(new Font("Segoe UI", Font.BOLD, 12));
         sep.setForeground(COR_HEADER);
-        sep.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, COR_HEADER));
+        sep.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, COR_HEADER)); //linha embaixo do texto
 
+        //ocupa as duas colunas do formulário (gridwidth = 2)
         gc.gridx = 0; gc.gridy = linha; gc.gridwidth = 2;
         gc.fill = GridBagConstraints.HORIZONTAL;
         gc.insets = new Insets(12, 5, 4, 5);
         painel.add(sep, gc);
 
+        //volta as configurações ao normal pra não afetar as próximas linhas do formulário
         gc.gridwidth = 1;
         gc.insets = new Insets(6, 5, 6, 5);
     }
 
+    //cria um campo de texto com o visual padrão da tela
     private JTextField criarCampo() {
         JTextField campo = new JTextField();
         campo.setFont(FONTE_CAMPO);
@@ -262,6 +288,7 @@ public class GerenciarEstadioView extends JFrame {
         return campo;
     }
 
+    //monta o rodapé com os botões cancelar e salvar
     private JPanel criarRodape() {
         JPanel rodape = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 12));
         rodape.setBackground(COR_FUNDO);
@@ -270,11 +297,13 @@ public class GerenciarEstadioView extends JFrame {
         JButton btnCancelar = criarBotao("Cancelar", COR_CANCELAR);
         JButton btnSalvar   = criarBotao("Salvar", COR_SALVAR);
 
+        //cancelar fecha essa tela e volta pro menu principal
         btnCancelar.addActionListener(e -> {
             dispose();
             new MenuPrincipalView(SessaoUsuario.getInstancia().getUsuarioLogado()).setVisible(true);
         });
 
+        //salvar dispara a validação e o cadastro do estádio
         btnSalvar.addActionListener(e -> salvarEstadio());
 
         rodape.add(btnCancelar);
@@ -282,6 +311,7 @@ public class GerenciarEstadioView extends JFrame {
         return rodape;
     }
 
+    //metodo auxiliar pra criar botões com a mesma aparência e efeito hover
     private JButton criarBotao(String texto, Color cor) {
         JButton btn = new JButton(texto);
         btn.setFont(new Font("Segoe UI", Font.BOLD, 13));
@@ -291,6 +321,7 @@ public class GerenciarEstadioView extends JFrame {
         btn.setBorderPainted(false);
         btn.setPreferredSize(new Dimension(110, 36));
         btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        //escurece o botão ao passar o mouse e volta ao normal ao sair
         btn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent e) { btn.setBackground(cor.darker()); }
             public void mouseExited(java.awt.event.MouseEvent e) { btn.setBackground(cor); }
@@ -298,20 +329,25 @@ public class GerenciarEstadioView extends JFrame {
         return btn;
     }
 
+    //ação do botão "Excluir": remove o estádio selecionado na tabela
     private void excluirEstadio() {
         int linha = tabela.getSelectedRow();
+        //se nada estiver selecionado, avisa e não faz nada
         if (linha < 0) {
             JOptionPane.showMessageDialog(this, "Selecione um estádio na tabela para excluir.", "Aviso", JOptionPane.WARNING_MESSAGE);
             return;
         }
+        //pega o id e o nome da linha selecionada
         int id = (int) modeloTabela.getValueAt(linha, 0);
         String nome = (String) modeloTabela.getValueAt(linha, 1);
+        //pede confirmação antes de excluir
         int confirmacao = JOptionPane.showConfirmDialog(this,
                 "Deseja excluir o estádio '" + nome + "'?", "Confirmar exclusão", JOptionPane.YES_NO_OPTION);
         if (confirmacao == JOptionPane.YES_OPTION) {
             try {
                 controller.excluir(id);
                 JOptionPane.showMessageDialog(this, "Estádio excluído com sucesso!");
+                //atualiza a tabela mantendo o filtro de busca atual
                 carregarTabela(txtBusca.getText().trim());
             } catch (IOException e) {
                 JOptionPane.showMessageDialog(this, "Erro ao excluir: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
@@ -319,8 +355,10 @@ public class GerenciarEstadioView extends JFrame {
         }
     }
 
+    //ação do botão "Salvar": valida os campos e cadastra o estádio
     private void salvarEstadio() {
         try {
+            //pega o texto digitado em cada campo e o país escolhido no combo
             String nome = txtNome.getText().trim();
             int capacidade = Integer.parseInt(txtCapacidade.getText().trim());
             String cidade = txtCidade.getText().trim();
@@ -328,20 +366,25 @@ public class GerenciarEstadioView extends JFrame {
             PaisSede pais = (PaisSede) comboPais.getSelectedItem();
             String endereco = txtEndereco.getText().trim();
 
+            //valida campos obrigatórios
             if (nome.isEmpty() || cidade.isEmpty() || estado.isEmpty() || endereco.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Todos os campos são obrigatórios.", "Aviso", JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
+            // ID gerado automaticamente pelo controller
             controller.cadastrar(nome, capacidade, cidade, estado, pais, endereco);
 
             JOptionPane.showMessageDialog(this, "Estádio salvo com sucesso!");
+            //recarrega a tabela já mostrando o novo estádio e limpa a busca
             carregarTabela("");
             txtBusca.setText("");
 
         } catch (NumberFormatException e) {
+            //cai aqui se o campo de capacidade não tiver um número válido
             JOptionPane.showMessageDialog(this, "Capacidade deve ser um número inteiro.", "Erro", JOptionPane.ERROR_MESSAGE);
         } catch (CapacidadeInvalidaException e) {
+            //cai aqui se a capacidade for zero ou negativa (regra de negócio do model Estadio)
             JOptionPane.showMessageDialog(this, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "Erro ao salvar: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
