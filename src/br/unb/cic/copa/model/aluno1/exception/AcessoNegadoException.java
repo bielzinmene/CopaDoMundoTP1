@@ -7,3 +7,4 @@ public class AcessoNegadoException extends CopaException {
         super("Acesso negado! Você não tem permissão para realizar esta operação.");
     }
 }
+//testando

@@ -6,4 +6,4 @@ public class EmailInvalidoException extends CopaException {
     public EmailInvalidoException() {
         super("Email inválido! Informe um email no formato correto. Ex: usuario@email.com");
     }
-}
+}//testando

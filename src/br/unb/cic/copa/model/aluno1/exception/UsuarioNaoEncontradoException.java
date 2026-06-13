@@ -6,4 +6,4 @@ public class UsuarioNaoEncontradoException extends CopaException {
     public UsuarioNaoEncontradoException() {
         super("Usuário não encontrado!");
     }
-}
+}//testando

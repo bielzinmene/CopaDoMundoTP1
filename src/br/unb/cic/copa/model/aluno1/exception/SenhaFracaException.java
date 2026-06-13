@@ -6,4 +6,4 @@ public class SenhaFracaException extends CopaException {
     public SenhaFracaException() {
         super("Senha fraca! A senha deve ter no mínimo 8 caracteres, letras e números.");
     }
-}
+}//testando

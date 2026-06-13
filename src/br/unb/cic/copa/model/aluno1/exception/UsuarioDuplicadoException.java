@@ -6,4 +6,4 @@ public class UsuarioDuplicadoException extends CopaException {
     public UsuarioDuplicadoException() {
         super("Já existe um usuário cadastrado com estes dados!");
     }
-}
+}//testando
