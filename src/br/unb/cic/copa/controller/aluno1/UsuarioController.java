@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+//testando
+
 public class UsuarioController {
 
     private static UsuarioController instancia;
@@ -39,9 +41,6 @@ public class UsuarioController {
         return instancia;
     }
 
-    // =====================================================
-    // VALIDAÇÕES
-    // =====================================================
 
     private void validarSenha(String senha) throws SenhaFracaException {
         if (senha == null || senha.length() < 8) throw new SenhaFracaException();
@@ -67,7 +66,7 @@ public class UsuarioController {
             throw new CpfInvalidoException();
     }
 
-    // Verifica email duplicado — ignorando o próprio usuário se for edição
+
     private void verificarEmailDuplicado(String email, int idIgnorar)
             throws UsuarioDuplicadoException {
         for (Usuario u : usuarios) {
@@ -77,7 +76,7 @@ public class UsuarioController {
         }
     }
 
-    // Verifica login duplicado — ignorando o próprio usuário se for edição
+
     private void verificarLoginDuplicado(String login, int idIgnorar)
             throws UsuarioDuplicadoException {
         for (Usuario u : usuarios) {
@@ -87,7 +86,7 @@ public class UsuarioController {
         }
     }
 
-    // Verifica CPF duplicado — ignorando o próprio usuário se for edição
+
     private void verificarCpfDuplicado(String cpf, int idIgnorar)
             throws UsuarioDuplicadoException {
         for (Usuario u : usuarios) {
@@ -103,28 +102,21 @@ public class UsuarioController {
         }
     }
 
-    // =====================================================
-    // OPERAÇÕES
-    // =====================================================
 
     public void cadastrarUsuario(Usuario solicitante, Usuario novoUsuario)
             throws AcessoNegadoException, SenhaFracaException, EmailInvalidoException,
             CpfInvalidoException, UsuarioDuplicadoException, IOException {
 
-        // 1. Verifica permissão
         verificarPermissao(solicitante);
 
-        // 2. Valida dados
         validarEmail(novoUsuario.getEmail());
         validarCpf(novoUsuario.getCpf());
         validarSenha(novoUsuario.getSenha());
 
-        // 3. Verifica duplicatas — passa -1 como idIgnorar pois é cadastro novo
         verificarEmailDuplicado(novoUsuario.getEmail(), -1);
         verificarLoginDuplicado(novoUsuario.getLogin(), -1);
         verificarCpfDuplicado(novoUsuario.getCpf(), -1);
 
-        // 4. Salva
         novoUsuario.setId(gerarNovoId());
         repository.salvar(novoUsuario);
         usuarios = repository.listarTodos();
@@ -135,10 +127,8 @@ public class UsuarioController {
             CpfInvalidoException, UsuarioNaoEncontradoException, UsuarioDuplicadoException,
             IOException {
 
-        // 1. Verifica permissão
         verificarPermissao(solicitante);
 
-        // 2. Verifica se existe
         boolean encontrado = false;
         for (Usuario u : usuarios) {
             if (u.getId() == usuarioEditado.getId()) {
@@ -148,17 +138,14 @@ public class UsuarioController {
         }
         if (!encontrado) throw new UsuarioNaoEncontradoException();
 
-        // 3. Valida dados
         validarEmail(usuarioEditado.getEmail());
         validarCpf(usuarioEditado.getCpf());
         validarSenha(usuarioEditado.getSenha());
 
-        // 4. Verifica duplicatas — ignora o próprio usuário sendo editado
         verificarEmailDuplicado(usuarioEditado.getEmail(), usuarioEditado.getId());
         verificarLoginDuplicado(usuarioEditado.getLogin(), usuarioEditado.getId());
         verificarCpfDuplicado(usuarioEditado.getCpf(), usuarioEditado.getId());
 
-        // 5. Salva
         repository.salvar(usuarioEditado);
         usuarios = repository.listarTodos();
     }
