@@ -70,9 +70,19 @@ public class Arbitro extends Usuario implements Serializable {
     }
 
     // arbitro não pode apitar partida envolvendo sua própria seleção
+// Verifica se o árbitro pode apitar essa partida (true = pode, false = mesma nacionalidade de alguma seleção)
     public boolean validarNacionalidade(Partida partida) {
-        return !this.nacionalidade.equalsIgnoreCase(partida.getSelecao1().getNome())
-                && !this.nacionalidade.equalsIgnoreCase(partida.getSelecao2().getNome());
+        String nacionalidadeNormalizada = normalizar(this.nacionalidade);
+        return !nacionalidadeNormalizada.equals(normalizar(partida.getSelecao1().getNome()))
+                && !nacionalidadeNormalizada.equals(normalizar(partida.getSelecao2().getNome()));
+    }
+
+    // Remove acentos e diferenças de maiúsculas/minúsculas pra comparar nomes de país
+    private String normalizar(String texto) {
+        if (texto == null) return "";
+        String semAcento = java.text.Normalizer.normalize(texto.trim(), java.text.Normalizer.Form.NFD)
+                .replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
+        return semAcento.toLowerCase();
     }
 
     // Designa o árbitro para a partida apenas se passar na validação de nacionalidade
