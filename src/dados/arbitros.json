@@ -1,27 +1,3 @@
 [
-  {
-    "nacionalidade": "Italia",
-    "experiencia": 3,
-    "id": 1,
-    "nome": "ana",
-    "email": "ana@gmail.com",
-    "login": "ana",
-    "senha": "ana12345",
-    "cpf": "323.342.467-90",
-    "pais": "Italia"
-  },
-  {
-    "nacionalidade": "Brasil",
-    "experiencia": 9,
-    "partidasDesignadas": [],
-    "id": 2,
-    "nome": "Abbat Abel",
-    "email": "abel@gmail.com",
-    "login": "abbat",
-    "senha": "abbat123",
-    "cpf": "348.876.245-98",
-    "pais": "Brasil",
-    "funcao": "Arbitro",
-    "status": "Ativo"
-  }
+
 ]

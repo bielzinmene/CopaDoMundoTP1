@@ -9,8 +9,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-//testando
-
 public class UsuarioRepository implements Repositorio<Usuario> {
 
     private final String caminhoArquivo;
