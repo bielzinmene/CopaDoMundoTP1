@@ -1,2 +1,35 @@
 [
+  {
+    "id": 0,
+    "nome": "Admin",
+    "email": "admin@copa.com",
+    "login": "admin",
+    "senha": "Admin123",
+    "cpf": "000.000.000-00",
+    "pais": "Brasil",
+    "funcao": "Administrador",
+    "status": "Ativo"
+  },
+  {
+    "id": 1,
+    "nome": "joao",
+    "email": "joao@gmail.com",
+    "login": "joao.silva",
+    "senha": "Joaoo123",
+    "cpf": "567.098.456-90",
+    "pais": "Brasil",
+    "funcao": "Arbitro",
+    "status": "Ativo"
+  },
+  {
+    "id": 2,
+    "nome": "joao",
+    "email": "joaoo@gmail.com",
+    "login": "joao.silvaa",
+    "senha": "Teste123",
+    "cpf": "567.098.456-91",
+    "pais": "Brasil",
+    "funcao": "Administrador",
+    "status": "Ativo"
+  }
 ]
