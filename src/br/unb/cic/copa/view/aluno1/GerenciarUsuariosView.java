@@ -4,14 +4,12 @@ import br.unb.cic.copa.controller.aluno1.UsuarioController;
 import br.unb.cic.copa.model.aluno1.*;
 import br.unb.cic.copa.model.aluno1.exception.*;
 
-//testando
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.io.IOException;
 import java.util.List;
 
 public class GerenciarUsuariosView extends JFrame {
@@ -190,7 +188,7 @@ public class GerenciarUsuariosView extends JFrame {
         g.anchor = GridBagConstraints.WEST;
         g.fill = GridBagConstraints.NONE;
 
-        // Linha 1
+
         g.gridx = 0; g.gridy = 0; g.weightx = 0;
         filtros.add(new JLabel("Nome:"), g);
         g.gridx = 1; g.weightx = 0;

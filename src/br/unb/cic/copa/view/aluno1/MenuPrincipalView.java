@@ -236,4 +236,4 @@ public class MenuPrincipalView extends JFrame {
         rodape.add(lblInfo);
         return rodape;
     }
-}//testando
+}

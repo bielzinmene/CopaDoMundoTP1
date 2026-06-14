@@ -1,13 +1,2 @@
 [
-  {
-    "id": 1,
-    "nome": "Admin",
-    "email": "admin@copa.com",
-    "login": "admin",
-    "senha": "Admin123",
-    "cpf": "000.000.000-00",
-    "pais": "Brasil",
-    "funcao": "Administrador",
-    "status": "Ativo"
-  }
 ]

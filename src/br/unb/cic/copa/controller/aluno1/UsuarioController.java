@@ -8,8 +8,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-//testando
-
 public class UsuarioController {
 
     private static UsuarioController instancia;
@@ -41,6 +39,13 @@ public class UsuarioController {
         return instancia;
     }
 
+    public void recarregarUsuarios() {
+        try {
+            usuarios = repository.listarTodos();
+        } catch (IOException e) {
+            System.out.println("Erro ao recarregar usuários: " + e.getMessage());
+        }
+    }
 
     private void validarSenha(String senha) throws SenhaFracaException {
         if (senha == null || senha.length() < 8) throw new SenhaFracaException();
@@ -198,20 +203,6 @@ public class UsuarioController {
         return resultado;
     }
 
-    public String gerarRelatorioUsuarios() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("=== RELATÓRIO DE USUÁRIOS ===\n\n");
-        sb.append(String.format("%-5s %-20s %-30s %-15s %-10s\n",
-                "ID", "Nome", "Email", "Função", "Status"));
-        sb.append("-".repeat(80)).append("\n");
-        for (Usuario u : usuarios) {
-            sb.append(String.format("%-5d %-20s %-30s %-15s %-10s\n",
-                    u.getId(), u.getNome(), u.getEmail(),
-                    u.getFuncao(), u.getStatus()));
-        }
-        sb.append("\nTotal de usuários: ").append(usuarios.size());
-        return sb.toString();
-    }
 
     private int gerarNovoId() {
         int maior = 0;

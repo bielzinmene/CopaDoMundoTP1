@@ -31,7 +31,7 @@ public class LoginView extends JFrame {
         getContentPane().setBackground(COR_FUNDO);
         setLayout(new BorderLayout());
 
-        // Ícone
+
         try {
             java.net.URL imgUrl = getClass().getClassLoader().getResource("resources/copa2026.jpg");
             if (imgUrl != null) setIconImage(new ImageIcon(imgUrl).getImage());
@@ -78,7 +78,7 @@ public class LoginView extends JFrame {
         gc.anchor = GridBagConstraints.WEST;
         gc.fill = GridBagConstraints.NONE;
 
-        // Login
+
         JLabel lblLogin = new JLabel("Login:");
         lblLogin.setFont(FONTE_LABEL);
         lblLogin.setForeground(new Color(50, 50, 80));
@@ -95,7 +95,7 @@ public class LoginView extends JFrame {
         gc.gridx = 1;
         formulario.add(txtLogin, gc);
 
-        // Senha
+
         JLabel lblSenha = new JLabel("Senha:");
         lblSenha.setFont(FONTE_LABEL);
         lblSenha.setForeground(new Color(50, 50, 80));
@@ -183,4 +183,4 @@ public class LoginView extends JFrame {
         });
         return btn;
     }
-}//testando
+}
