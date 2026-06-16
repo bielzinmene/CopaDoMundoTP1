@@ -20,7 +20,7 @@ public class UsuarioController {
             usuarios = repository.listarTodos();
             if (usuarios.isEmpty()) {
                 Usuario admin = new Administrador(
-                        1, "Admin", "admin@copa.com",
+                        0, "Admin", "admin@copa.com",
                         "admin", "Admin123", "000.000.000-00", "Brasil"
                 );
                 repository.salvar(admin);

@@ -62,15 +62,18 @@ public class PartidaRepository {
                 String sel2Nome    = p.getSelecao2() != null ? p.getSelecao2().getNome() : "";
                 String estadioNome = p.getEstadio()  != null ? p.getEstadio().getNome()  : "";
                 String fase        = p.getFase()      != null ? p.getFase().name()        : "GRUPOS";
+
                 String json = "  {\n" +
-                        "    \"id\": "             + p.getId()        + ",\n" +
-                        "    \"arbitroId\": "      + p.getArbitroId() + ",\n" +
-                        "    \"fase\": \""         + fase             + "\",\n" +
-                        "    \"status\": \""       + p.getStatus()    + "\",\n" +
-                        "    \"data\": \""         + p.getData()      + "\",\n" +
-                        "    \"selecao1Nome\": \"" + sel1Nome         + "\",\n" +
-                        "    \"selecao2Nome\": \"" + sel2Nome         + "\",\n" +
-                        "    \"estadioNome\": \""  + estadioNome      + "\"\n" +
+                        "    \"id\": "              + p.getId()           + ",\n" +
+                        "    \"arbitroId\": "       + p.getArbitroId()    + ",\n" +
+                        "    \"fase\": \""          + fase                + "\",\n" +
+                        "    \"status\": \""        + p.getStatus()       + "\",\n" +
+                        "    \"data\": \""          + p.getData()         + "\",\n" +
+                        "    \"selecao1Nome\": \""  + sel1Nome            + "\",\n" +
+                        "    \"selecao2Nome\": \""  + sel2Nome            + "\",\n" +
+                        "    \"estadioNome\": \""   + estadioNome         + "\",\n" +
+                        "    \"golsSelecao1\": "    + p.getGolsSelecao1() + ",\n" +
+                        "    \"golsSelecao2\": "    + p.getGolsSelecao2() + "\n"  +
                         "  }";
                 writer.write(json);
                 if (i < partidas.size() - 1) writer.write(",\n");
@@ -82,9 +85,9 @@ public class PartidaRepository {
     }
 
     public List<Partida> listarTodos() {
-            List<Partida> partidas = new ArrayList<>();
-            File file = new File(ARQUIVO);
-            if (!file.exists()) return partidas;
+        List<Partida> partidas = new ArrayList<>();
+        File file = new File(ARQUIVO);
+        if (!file.exists()) return partidas;
 
         try {
             String conteudo = new String(Files.readAllBytes(Paths.get(ARQUIVO))).trim();
@@ -95,7 +98,7 @@ public class PartidaRepository {
 
             for (String obj : objetos) {
                 obj = obj.replace("{", "").replace("}", "").trim();
-                int id = 0, arbitroId = 0;
+                int id = 0, arbitroId = 0, gols1 = 0, gols2 = 0;
                 String fase = "", status = "", data = "", sel1Nome = "", sel2Nome = "", estadioNome = "";
 
                 for (String linha : obj.split(",\\s*\\r?\\n")) {
@@ -115,6 +118,8 @@ public class PartidaRepository {
                         case "selecao1Nome": sel1Nome  = valor; break;
                         case "selecao2Nome": sel2Nome  = valor; break;
                         case "estadioNome":  estadioNome = valor; break;
+                        case "golsSelecao1": gols1     = Integer.parseInt(valor); break;
+                        case "golsSelecao2": gols2     = Integer.parseInt(valor); break;
                     }
                 }
 
@@ -124,10 +129,18 @@ public class PartidaRepository {
                     Localizacao loc = new Localizacao("", "", PaisSede.ESTADOS_UNIDOS, "");
                     Estadio estadio = new Estadio(0, estadioNome, loc, 1);
                     Fase faseEnum = Fase.valueOf(fase);
+
                     Partida p = new Partida(sel1, sel2, data, estadio, faseEnum);
                     p.setId(id);
                     p.setArbitroId(arbitroId);
-                    if ("EM_ANDAMENTO".equals(status)) p.iniciarPartida();
+
+                    if ("EM_ANDAMENTO".equals(status)) {
+                        p.iniciarPartida();
+                    } else if ("FINALIZADA".equals(status)) {
+                        p.iniciarPartida();
+                        p.finalizarPartida(new br.unb.cic.copa.model.aluno4.Resultado(gols1, gols2));
+                    }
+
                     partidas.add(p);
                 } catch (Exception e) {
                     System.out.println("[ERRO ao carregar partida]: " + e.getMessage());

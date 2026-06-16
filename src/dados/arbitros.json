@@ -1,3 +1,16 @@
 [
-
+  {
+    "nacionalidade": "Brasil",
+    "experiencia": 4,
+    "partidasDesignadas": [],
+    "id": 1,
+    "nome": "joao",
+    "email": "joao@gmail.com",
+    "login": "joao.silva",
+    "senha": "Joaoo123",
+    "cpf": "567.098.456-90",
+    "pais": "Brasil",
+    "funcao": "Arbitro",
+    "status": "Ativo"
+  }
 ]
