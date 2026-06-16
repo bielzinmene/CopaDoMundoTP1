@@ -1,4 +1,4 @@
-package br.unb.cic.copa.testes.aluno4;
+package br.unb.cic.copa.init.aluno4;
 
 import br.unb.cic.copa.view.aluno4.PartidaView;
 
