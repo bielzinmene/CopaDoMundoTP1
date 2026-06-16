@@ -70,5 +70,17 @@
     "estadioNome": "Estádio de Toronto",
     "golsSelecao1": 19,
     "golsSelecao2": 0
+  },
+  {
+    "id": 8,
+    "arbitroId": 1,
+    "fase": "GRUPOS",
+    "status": "FINALIZADA",
+    "data": "16/06/2026",
+    "selecao1Nome": "Senegal",
+    "selecao2Nome": "Belgica",
+    "estadioNome": "Estádio Monterrey",
+    "golsSelecao1": 2,
+    "golsSelecao2": 2
   }
 ]
