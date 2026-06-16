@@ -23,14 +23,19 @@ public class Selecao {
         this.jogadores = new ArrayList<>();
     }
 
-    // Construtor vazio para uso do JSON
+    // Construtor vazio para uso do GSON
     public Selecao() {
         this.jogadores = new ArrayList<>();
     }
 
-    // ----------métodos (numeroJaExiste, adicionarJogador, etc.) ----------
+    // ----------métodos ---------
     public boolean numeroJaExiste(int numeracao) {
-        return jogadores.stream().anyMatch(j -> j.getNumeracao() == numeracao);
+        for (Jogador j : jogadores) {
+            if (j.getNumeracao() == numeracao) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void adicionarJogador(Jogador novoJogador) throws LimiteJogadoresException, JogadorDuplicadoException {
@@ -42,7 +47,7 @@ public class Selecao {
             throw new JogadorDuplicadoException("A numeração " + novoJogador.getNumeracao() + " já está sendo usada na seleção " + nome);
         }
 
-        this.jogadores.add(novoJogador);
+        jogadores.add(novoJogador);
         novoJogador.setSelecao(this);
     }
 
@@ -82,41 +87,14 @@ public class Selecao {
             }
         }
         if(contTitular != 11) {
-            System.out.println("Erro na escalação da " + nome + ": Apenas " + contTitular + " titulares (necessário 11).");
-            return false;
+            throw new StatusJogadorInvalidoException("Erro na escalação da " + nome + ": Apenas " + contTitular + " titulares (necessário 11).");
         }
 
         if (!temGoleiro) {
-            System.out.println("Erro na escalação da " + nome + ": Nenhum goleiro entre os titulares.");
-            return false;
+            throw new StatusJogadorInvalidoException("Erro na escalação da " + nome + ": Nenhum goleiro entre os titulares.");
         }
 
-        System.out.println("A seleção " + nome + " está apta e escalada corretamente para a partida!");
         return true;
-    }
-
-    public boolean isElencoCompleto() {
-        return jogadores.size() >= MIN_JOGADORES;
-    }
-
-    public List<Jogador> buscarJogadoresPorPosicao(Posicao posicao) {
-        List<Jogador> resultado = new ArrayList<>();
-        for (Jogador j : jogadores) {
-            if (j.getPosicao() == posicao) {
-                resultado.add(j);
-            }
-        }
-        return resultado;
-    }
-
-    public List<Jogador> buscarJogadoresPorStatus(StatusJogador status) {
-        List<Jogador> resultado = new ArrayList<>();
-        for (Jogador j : jogadores) {
-            if (j.getStatus() == status) {
-                resultado.add(j);
-            }
-        }
-        return resultado;
     }
 
     public List<Jogador> buscarJogadoresPorNome(String parteNome) {
@@ -130,6 +108,7 @@ public class Selecao {
         return resultado;
     }
 
+    /*metodo usado para debug
     public void exibirIntegrantes() {
         System.out.println("=== Seleção: " + nome + " (Grupo " + grupo + ") ===");
         System.out.println("Técnico: " + tecnico);
@@ -143,6 +122,7 @@ public class Selecao {
             if (!j.isTitular()) System.out.println(j);
         }
     }
+    */
 
     // ========== GETTERS E SETTERS ==========
 

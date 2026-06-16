@@ -25,7 +25,6 @@ public class SelecaoRepository implements Repositorio<Selecao> {
 
     public SelecaoRepository(String caminhoArquivo) {
         this.caminhoArquivo = caminhoArquivo;
-        // Cria o Gson com formatação bonita (pretty printing) para facilitar leitura manual
         this.gson = new GsonBuilder().setPrettyPrinting().create();
     }
 
@@ -37,11 +36,11 @@ public class SelecaoRepository implements Repositorio<Selecao> {
      * Salva a lista completa de seleções no arquivo JSON.
      */
     public void salvarTodas(List<Selecao> selecoes) throws IOException {
-        String json = gson.toJson(selecoes);
+        String json = gson.toJson(selecoes); // converte a lista de seleções para string JSON
 
         File arquivo = new File(caminhoArquivo);
-        arquivo.getParentFile().mkdirs(); // Garante que a pasta exista
-        Files.write(Paths.get(caminhoArquivo), json.getBytes());
+        arquivo.getParentFile().mkdirs(); // cria os diretórios pais se não existirem
+        Files.write(Paths.get(caminhoArquivo), json.getBytes()); // escreve o JSON no arquivo
     }
 
     /**
@@ -51,16 +50,16 @@ public class SelecaoRepository implements Repositorio<Selecao> {
     public List<Selecao> carregarTodas() throws IOException {
         File arquivo = new File(caminhoArquivo);
         if (!arquivo.exists()) {
-            return new ArrayList<>();
+            return new ArrayList<>(); // arquivo não existe, retorna lista vazia
         }
-        String json = new String(Files.readAllBytes(Paths.get(caminhoArquivo)));
-        Type tipoLista = new TypeToken<ArrayList<Selecao>>() {}.getType();
-        List<Selecao> selecoes = gson.fromJson(json, tipoLista);
-        // Reconstroi a referência bidirecional jogador -> seleção (importante)
+        String json = new String(Files.readAllBytes(Paths.get(caminhoArquivo))); // lê todo o conteúdo do arquivo
+        Type tipoLista = new TypeToken<ArrayList<Selecao>>() {}.getType(); // define o tipo para desserialização
+        List<Selecao> selecoes = gson.fromJson(json, tipoLista); // converte JSON para lista de objetos
+        // Reconstroi a referência bidirecional jogador -> seleção
         if (selecoes != null) {
             for (Selecao s : selecoes) {
                 for (Jogador j : s.getJogadores()) {
-                    j.setSelecao(s);
+                    j.setSelecao(s); // associa cada jogador à sua seleção
                 }
             }
         }
@@ -73,62 +72,43 @@ public class SelecaoRepository implements Repositorio<Selecao> {
 
     @Override
     public void salvar(Selecao selecao) throws IOException {
-        List<Selecao> todas = listarTodos();
+        List<Selecao> todas = listarTodos(); // carrega todas as seleções existentes
         // Atualiza se já existir (pelo ID), senão adiciona
         boolean encontrado = false;
         for (int i = 0; i < todas.size(); i++) {
-            if (todas.get(i).getId() == selecao.getId()) {
-                todas.set(i, selecao);
+            if (todas.get(i).getId() == selecao.getId()) { // verifica se ID já existe
+                todas.set(i, selecao); // substitui a seleção antiga pela nova
                 encontrado = true;
                 break;
             }
         }
         if (!encontrado) {
-            todas.add(selecao);
+            todas.add(selecao); // adiciona nova seleção à lista
         }
-        salvarTodas(todas);
+        salvarTodas(todas); // persiste a lista atualizada
     }
 
     @Override
     public Selecao buscarPorId(int id) throws IOException {
-        return listarTodos().stream()
-                .filter(s -> s.getId() == id)
-                .findFirst()
-                .orElseThrow(() -> new IOException("Seleção com id " + id + " não encontrada."));
+        return listarTodos().stream() // carrega todas as seleções
+                .filter(s -> s.getId() == id) // filtra pelo ID
+                .findFirst() // pega o primeiro (único) que atende
+                .orElseThrow(() -> new IOException("Seleção com id " + id + " não encontrada.")); // lança exceção se não achar
     }
 
     @Override
     public List<Selecao> listarTodos() throws IOException {
-        return carregarTodas();
+        return carregarTodas(); // delega para o método de carregamento
     }
 
     @Override
     public void remover(int id) throws IOException {
-        List<Selecao> todas = listarTodos();
-        boolean removido = todas.removeIf(s -> s.getId() == id);
+        List<Selecao> todas = listarTodos(); // carrega todas as seleções
+        boolean removido = todas.removeIf(s -> s.getId() == id); // remove se ID corresponder
         if (!removido) {
             throw new IOException("Seleção com id " + id + " não encontrada.");
         }
-        salvarTodas(todas);
+        salvarTodas(todas); // salva a lista após remoção
     }
 
-    // --------------------------------------------------------------
-    // Métodos auxiliares adicionais (para conveniência)
-    // --------------------------------------------------------------
-
-    public Selecao buscarPorNome(String nome) throws IOException {
-        return listarTodos().stream()
-                .filter(s -> s.getNome().equalsIgnoreCase(nome))
-                .findFirst()
-                .orElse(null);
-    }
-
-    public void removerPorNome(String nome) throws IOException {
-        List<Selecao> todas = listarTodos();
-        boolean removido = todas.removeIf(s -> s.getNome().equalsIgnoreCase(nome));
-        if (!removido) {
-            throw new IOException("Seleção com nome " + nome + " não encontrada.");
-        }
-        salvarTodas(todas);
-    }
 }
