@@ -11,6 +11,13 @@
         "posicao": "ZAGUEIRO",
         "titular": true,
         "status": "ATIVO"
+      },
+      {
+        "nome": "NeymarJr",
+        "numeracao": 11,
+        "posicao": "GOLEIRO",
+        "titular": true,
+        "status": "ATIVO"
       }
     ]
   },

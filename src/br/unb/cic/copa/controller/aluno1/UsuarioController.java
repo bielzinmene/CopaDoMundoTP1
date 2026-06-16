@@ -20,7 +20,7 @@ public class UsuarioController {
             usuarios = repository.listarTodos();
             if (usuarios.isEmpty()) {
                 Usuario admin = new Administrador(
-                        1, "Admin", "admin@copa.com",
+                        0, "Admin", "admin@copa.com",
                         "admin", "Admin123", "000.000.000-00", "Brasil"
                 );
                 repository.salvar(admin);
@@ -39,9 +39,13 @@ public class UsuarioController {
         return instancia;
     }
 
-    // =====================================================
-    // VALIDAÇÕES
-    // =====================================================
+    public void recarregarUsuarios() {
+        try {
+            usuarios = repository.listarTodos();
+        } catch (IOException e) {
+            System.out.println("Erro ao recarregar usuários: " + e.getMessage());
+        }
+    }
 
     private void validarSenha(String senha) throws SenhaFracaException {
         if (senha == null || senha.length() < 8) throw new SenhaFracaException();
@@ -67,7 +71,7 @@ public class UsuarioController {
             throw new CpfInvalidoException();
     }
 
-    // Verifica email duplicado — ignorando o próprio usuário se for edição
+
     private void verificarEmailDuplicado(String email, int idIgnorar)
             throws UsuarioDuplicadoException {
         for (Usuario u : usuarios) {
@@ -77,7 +81,7 @@ public class UsuarioController {
         }
     }
 
-    // Verifica login duplicado — ignorando o próprio usuário se for edição
+
     private void verificarLoginDuplicado(String login, int idIgnorar)
             throws UsuarioDuplicadoException {
         for (Usuario u : usuarios) {
@@ -87,7 +91,7 @@ public class UsuarioController {
         }
     }
 
-    // Verifica CPF duplicado — ignorando o próprio usuário se for edição
+
     private void verificarCpfDuplicado(String cpf, int idIgnorar)
             throws UsuarioDuplicadoException {
         for (Usuario u : usuarios) {
@@ -103,28 +107,21 @@ public class UsuarioController {
         }
     }
 
-    // =====================================================
-    // OPERAÇÕES
-    // =====================================================
 
     public void cadastrarUsuario(Usuario solicitante, Usuario novoUsuario)
             throws AcessoNegadoException, SenhaFracaException, EmailInvalidoException,
             CpfInvalidoException, UsuarioDuplicadoException, IOException {
 
-        // 1. Verifica permissão
         verificarPermissao(solicitante);
 
-        // 2. Valida dados
         validarEmail(novoUsuario.getEmail());
         validarCpf(novoUsuario.getCpf());
         validarSenha(novoUsuario.getSenha());
 
-        // 3. Verifica duplicatas — passa -1 como idIgnorar pois é cadastro novo
         verificarEmailDuplicado(novoUsuario.getEmail(), -1);
         verificarLoginDuplicado(novoUsuario.getLogin(), -1);
         verificarCpfDuplicado(novoUsuario.getCpf(), -1);
 
-        // 4. Salva
         novoUsuario.setId(gerarNovoId());
         repository.salvar(novoUsuario);
         usuarios = repository.listarTodos();
@@ -135,10 +132,8 @@ public class UsuarioController {
             CpfInvalidoException, UsuarioNaoEncontradoException, UsuarioDuplicadoException,
             IOException {
 
-        // 1. Verifica permissão
         verificarPermissao(solicitante);
 
-        // 2. Verifica se existe
         boolean encontrado = false;
         for (Usuario u : usuarios) {
             if (u.getId() == usuarioEditado.getId()) {
@@ -148,17 +143,14 @@ public class UsuarioController {
         }
         if (!encontrado) throw new UsuarioNaoEncontradoException();
 
-        // 3. Valida dados
         validarEmail(usuarioEditado.getEmail());
         validarCpf(usuarioEditado.getCpf());
         validarSenha(usuarioEditado.getSenha());
 
-        // 4. Verifica duplicatas — ignora o próprio usuário sendo editado
         verificarEmailDuplicado(usuarioEditado.getEmail(), usuarioEditado.getId());
         verificarLoginDuplicado(usuarioEditado.getLogin(), usuarioEditado.getId());
         verificarCpfDuplicado(usuarioEditado.getCpf(), usuarioEditado.getId());
 
-        // 5. Salva
         repository.salvar(usuarioEditado);
         usuarios = repository.listarTodos();
     }
@@ -211,20 +203,6 @@ public class UsuarioController {
         return resultado;
     }
 
-    public String gerarRelatorioUsuarios() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("=== RELATÓRIO DE USUÁRIOS ===\n\n");
-        sb.append(String.format("%-5s %-20s %-30s %-15s %-10s\n",
-                "ID", "Nome", "Email", "Função", "Status"));
-        sb.append("-".repeat(80)).append("\n");
-        for (Usuario u : usuarios) {
-            sb.append(String.format("%-5d %-20s %-30s %-15s %-10s\n",
-                    u.getId(), u.getNome(), u.getEmail(),
-                    u.getFuncao(), u.getStatus()));
-        }
-        sb.append("\nTotal de usuários: ").append(usuarios.size());
-        return sb.toString();
-    }
 
     private int gerarNovoId() {
         int maior = 0;

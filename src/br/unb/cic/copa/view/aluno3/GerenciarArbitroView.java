@@ -82,17 +82,17 @@ public class GerenciarArbitroView extends JFrame {
         header.setBackground(COR_HEADER);
         header.setBorder(new EmptyBorder(10, 20, 10, 20));
 
-        JLabel titulo = new JLabel("Gerenciar Árbitros");
+        JLabel titulo = new JLabel("  Gerenciar Árbitros");
         titulo.setFont(FONTE_TITULO);
         titulo.setForeground(Color.WHITE);
         header.add(titulo, BorderLayout.WEST);
 
         //tenta carregar e redimensionar a imagem do header
         try {
-            java.net.URL imgUrl = getClass().getClassLoader().getResource("resources/copa_3.png");
+            java.net.URL imgUrl = getClass().getClassLoader().getResource("resources/copa2026.jpg");
             if (imgUrl != null) {
                 ImageIcon icone = new ImageIcon(imgUrl);
-                Image img = icone.getImage().getScaledInstance(50, 60, Image.SCALE_SMOOTH);
+                Image img = icone.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
                 JLabel lblImagem = new JLabel(new ImageIcon(img));
                 header.add(lblImagem, BorderLayout.EAST);
             }
@@ -285,14 +285,18 @@ public class GerenciarArbitroView extends JFrame {
         return campo;
     }
 
-    //monta o rodapé com os botões cancelar e salvar
+    //monta o rodapé com os botões limpar, cancelar e salvar
     private JPanel criarRodape() {
         JPanel rodape = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 12));
         rodape.setBackground(COR_FUNDO);
         rodape.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(200, 200, 220)));
 
+        JButton btnLimpar   = criarBotao("Limpar", COR_BUSCA);
         JButton btnCancelar = criarBotao("Cancelar", COR_CANCELAR);
         JButton btnSalvar   = criarBotao("Salvar", COR_SALVAR);
+
+        //limpar reseta todos os campos do formulário, sem precisar salvar
+        btnLimpar.addActionListener(e -> limparFormulario());
 
         //cancelar fecha essa tela e volta pro menu principal
         btnCancelar.addActionListener(e -> {
@@ -303,6 +307,7 @@ public class GerenciarArbitroView extends JFrame {
         //salvar dispara a validação e o cadastro do árbitro
         btnSalvar.addActionListener(e -> salvarArbitro());
 
+        rodape.add(btnLimpar);
         rodape.add(btnCancelar);
         rodape.add(btnSalvar);
         return rodape;

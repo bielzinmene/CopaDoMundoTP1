@@ -30,6 +30,10 @@ public class ArbitroController {
         Arbitro arbitro = new Arbitro(id, nome, email, login, senha, cpf, nacionalidade, nacionalidade, experiencia);
         arbitroRepository.salvar(arbitro);
         usuarioRepository.salvar(arbitro);
+
+        // Atualiza o singleton de usuários, pois o login usa a lista em memória dele
+        br.unb.cic.copa.controller.aluno1.UsuarioController.getInstancia().recarregarUsuarios();
+
     }
 
     // Busca árbitro pelo ID
@@ -55,6 +59,8 @@ public class ArbitroController {
         } catch (IOException ignored) {
             // árbitro pode não estar em usuarios.json em registros antigos
         }
+        // Atualiza o singleton de usuários, pois o login usa a lista em memória dele
+        br.unb.cic.copa.controller.aluno1.UsuarioController.getInstancia().recarregarUsuarios();
     }
 
     // Gera ID único: pega o maior ID existente e soma 1

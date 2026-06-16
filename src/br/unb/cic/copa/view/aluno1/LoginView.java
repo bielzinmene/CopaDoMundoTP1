@@ -14,13 +14,10 @@ public class LoginView extends JFrame {
     private JTextField txtLogin;
     private JPasswordField txtSenha;
 
-
     private static final Color COR_FUNDO     = new Color(240, 242, 245);
-    private static final Color COR_HEADER    = new Color(26, 53, 98);
+    private static final Color COR_HEADER    = Color.BLACK;
     private static final Color COR_ENTRAR    = new Color(34, 139, 34);
-    private static final Color COR_ENTRAR_HOVER = new Color(28, 115, 28);
     private static final Color COR_SAIR      = new Color(180, 40, 40);
-    private static final Color COR_SAIR_HOVER = new Color(150, 30, 30);
     private static final Color COR_TEXTO_BTN = Color.WHITE;
 
     private static final Font FONTE_LABEL   = new Font("Segoe UI", Font.PLAIN, 14);
@@ -30,9 +27,15 @@ public class LoginView extends JFrame {
     public LoginView() {
         setTitle("Copa do Mundo 2026 — Login");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setExtendedState(JFrame.MAXIMIZED_BOTH);  // TELA CHEIA
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         getContentPane().setBackground(COR_FUNDO);
         setLayout(new BorderLayout());
+
+
+        try {
+            java.net.URL imgUrl = getClass().getClassLoader().getResource("resources/copa2026.jpg");
+            if (imgUrl != null) setIconImage(new ImageIcon(imgUrl).getImage());
+        } catch (Exception ignored) {}
 
         add(criarHeader(), BorderLayout.NORTH);
         add(criarCorpo(), BorderLayout.CENTER);
@@ -42,12 +45,22 @@ public class LoginView extends JFrame {
     private JPanel criarHeader() {
         JPanel header = new JPanel(new BorderLayout());
         header.setBackground(COR_HEADER);
-        header.setBorder(new EmptyBorder(20, 25, 20, 25));
+        header.setBorder(new EmptyBorder(10, 20, 10, 20));
 
-        JLabel titulo = new JLabel("  Copa do Mundo 2026  ");
+        JLabel titulo = new JLabel("Acesso ao Sistema");
         titulo.setFont(FONTE_TITULO);
         titulo.setForeground(Color.WHITE);
         header.add(titulo, BorderLayout.WEST);
+
+        try {
+            java.net.URL imgUrl = getClass().getClassLoader().getResource("resources/copa_3.png");
+            if (imgUrl != null) {
+                ImageIcon icone = new ImageIcon(imgUrl);
+                Image img = icone.getImage().getScaledInstance(50, 60, Image.SCALE_SMOOTH);
+                JLabel lblImagem = new JLabel(new ImageIcon(img));
+                header.add(lblImagem, BorderLayout.EAST);
+            }
+        } catch (Exception ignored) {}
 
         return header;
     }
@@ -65,7 +78,7 @@ public class LoginView extends JFrame {
         gc.anchor = GridBagConstraints.WEST;
         gc.fill = GridBagConstraints.NONE;
 
-        // Login
+
         JLabel lblLogin = new JLabel("Login:");
         lblLogin.setFont(FONTE_LABEL);
         lblLogin.setForeground(new Color(50, 50, 80));
@@ -75,15 +88,14 @@ public class LoginView extends JFrame {
         txtLogin.setPreferredSize(new Dimension(250, 34));
         txtLogin.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(180, 180, 210)),
-                new EmptyBorder(4, 10, 4, 10)
-        ));
+                new EmptyBorder(4, 10, 4, 10)));
 
         gc.gridx = 0; gc.gridy = 0;
         formulario.add(lblLogin, gc);
         gc.gridx = 1;
         formulario.add(txtLogin, gc);
 
-        // Senha
+
         JLabel lblSenha = new JLabel("Senha:");
         lblSenha.setFont(FONTE_LABEL);
         lblSenha.setForeground(new Color(50, 50, 80));
@@ -93,8 +105,7 @@ public class LoginView extends JFrame {
         txtSenha.setPreferredSize(new Dimension(250, 34));
         txtSenha.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(180, 180, 210)),
-                new EmptyBorder(4, 10, 4, 10)
-        ));
+                new EmptyBorder(4, 10, 4, 10)));
 
         gc.gridx = 0; gc.gridy = 1;
         formulario.add(lblSenha, gc);
@@ -110,8 +121,8 @@ public class LoginView extends JFrame {
         rodape.setBackground(COR_FUNDO);
         rodape.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(200, 200, 220)));
 
-        JButton btnSair   = criarBotao("Sair", COR_SAIR, COR_SAIR_HOVER);
-        JButton btnEntrar = criarBotao("Acessar", COR_ENTRAR, COR_ENTRAR_HOVER);
+        JButton btnSair   = criarBotao("Sair", COR_SAIR);
+        JButton btnEntrar = criarBotao("Acessar", COR_ENTRAR);
 
         btnSair.addActionListener(e -> System.exit(0));
         btnEntrar.addActionListener(e -> realizarLogin());
@@ -155,10 +166,10 @@ public class LoginView extends JFrame {
         }
     }
 
-    private JButton criarBotao(String texto, Color corNormal, Color corHover) {
+    private JButton criarBotao(String texto, Color cor) {
         JButton btn = new JButton(texto);
         btn.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        btn.setBackground(corNormal);
+        btn.setBackground(cor);
         btn.setForeground(COR_TEXTO_BTN);
         btn.setFocusPainted(false);
         btn.setBorderPainted(false);
@@ -166,16 +177,10 @@ public class LoginView extends JFrame {
         btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btn.setOpaque(true);
         btn.setBorder(new EmptyBorder(8, 15, 8, 15));
-
         btn.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                if (btn.isEnabled()) btn.setBackground(corHover);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                if (btn.isEnabled()) btn.setBackground(corNormal);
-            }
+            public void mouseEntered(java.awt.event.MouseEvent e) { btn.setBackground(cor.darker()); }
+            public void mouseExited(java.awt.event.MouseEvent e) { btn.setBackground(cor); }
         });
-
         return btn;
     }
 }

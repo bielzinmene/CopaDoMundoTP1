@@ -1,25 +1,5 @@
 [
   {
-    "id": 3,
-    "arbitroId": 7,
-    "fase": "GRUPOS",
-    "status": "AGENDADA",
-    "data": "12/06/2026",
-    "selecao1Nome": "Egito",
-    "selecao2Nome": "Marrocos",
-    "estadioNome": "Estádio de Toronto"
-  },
-  {
-    "id": 4,
-    "arbitroId": 7,
-    "fase": "GRUPOS",
-    "status": "AGENDADA",
-    "data": "23/03/2026",
-    "selecao1Nome": "Egito",
-    "selecao2Nome": "Senegal",
-    "estadioNome": "Estadio Monterrey"
-  },
-  {
     "id": 1,
     "arbitroId": 6,
     "fase": "GRUPOS",
@@ -27,17 +7,9 @@
     "data": "23/03/2026",
     "selecao1Nome": "mexico",
     "selecao2Nome": "peru",
-    "estadioNome": "Estádio de Toronto"
-  },
-  {
-    "id": 2,
-    "arbitroId": 1,
-    "fase": "GRUPOS",
-    "status": "AGENDADA",
-    "data": "23/03/2026",
-    "selecao1Nome": "Brasil",
-    "selecao2Nome": "Argentina",
-    "estadioNome": "Estádio de Toronto"
+    "estadioNome": "Estádio de Toronto",
+    "golsSelecao1": 0,
+    "golsSelecao2": 0
   },
   {
     "id": 5,
@@ -47,7 +19,9 @@
     "data": "24/06/2026",
     "selecao1Nome": "Alemanha",
     "selecao2Nome": "Curação",
-    "estadioNome": "Estádio de Toronto"
+    "estadioNome": "Estádio de Toronto",
+    "golsSelecao1": 0,
+    "golsSelecao2": 0
   },
   {
     "id": 6,
@@ -57,7 +31,9 @@
     "data": "18/06/2026",
     "selecao1Nome": "Japão",
     "selecao2Nome": "Colômbia",
-    "estadioNome": "Estádio Guadalajara"
+    "estadioNome": "Estádio Guadalajara",
+    "golsSelecao1": 0,
+    "golsSelecao2": 0
   },
   {
     "id": 7,
@@ -67,6 +43,32 @@
     "data": "11/06/2026",
     "selecao1Nome": "Egito",
     "selecao2Nome": "Marrocos",
-    "estadioNome": "Estádio Monterrey"
+    "estadioNome": "Estádio Monterrey",
+    "golsSelecao1": 0,
+    "golsSelecao2": 0
+  },
+  {
+    "id": 4,
+    "arbitroId": 7,
+    "fase": "GRUPOS",
+    "status": "FINALIZADA",
+    "data": "23/03/2026",
+    "selecao1Nome": "Egito",
+    "selecao2Nome": "Senegal",
+    "estadioNome": "Estadio Monterrey",
+    "golsSelecao1": 0,
+    "golsSelecao2": 0
+  },
+  {
+    "id": 2,
+    "arbitroId": 1,
+    "fase": "GRUPOS",
+    "status": "FINALIZADA",
+    "data": "23/03/2026",
+    "selecao1Nome": "Brasil",
+    "selecao2Nome": "Argentina",
+    "estadioNome": "Estádio de Toronto",
+    "golsSelecao1": 19,
+    "golsSelecao2": 0
   }
 ]
