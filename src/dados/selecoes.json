@@ -2,41 +2,55 @@
   {
     "id": 1,
     "nome": "Brasil",
-    "grupo": "A",
-    "tecnico": "Tite",
+    "grupo": "C",
+    "tecnico": "Carlo Ancelotti",
     "jogadores": [
       {
-        "nome": "Neymar",
-        "numeracao": 10,
-        "posicao": "ZAGUEIRO",
+        "nome": "Vinicius Jr",
+        "numeracao": 7,
+        "posicao": "ATACANTE",
         "titular": true,
         "status": "ATIVO"
       },
       {
-        "nome": "NeymarJr",
-        "numeracao": 11,
+        "nome": "Endrick",
+        "numeracao": 19,
+        "posicao": "ATACANTE",
+        "titular": false,
+        "status": "ATIVO"
+      },
+      {
+        "nome": "Alisson",
+        "numeracao": 1,
         "posicao": "GOLEIRO",
-        "titular": true,
+        "titular": false,
         "status": "ATIVO"
       }
     ]
   },
   {
     "id": 2,
-    "nome": "Alemanha",
-    "grupo": "A",
-    "tecnico": "KDAMKDA",
+    "nome": "França",
+    "grupo": "I",
+    "tecnico": "Didier Deschamps",
     "jogadores": [
       {
-        "nome": "LOOOK",
-        "numeracao": 9,
-        "posicao": "MEIO_CAMPO",
+        "nome": "Kylian Mbappé",
+        "numeracao": 10,
+        "posicao": "ATACANTE",
         "titular": true,
         "status": "ATIVO"
       },
       {
-        "nome": "LOok its me",
-        "numeracao": 13,
+        "nome": "Jules Koundé",
+        "numeracao": 5,
+        "posicao": "LATERAL",
+        "titular": true,
+        "status": "ATIVO"
+      },
+      {
+        "nome": "Ousmane Dembélé",
+        "numeracao": 7,
         "posicao": "ATACANTE",
         "titular": true,
         "status": "ATIVO"
@@ -45,14 +59,28 @@
   },
   {
     "id": 3,
-    "nome": "Chile",
+    "nome": "Marrocos",
     "grupo": "C",
-    "tecnico": "Young Lee",
+    "tecnico": "Mohamed Ouahbi",
     "jogadores": [
       {
-        "nome": "Xing Xing",
-        "numeracao": 3,
+        "nome": "Yassine Bounou",
+        "numeracao": 1,
+        "posicao": "GOLEIRO",
+        "titular": true,
+        "status": "ATIVO"
+      },
+      {
+        "nome": "Achraf Hakimi",
+        "numeracao": 13,
         "posicao": "ZAGUEIRO",
+        "titular": true,
+        "status": "ATIVO"
+      },
+      {
+        "nome": "Abdessamad Ezzalzouli",
+        "numeracao": 10,
+        "posicao": "ATACANTE",
         "titular": true,
         "status": "ATIVO"
       }
@@ -60,16 +88,30 @@
   },
   {
     "id": 4,
-    "nome": "Egito",
-    "grupo": "B",
-    "tecnico": "Lory",
+    "nome": "Senegal",
+    "grupo": "I",
+    "tecnico": "Pape Thiaw",
     "jogadores": [
       {
-        "nome": "Egipcio",
-        "numeracao": 9,
+        "nome": "Yehvann Diouf",
+        "numeracao": 1,
+        "posicao": "GOLEIRO",
+        "titular": true,
+        "status": "ATIVO"
+      },
+      {
+        "nome": "Sadio Mané",
+        "numeracao": 10,
+        "posicao": "ATACANTE",
+        "titular": true,
+        "status": "ATIVO"
+      },
+      {
+        "nome": "Bara Sapoko",
+        "numeracao": 22,
         "posicao": "MEIO_CAMPO",
         "titular": true,
-        "status": "LESIONADO"
+        "status": "ATIVO"
       }
     ]
   }

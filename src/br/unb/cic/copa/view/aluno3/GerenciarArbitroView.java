@@ -22,7 +22,8 @@ public class GerenciarArbitroView extends JFrame {
     private JTextField txtNome;
     private JTextField txtEmail;
     private JTextField txtLogin;
-    private JTextField txtSenha;
+    private JPasswordField txtSenha;
+    private char ecoSenhaPadrao;
     private JTextField txtCpf;
     private JTextField txtNacionalidade;
     private JTextField txtExperiencia;
@@ -125,10 +126,11 @@ public class GerenciarArbitroView extends JFrame {
         //cria cada campo já com um texto de exemplo (placeholder)
         txtNome          = criarCampoComPlaceholder("Ex: João Silva");
         txtEmail         = criarCampoComPlaceholder("Ex: joao@email.com");
-        txtLogin         = criarCampoComPlaceholder("Ex: joao.silva");
-        txtSenha         = criarCampoComPlaceholder("Mín. 8 caracteres, letra e número");
+        txtLogin         = criarCampoComPlaceholder("Ex: joao_silva");
+        txtSenha         = criarCampoSenhaComPlaceholder("Mín. 8 caracteres, letra e número");
+        ecoSenhaPadrao   = txtSenha.getEchoChar(); //guarda o caractere de ocultação original
         txtCpf           = criarCampoComPlaceholder("000.000.000-00");
-        txtNacionalidade = criarCampoComPlaceholder("Ex: Brasileiro");
+        txtNacionalidade = criarCampoComPlaceholder("Ex: Brasil");
         txtExperiencia   = criarCampoComPlaceholder("Ex: 5");
 
         //adiciona cada campo no formulário, um por linha
@@ -136,9 +138,20 @@ public class GerenciarArbitroView extends JFrame {
         adicionarLinha(painel, gc, 1, "Email:",              txtEmail);
         adicionarLinha(painel, gc, 2, "Login:",              txtLogin);
         adicionarLinha(painel, gc, 3, "Senha:",              txtSenha);
-        adicionarLinha(painel, gc, 4, "CPF:",                txtCpf);
-        adicionarLinha(painel, gc, 5, "País:",               txtNacionalidade);
-        adicionarLinha(painel, gc, 6, "Experiência (anos):", txtExperiencia);
+
+        //checkbox que alterna entre mostrar a senha em texto puro ou com os pontos
+        JCheckBox chkMostrarSenha = new JCheckBox("Mostrar senha");
+        chkMostrarSenha.setFont(FONTE_LABEL);
+        chkMostrarSenha.setBackground(COR_FUNDO);
+        chkMostrarSenha.setForeground(new Color(50, 50, 80));
+        chkMostrarSenha.addActionListener(e ->
+                txtSenha.setEchoChar(chkMostrarSenha.isSelected() ? (char) 0 : ecoSenhaPadrao));
+        gc.gridx = 1; gc.gridy = 4; gc.weightx = 0.7; gc.fill = GridBagConstraints.NONE;
+        painel.add(chkMostrarSenha, gc);
+
+        adicionarLinha(painel, gc, 5, "CPF:",                txtCpf);
+        adicionarLinha(painel, gc, 6, "País:",               txtNacionalidade);
+        adicionarLinha(painel, gc, 7, "Experiência (anos):", txtExperiencia);
 
         return painel;
     }
@@ -285,13 +298,36 @@ public class GerenciarArbitroView extends JFrame {
         return campo;
     }
 
+    //cria o campo de senha com placeholder, igual ao campo de texto normal mas ocultando os caracteres
+    private JPasswordField criarCampoSenhaComPlaceholder(String placeholder) {
+        JPasswordField campo = new JPasswordField() {
+            @Override
+            protected void paintComponent(java.awt.Graphics g) {
+                super.paintComponent(g);
+                //só desenha o placeholder se o campo estiver vazio
+                if (getPassword().length == 0) {
+                    g.setColor(new Color(180, 180, 200));
+                    g.setFont(getFont().deriveFont(java.awt.Font.ITALIC));
+                    g.drawString(placeholder, 8, getHeight() / 2 + getFont().getSize() / 2 - 2);
+                }
+            }
+        };
+        campo.setFont(FONTE_CAMPO);
+        campo.setPreferredSize(new Dimension(250, 32));
+        campo.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(180, 180, 210)),
+                new EmptyBorder(4, 8, 4, 8)
+        ));
+        return campo;
+    }
+
     //monta o rodapé com os botões limpar, cancelar e salvar
     private JPanel criarRodape() {
         JPanel rodape = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 12));
         rodape.setBackground(COR_FUNDO);
         rodape.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(200, 200, 220)));
 
-        JButton btnLimpar   = criarBotao("Limpar", COR_BUSCA);
+        JButton btnLimpar   = criarBotao("Limpar Formulário", COR_BUSCA);
         JButton btnCancelar = criarBotao("Cancelar", COR_CANCELAR);
         JButton btnSalvar   = criarBotao("Salvar", COR_SALVAR);
 
@@ -364,7 +400,7 @@ public class GerenciarArbitroView extends JFrame {
             String nome          = txtNome.getText().trim();
             String email         = txtEmail.getText().trim();
             String login         = txtLogin.getText().trim();
-            String senha         = txtSenha.getText().trim();
+            String senha         = new String(txtSenha.getPassword()).trim();
             String cpf           = txtCpf.getText().trim();
             String nacionalidade = txtNacionalidade.getText().trim();
             int experiencia      = Integer.parseInt(txtExperiencia.getText().trim());
