@@ -32,7 +32,7 @@ public class PartidaView extends JFrame {
     private JComboBox<Fase> comboFase;
     private JTextField campoData;
     private JComboBox<String> comboEstadio;
-    private JComboBox<String> comboIdArbitro;
+    private JComboBox<String> comboNomeArbitro;
     private JTable tabela;
     private DefaultTableModel modeloTabela;
 
@@ -42,11 +42,10 @@ public class PartidaView extends JFrame {
     private final ArbitroController arbitroController = new ArbitroController();
     private final EstadioController estadioController = new EstadioController();
 
-    private static final Color COR_FUNDO     = new Color(245, 245, 250);
-    private static final Color COR_HEADER    = new Color(30, 60, 120);
-    private static final Color COR_SALVAR    = new Color(34, 139, 34);
+    private static final Color COR_FUNDO     = Color.WHITE;
+    private static final Color COR_HEADER    = Color.BLACK;
+    private static final Color COR_SALVAR    = new Color(30, 100, 180);
     private static final Color COR_CANCELAR  = new Color(180, 40, 40);
-    private static final Color COR_BUSCA     = new Color(30, 100, 180);
     private static final Color COR_TEXTO_BTN = Color.WHITE;
     private static final Font  FONTE_LABEL   = new Font("Segoe UI", Font.PLAIN, 13);
     private static final Font  FONTE_CAMPO   = new Font("Segoe UI", Font.PLAIN, 13);
@@ -75,10 +74,19 @@ public class PartidaView extends JFrame {
         header.setBackground(COR_HEADER);
         header.setBorder(new EmptyBorder(15, 20, 15, 20));
 
-        JLabel titulo = new JLabel("⚽  Gerenciar Partidas");
+        JLabel titulo = new JLabel("Gerenciar Partidas");
         titulo.setFont(FONTE_TITULO);
         titulo.setForeground(Color.WHITE);
         header.add(titulo, BorderLayout.WEST);
+
+        try {
+            ImageIcon iconeOrig = new ImageIcon("src/resources/copa2026.jpg");
+            Image imagemRedimensionada = iconeOrig.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
+            JLabel logo = new JLabel(new ImageIcon(imagemRedimensionada));
+            header.add(logo, BorderLayout.EAST);
+        } catch (Exception e) {
+            System.out.println("Aviso: Não foi possível carregar a logo em src/resources/copa2026.jpg");
+        }
 
         return header;
     }
@@ -114,7 +122,6 @@ public class PartidaView extends JFrame {
         try {
             List<Estadio> listaEstadios = estadioController.listarTodos();
             if (listaEstadios == null || listaEstadios.isEmpty()) {
-                System.out.println("Aviso: O JSON de estadios nao foi carregado pelo Controller do Aluno 3. Usando Plano B!");
                 comboEstadio = new JComboBox<>(new String[]{"Estádio de Toronto", "Estádio Guadalajara", "Estádio Monterrey"});
             } else {
                 String[] nomesEstadios = new String[listaEstadios.size()];
@@ -124,23 +131,36 @@ public class PartidaView extends JFrame {
                 comboEstadio = new JComboBox<>(nomesEstadios);
             }
         } catch (Exception e) {
-            System.out.println("Erro no codigo do Aluno 3 ao listar estadios: " + e.getMessage());
             comboEstadio = new JComboBox<>(new String[]{"Estádio de Toronto", "Estádio Guadalajara", "Estádio Monterrey"});
         }
 
         comboEstadio.setFont(FONTE_CAMPO);
         comboEstadio.setPreferredSize(new Dimension(250, 32));
 
-        comboIdArbitro = new JComboBox<>(new String[]{"1", "2", "3", "99"});
-        comboIdArbitro.setFont(FONTE_CAMPO);
-        comboIdArbitro.setPreferredSize(new Dimension(250, 32));
+        try {
+            List<Arbitro> listaArbitros = arbitroController.listarTodos();
+            if (listaArbitros == null || listaArbitros.isEmpty()) {
+                comboNomeArbitro = new JComboBox<>(new String[]{"joao", "Árbitro Teste"});
+            } else {
+                String[] nomesArbitros = new String[listaArbitros.size()];
+                for (int i = 0; i < listaArbitros.size(); i++) {
+                    nomesArbitros[i] = listaArbitros.get(i).getNome();
+                }
+                comboNomeArbitro = new JComboBox<>(nomesArbitros);
+            }
+        } catch (Exception e) {
+            comboNomeArbitro = new JComboBox<>(new String[]{"joao", "Árbitro Teste"});
+        }
+
+        comboNomeArbitro.setFont(FONTE_CAMPO);
+        comboNomeArbitro.setPreferredSize(new Dimension(250, 32));
 
         adicionarLinha(painel, gc, 0, "Seleção 1:",       campoSelecao1);
         adicionarLinha(painel, gc, 1, "Seleção 2:",       campoSelecao2);
         adicionarLinhaCombo(painel, gc, 2, "Fase:",       comboFase);
         adicionarLinha(painel, gc, 3, "Data:",            campoData);
         adicionarLinhaCombo(painel, gc, 4, "Estádio:",    comboEstadio);
-        adicionarLinhaCombo(painel, gc, 5, "ID do Árbitro:", comboIdArbitro);
+        adicionarLinhaCombo(painel, gc, 5, "Árbitro:",    comboNomeArbitro);
 
         return painel;
     }
@@ -148,35 +168,6 @@ public class PartidaView extends JFrame {
     private JPanel criarPainelTabela() {
         JPanel painel = new JPanel(new BorderLayout(0, 8));
         painel.setBackground(COR_FUNDO);
-
-        JPanel painelResultado = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
-        painelResultado.setBackground(COR_FUNDO);
-        painelResultado.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createLineBorder(new Color(200, 200, 220)),
-                "Registrar Resultado",
-                javax.swing.border.TitledBorder.LEFT,
-                javax.swing.border.TitledBorder.TOP,
-                new Font("Segoe UI", Font.BOLD, 12),
-                COR_HEADER
-        ));
-
-        JTextField campoGols1 = criarCampoPequeno();
-        JTextField campoGols2 = criarCampoPequeno();
-        JButton btnResultado  = criarBotao("Registrar", COR_BUSCA);
-        btnResultado.setPreferredSize(new Dimension(100, 32));
-
-        JLabel lGols1 = new JLabel("Gols Seleção 1:");
-        lGols1.setFont(FONTE_LABEL);
-        lGols1.setForeground(new Color(50, 50, 80));
-        JLabel lGols2 = new JLabel("Gols Seleção 2:");
-        lGols2.setFont(FONTE_LABEL);
-        lGols2.setForeground(new Color(50, 50, 80));
-
-        painelResultado.add(lGols1);
-        painelResultado.add(campoGols1);
-        painelResultado.add(lGols2);
-        painelResultado.add(campoGols2);
-        painelResultado.add(btnResultado);
 
         modeloTabela = new DefaultTableModel(
                 new String[]{"ID", "Seleção 1", "Seleção 2", "Data", "Fase", "Status", "ID Árbitro"}, 0) {
@@ -186,9 +177,10 @@ public class PartidaView extends JFrame {
         tabela.setFont(FONTE_CAMPO);
         tabela.setRowHeight(26);
         tabela.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 12));
+
         tabela.getTableHeader().setBackground(COR_HEADER);
         tabela.getTableHeader().setForeground(Color.WHITE);
-        tabela.setSelectionBackground(new Color(200, 220, 255));
+        tabela.setSelectionBackground(new Color(220, 220, 220));
 
         JScrollPane scroll = new JScrollPane(tabela);
         scroll.setPreferredSize(new Dimension(0, 200));
@@ -206,39 +198,6 @@ public class PartidaView extends JFrame {
         painelExcluir.setBackground(COR_FUNDO);
         painelExcluir.add(btnExcluir);
 
-        btnResultado.addActionListener(e -> {
-            int linha = tabela.getSelectedRow();
-            if (linha < 0) {
-                JOptionPane.showMessageDialog(this, "Selecione uma partida na tabela.", "Aviso", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-            try {
-                int idPartida = (int) modeloTabela.getValueAt(linha, 0);
-                int gols1 = Integer.parseInt(campoGols1.getText().trim());
-                int gols2 = Integer.parseInt(campoGols2.getText().trim());
-
-                Partida partida = partidaController.buscarPorId(idPartida);
-                if (partida == null) {
-                    JOptionPane.showMessageDialog(this, "Partida não encontrada.", "Erro", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-                partida.iniciarPartida();
-                partida.finalizarPartida(new br.unb.cic.copa.model.aluno4.Resultado(gols1, gols2));
-                partidaController.salvarPartida(partida);
-
-                JOptionPane.showMessageDialog(this, "Resultado registrado com sucesso!");
-                campoGols1.setText("");
-                campoGols2.setText("");
-                carregarTabela();
-
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(this, "Gols devem ser números inteiros.", "Erro", JOptionPane.ERROR_MESSAGE);
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Erro: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
-            }
-        });
-
-        painel.add(painelResultado, BorderLayout.NORTH);
         painel.add(scroll, BorderLayout.CENTER);
         painel.add(painelExcluir, BorderLayout.SOUTH);
 
@@ -250,7 +209,7 @@ public class PartidaView extends JFrame {
         rodape.setBackground(COR_FUNDO);
         rodape.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(200, 200, 220)));
 
-        JButton btnCancelar = criarBotao("Cancelar", COR_CANCELAR);
+        JButton btnVoltar = criarBotao("Voltar", COR_CANCELAR);
         JButton btnSalvar   = criarBotao("Salvar", COR_SALVAR);
 
         if (!(usuarioLogado instanceof Administrador) && !(usuarioLogado instanceof Organizador)) {
@@ -258,14 +217,18 @@ public class PartidaView extends JFrame {
             btnSalvar.setToolTipText("Você não tem permissão para criar partidas.");
         }
 
-        btnCancelar.addActionListener(e -> {
-            dispose();
-            new MenuPrincipalView(SessaoUsuario.getInstancia().getUsuarioLogado()).setVisible(true);
+        btnVoltar.addActionListener(e -> {
+            try {
+                new MenuPrincipalView().setVisible(true);
+                dispose();
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Erro ao abrir o menu: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+            }
         });
 
         btnSalvar.addActionListener(e -> salvarPartida());
 
-        rodape.add(btnCancelar);
+        rodape.add(btnVoltar);
         rodape.add(btnSalvar);
         return rodape;
     }
@@ -276,10 +239,10 @@ public class PartidaView extends JFrame {
             String nomeSel2    = campoSelecao2.getText().trim();
             String data        = campoData.getText().trim();
             String nomeEstadio = comboEstadio.getSelectedItem().toString();
-            String idArbitroTxt = comboIdArbitro.getSelectedItem().toString();
+            String nomeArbitroSel = comboNomeArbitro.getSelectedItem().toString();
             Fase fase          = (Fase) comboFase.getSelectedItem();
 
-            if (nomeSel1.isEmpty() || nomeSel2.isEmpty() || data.isEmpty() || nomeEstadio.isEmpty() || idArbitroTxt.isEmpty()) {
+            if (nomeSel1.isEmpty() || nomeSel2.isEmpty() || data.isEmpty() || nomeEstadio.isEmpty() || nomeArbitroSel.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Preencha todos os campos.", "Aviso", JOptionPane.WARNING_MESSAGE);
                 return;
             }
@@ -300,7 +263,21 @@ public class PartidaView extends JFrame {
                 return;
             }
 
-            int idArbitro = Integer.parseInt(idArbitroTxt);
+            int idArbitro = 1;
+            try {
+                List<Arbitro> listaArbitros = arbitroController.listarTodos();
+                if (listaArbitros != null) {
+                    for (Arbitro a : listaArbitros) {
+                        if (a.getNome().equalsIgnoreCase(nomeArbitroSel)) {
+                            idArbitro = a.getId();
+                            break;
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                if ("joao".equalsIgnoreCase(nomeArbitroSel)) idArbitro = 1;
+                else idArbitro = 99;
+            }
 
             Selecao sel1 = new Selecao(nomeSel1, "", "");
             Selecao sel2 = new Selecao(nomeSel2, "", "");
@@ -384,13 +361,13 @@ public class PartidaView extends JFrame {
         campoData.setText("");
         comboFase.setSelectedIndex(0);
         if (comboEstadio.getItemCount() > 0) comboEstadio.setSelectedIndex(0);
-        if (comboIdArbitro.getItemCount() > 0) comboIdArbitro.setSelectedIndex(0);
+        if (comboNomeArbitro.getItemCount() > 0) comboNomeArbitro.setSelectedIndex(0);
     }
 
     private void adicionarLinha(JPanel painel, GridBagConstraints gc, int linha, String labelTxt, JTextField campo) {
         JLabel label = new JLabel(labelTxt);
         label.setFont(FONTE_LABEL);
-        label.setForeground(new Color(50, 50, 80));
+        label.setForeground(Color.BLACK);
 
         gc.gridx = 0; gc.gridy = linha; gc.weightx = 0.3; gc.fill = GridBagConstraints.NONE;
         painel.add(label, gc);
@@ -402,7 +379,7 @@ public class PartidaView extends JFrame {
     private void adicionarLinhaCombo(JPanel painel, GridBagConstraints gc, int linha, String labelTxt, JComboBox<?> combo) {
         JLabel label = new JLabel(labelTxt);
         label.setFont(FONTE_LABEL);
-        label.setForeground(new Color(50, 50, 80));
+        label.setForeground(Color.BLACK);
 
         gc.gridx = 0; gc.gridy = linha; gc.weightx = 0.3; gc.fill = GridBagConstraints.NONE;
         painel.add(label, gc);
@@ -432,21 +409,10 @@ public class PartidaView extends JFrame {
         return campo;
     }
 
-    private JTextField criarCampoPequeno() {
-        JTextField campo = new JTextField();
-        campo.setFont(FONTE_CAMPO);
-        campo.setPreferredSize(new Dimension(50, 32));
-        campo.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(180, 180, 210)),
-                new EmptyBorder(4, 8, 4, 8)
-        ));
-        return campo;
-    }
-
-    private JButton criarBotao(String texto, Color cor) {
+    private JButton criarBotao(String texto, Color col) {
         JButton btn = new JButton(texto);
         btn.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        btn.setBackground(cor);
+        btn.setBackground(col);
         btn.setForeground(COR_TEXTO_BTN);
         btn.setFocusPainted(false);
         btn.setBorderPainted(false);
