@@ -2,6 +2,7 @@ package br.unb.cic.copa.controller.aluno1;
 
 import br.unb.cic.copa.controller.aluno2.SelecaoController;
 import br.unb.cic.copa.controller.aluno4.PartidaController;
+import br.unb.cic.copa.controller.aluno5.IngressosController;
 import br.unb.cic.copa.model.aluno1.Usuario;
 import br.unb.cic.copa.model.aluno2.Selecao;
 import br.unb.cic.copa.model.aluno4.Partida;
@@ -16,9 +17,10 @@ public class RelatorioController {
 
     private static RelatorioController instancia;
 
-    private final PartidaController partidaController = new PartidaController();
-    private final SelecaoController selecaoController = new SelecaoController();
-    private final UsuarioController usuarioController = UsuarioController.getInstancia();
+    private final PartidaController    partidaController    = new PartidaController();
+    private final SelecaoController    selecaoController    = new SelecaoController();
+    private final UsuarioController    usuarioController    = UsuarioController.getInstancia();
+    private final IngressosController  ingressosController  = new IngressosController();
 
     private RelatorioController() {}
 
@@ -27,12 +29,12 @@ public class RelatorioController {
         return instancia;
     }
 
-    // retorna lista de todos os usuários
+    // Retorna lista de todos os usuarios
     public List<Usuario> getUsuarios() {
         return usuarioController.listarUsuarios();
     }
 
-    // retorna contagem de usuários por perfil
+    // Retorna contagem de usuarios por perfil
     public Map<String, Long> getResumoUsuarios() {
         Map<String, Long> mapa = new LinkedHashMap<>();
         for (Usuario u : usuarioController.listarUsuarios()) {
@@ -41,7 +43,7 @@ public class RelatorioController {
         return mapa;
     }
 
-    // retorna total e contagem por status das partidas
+    // Retorna total e contagem por status das partidas
     public Map<String, Integer> getResumoPartidas() {
         List<Partida> partidas = partidaController.listarTodas();
         Map<String, Integer> mapa = new LinkedHashMap<>();
@@ -52,21 +54,30 @@ public class RelatorioController {
             else if (p.getStatus() == StatusPartida.EM_ANDAMENTO) andamento++;
             else if (p.getStatus() == StatusPartida.FINALIZADA)   finalizadas++;
         }
-        mapa.put("Agendadas", agendadas);
+        mapa.put("Agendadas",    agendadas);
         mapa.put("Em Andamento", andamento);
-        mapa.put("Finalizadas", finalizadas);
+        mapa.put("Finalizadas",  finalizadas);
         return mapa;
     }
 
-    // retorna resumo de ingressos (stub — aluno5 implementa a persistência real)
+    // Retorna dados reais de ingressos do IngressosController
     public Map<String, String> getResumoIngressos() {
         Map<String, String> mapa = new LinkedHashMap<>();
-        mapa.put("Total de Ingressos Vendidos", "N/D");
-        mapa.put("Receita Total", "N/D");
+        try {
+            int total = ingressosController.getTotalIngressosVendidos();
+            double receita = ingressosController.getValorTotalArrecadado();
+            mapa.put("Total de Ingressos Vendidos",
+                    String.valueOf(total));
+            mapa.put("Receita Total",
+                    String.format("R$ %.2f", receita));
+        } catch (Exception e) {
+            mapa.put("Total de Ingressos Vendidos", "Erro ao carregar");
+            mapa.put("Receita Total", "Erro ao carregar");
+        }
         return mapa;
     }
 
-    // retorna todas as partidas finalizadas
+    // Retorna todas as partidas finalizadas
     public List<Partida> getPartidasFinalizadas() {
         List<Partida> finalizadas = new ArrayList<>();
         for (Partida p : partidaController.listarTodas()) {
@@ -75,19 +86,20 @@ public class RelatorioController {
         return finalizadas;
     }
 
-    // retorna uma linha por seleção com total de gols feitos e sofridos
+    // Retorna uma linha por selecao com gols feitos e sofridos
     public List<Object[]> getDesempenhoSelecoes() {
         List<Selecao> selecoes = selecaoController.listarTodas();
         List<Partida> partidas = partidaController.listarTodas();
         List<Object[]> resultado = new ArrayList<>();
 
         for (Selecao s : selecoes) {
-            int golsFeitos = 0;
-            int golsSofridos = 0;
+            int golsFeitos = 0, golsSofridos = 0;
 
             for (Partida p : partidas) {
-                if (p.getStatus() != StatusPartida.FINALIZADA || p.getResultado() == null) continue;
-                if (p.getSelecao1() == null || p.getSelecao2() == null) continue;
+                if (p.getStatus() != StatusPartida.FINALIZADA
+                        || p.getResultado() == null) continue;
+                if (p.getSelecao1() == null
+                        || p.getSelecao2() == null) continue;
 
                 boolean eh1 = p.getSelecao1().getNome().equals(s.getNome());
                 boolean eh2 = p.getSelecao2().getNome().equals(s.getNome());
