@@ -304,6 +304,7 @@ public class GerenciarJogadorView extends JFrame { //declarando a tela de jogado
         rodape.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(200, 200, 220)));
 
         JButton btnCancelar = criarBotao("Cancelar", COR_CANCELAR);
+        JButton btnLimpar = criarBotao("Limpar", Color.BLUE);
         JButton btnSalvarJog   = criarBotao("Salvar", COR_SALVAR);
 
         getRootPane().setDefaultButton(btnSalvarJog); // define que pressionar Enter aciona o botão Salvar
@@ -314,8 +315,10 @@ public class GerenciarJogadorView extends JFrame { //declarando a tela de jogado
         });
 
         btnSalvarJog.addActionListener(e -> salvarJogador()); // ação do botão Salvar: chama o o metodo salvarJogador
+        btnLimpar.addActionListener(e -> limparFormulario());
 
         rodape.add(btnCancelar);
+        rodape.add(btnLimpar);
         rodape.add(btnSalvarJog);
         return rodape;
     }

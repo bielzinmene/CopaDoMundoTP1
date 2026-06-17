@@ -236,6 +236,7 @@ public class GerenciarSelecaoView extends JFrame {
         rodape.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(200, 200, 220)));
 
         JButton btnCancelar = criarBotao("Cancelar", COR_CANCELAR);
+        JButton btnLimpar = criarBotao("Limpar", Color.BLUE);
         JButton btnSalvarSel   = criarBotao("Salvar", COR_SALVAR);
 
         btnCancelar.addActionListener(e -> { // ação do botão Cancelar
@@ -244,9 +245,12 @@ public class GerenciarSelecaoView extends JFrame {
         });
 
         btnSalvarSel.addActionListener(e -> salvarSelecao()); // ação do botão Salvar: chama metodo SalvarSelecao
+        btnLimpar.addActionListener(e -> limparFormulario());  // ação de limpar
 
         rodape.add(btnCancelar);
+        rodape.add(btnLimpar);
         rodape.add(btnSalvarSel);
+
         return rodape;
     }
 
