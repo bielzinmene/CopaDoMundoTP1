@@ -22,5 +22,29 @@
     "estadioNome": "Estadio Guadalajara",
     "golsSelecao1": 3,
     "golsSelecao2": 1
+  },
+  {
+    "id": 3,
+    "arbitroId": 2,
+    "fase": "GRUPOS",
+    "status": "FINALIZADA",
+    "data": "19/07/2026",
+    "selecao1Nome": "Brasil",
+    "selecao2Nome": "Argentina",
+    "estadioNome": "Estádio de Boston",
+    "golsSelecao1": 3,
+    "golsSelecao2": 1
+  },
+  {
+    "id": 4,
+    "arbitroId": 3,
+    "fase": "GRUPOS",
+    "status": "AGENDADA",
+    "data": "19/06/2026",
+    "selecao1Nome": "Brasil",
+    "selecao2Nome": "Haiti",
+    "estadioNome": "Estádio de Boston",
+    "golsSelecao1": 0,
+    "golsSelecao2": 0
   }
 ]

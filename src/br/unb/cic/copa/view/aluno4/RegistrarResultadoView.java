@@ -20,7 +20,7 @@ public class RegistrarResultadoView extends JFrame {
     private final PartidaController partidaController = new PartidaController();
 
     private static final Color COR_FUNDO     = new Color(245, 245, 250);
-    private static final Color COR_HEADER    = new Color(30, 60, 120);
+    private static final Color COR_HEADER    = Color.BLACK;
     private static final Color COR_CANCELAR  = new Color(180, 40, 40);
     private static final Color COR_BUSCA     = new Color(30, 100, 180);
     private static final Color COR_TEXTO_BTN = Color.WHITE;
@@ -55,12 +55,22 @@ public class RegistrarResultadoView extends JFrame {
     private JPanel criarHeader() {
         JPanel header = new JPanel(new BorderLayout());
         header.setBackground(COR_HEADER);
-        header.setBorder(new EmptyBorder(15, 20, 15, 20));
+        header.setBorder(new EmptyBorder(10, 20, 10, 20));
 
         JLabel titulo = new JLabel("⚽  Registrar Resultado de Partida");
         titulo.setFont(FONTE_TITULO);
         titulo.setForeground(Color.WHITE);
         header.add(titulo, BorderLayout.WEST);
+
+        try {
+            java.net.URL imgURL = getClass().getClassLoader().getResource("resources/copa_3.png");
+            if (imgURL != null) {
+                ImageIcon icone = new ImageIcon(imgURL);
+                Image img = icone.getImage().getScaledInstance(50, 60, Image.SCALE_SMOOTH);
+                JLabel lblImagem = new JLabel(new ImageIcon(img));
+                header.add(lblImagem, BorderLayout.EAST);
+            }
+        } catch (Exception ignored) {}
 
         return header;
     }
@@ -108,6 +118,14 @@ public class RegistrarResultadoView extends JFrame {
             painelLista.add(Box.createRigidArea(new Dimension(0, 10)));
         }
 
+        if (painelLista.getComponentCount() == 0) {
+            JLabel lblVazio = new JLabel("Nenhuma partida agendada para registrar resultado.");
+            lblVazio.setFont(FONTE_LABEL);
+            lblVazio.setForeground(Color.GRAY);
+            lblVazio.setAlignmentX(Component.CENTER_ALIGNMENT);
+            painelLista.add(lblVazio);
+        }
+
         painelLista.revalidate();
         painelLista.repaint();
     }
@@ -148,7 +166,7 @@ public class RegistrarResultadoView extends JFrame {
         lblSel2.setFont(FONTE_TIME);
         lblSel2.setForeground(Color.BLACK);
 
-        JButton btnRegistrar = criarBotao("Registrar", COR_BUSCA);
+        JButton btnRegistrar = criarBotao("Registrar", Color.BLACK);
         btnRegistrar.setPreferredSize(new Dimension(110, 32));
         btnRegistrar.addActionListener(e -> registrarResultado(partida, campoGols1, campoGols2));
 
