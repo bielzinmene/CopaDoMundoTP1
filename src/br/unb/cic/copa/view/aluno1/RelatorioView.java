@@ -2,7 +2,6 @@ package br.unb.cic.copa.view.aluno1;
 
 import br.unb.cic.copa.controller.aluno1.RelatorioController;
 import br.unb.cic.copa.model.aluno1.Usuario;
-import br.unb.cic.copa.model.aluno4.Partida;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -10,7 +9,6 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -134,8 +132,6 @@ public class RelatorioView extends JFrame {
         return corpo;
     }
 
-
-
     private void mostrarPaginaInicial() {
         painelConteudo.removeAll();
 
@@ -154,8 +150,8 @@ public class RelatorioView extends JFrame {
                         "  USUARIOS DO SISTEMA\n" +
                         "  Exibe todos os usuarios cadastrados com perfis e status.\n\n" +
                         "  RELATORIO CONSOLIDADO\n" +
-                        "  Exibe panorama geral: usuarios, selecoes, partidas,\n" +
-                        "  desempenho de selecoes e ingressos vendidos."
+                        "  Exibe panorama geral: usuarios, partidas,\n" +
+                        "  desempenho das selecoes e ingressos vendidos."
         );
         painel.add(txt);
         painelConteudo.add(painel);
@@ -200,6 +196,7 @@ public class RelatorioView extends JFrame {
     private void mostrarRelatorioConsolidado() {
         painelConteudo.removeAll();
 
+        // 1. Usuários
         painelConteudo.add(criarTituloSecao("1. USUARIOS DO SISTEMA"));
         painelConteudo.add(Box.createVerticalStrut(10));
         Map<String, Long> resumoUsuarios = controller.getResumoUsuarios();
@@ -212,6 +209,7 @@ public class RelatorioView extends JFrame {
         painelConteudo.add(criarPainelTabela(colUsuarios, dadosUsuarios));
         painelConteudo.add(Box.createVerticalStrut(25));
 
+        // 2. Partidas
         painelConteudo.add(criarTituloSecao("2. PARTIDAS"));
         painelConteudo.add(Box.createVerticalStrut(10));
         Map<String, Integer> resumoPartidas = controller.getResumoPartidas();
@@ -224,25 +222,23 @@ public class RelatorioView extends JFrame {
         painelConteudo.add(criarPainelTabela(colPartidas, dadosPartidas));
         painelConteudo.add(Box.createVerticalStrut(25));
 
+        // 3. Desempenho das seleções — uma linha por seleção com totais acumulados
         painelConteudo.add(criarTituloSecao("3. DESEMPENHO DAS SELECOES"));
         painelConteudo.add(Box.createVerticalStrut(10));
-
         List<Object[]> desempenho = controller.getDesempenhoSelecoes();
-
         if (desempenho.isEmpty()) {
-            JLabel lblSemDados = new JLabel("  Nenhuma selecao cadastrada.");
+            JLabel lblSemDados = new JLabel("  Nenhuma partida finalizada ainda.");
             lblSemDados.setFont(FONTE_RESUMO);
             lblSemDados.setAlignmentX(Component.LEFT_ALIGNMENT);
             painelConteudo.add(lblSemDados);
         } else {
-            String[] colSelecoes = {"Selecao", "Gols Feitos", "Gols Sofridos"};
+            String[] colSelecoes = {"Seleção", "Gols Feitos", "Gols Sofridos"};
             Object[][] dadosSelecoes = desempenho.toArray(new Object[0][]);
             painelConteudo.add(criarPainelTabela(colSelecoes, dadosSelecoes));
         }
-
         painelConteudo.add(Box.createVerticalStrut(25));
 
-
+        // 4. Ingressos
         painelConteudo.add(criarTituloSecao("4. INGRESSOS E PUBLICO"));
         painelConteudo.add(Box.createVerticalStrut(10));
         Map<String, String> resumoIngressos = controller.getResumoIngressos();
@@ -256,7 +252,6 @@ public class RelatorioView extends JFrame {
 
         atualizarConteudo();
     }
-
 
     private JLabel criarTituloSecao(String texto) {
         JLabel lbl = new JLabel(texto);
@@ -318,8 +313,6 @@ public class RelatorioView extends JFrame {
         SwingUtilities.invokeLater(() ->
                 scrollPrincipal.getVerticalScrollBar().setValue(0));
     }
-
-
 
     private void destacarBotao(JButton ativo, JButton... outros) {
         ativo.setBackground(new Color(20, 70, 130));
