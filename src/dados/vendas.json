@@ -22,5 +22,21 @@
     "partidaId": 2,
     "quantidadeIngressos": 1,
     "valorTotal": 150.0
+  },
+  {
+    "id": 3,
+    "comprador": "Gabriel Menezes",
+    "dataVenda": "2026-06-17T22:04:08.505580917",
+    "partidaId": 4,
+    "quantidadeIngressos": 1,
+    "valorTotal": 300.0
+  },
+  {
+    "id": 4,
+    "comprador": "Olivia Rodrigo",
+    "dataVenda": "2026-06-17T22:07:02.692579725",
+    "partidaId": 4,
+    "quantidadeIngressos": 3,
+    "valorTotal": 225.0
   }
 ]
