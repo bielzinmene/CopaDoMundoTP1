@@ -1,6 +1,7 @@
 package br.unb.cic.copa.controller.aluno5;
 
 import br.unb.cic.copa.model.aluno4.Partida;
+import br.unb.cic.copa.model.aluno4.StatusPartida;
 import br.unb.cic.copa.model.aluno5.CategoriaIngresso;
 import br.unb.cic.copa.model.aluno5.Ingresso;
 import br.unb.cic.copa.model.aluno5.Venda;
@@ -46,6 +47,12 @@ public class IngressosController {
         if (quantidade <= 0) {
             throw new VendaIngressoException(
                     "Quantidade inválida."
+            );
+        }
+        
+        if (partida.getStatus() != StatusPartida.AGENDADA) {
+            throw new VendaIngressoException(
+                    "Ingressos só podem ser vendidos para partidas agendadas."
             );
         }
 
