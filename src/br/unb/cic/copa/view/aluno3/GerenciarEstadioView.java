@@ -76,7 +76,7 @@ public class GerenciarEstadioView extends JFrame {
         header.setBackground(COR_HEADER);
         header.setBorder(new EmptyBorder(10, 20, 10, 20));
 
-        JLabel titulo = new JLabel("🏟  Gerenciar Estádios");
+        JLabel titulo = new JLabel("Gerenciar Estádios");
         titulo.setFont(FONTE_TITULO);
         titulo.setForeground(Color.WHITE);
         header.add(titulo, BorderLayout.WEST);

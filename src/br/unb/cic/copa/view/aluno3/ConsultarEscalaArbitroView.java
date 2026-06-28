@@ -2,6 +2,7 @@ package br.unb.cic.copa.view.aluno3;
 
 import br.unb.cic.copa.controller.aluno3.ArbitroController;
 import br.unb.cic.copa.controller.aluno4.PartidaController;
+import br.unb.cic.copa.model.aluno1.SessaoUsuario;
 import br.unb.cic.copa.model.aluno3.Arbitro;
 import br.unb.cic.copa.model.aluno4.Partida;
 
@@ -17,8 +18,7 @@ import java.util.List;
 // Tela para o árbitro consultar as partidas para as quais foi designado
 public class ConsultarEscalaArbitroView extends JFrame {
 
-    //campos da tela: onde o usuário digita o login e onde aparece o nome do árbitro
-    private JTextField txtIdArbitro;
+    //label que mostra o nome do árbitro logado no topo da tela
     private JLabel labelNomeArbitro;
     //tabela que vai mostrar a escala de partidas
     private JTable tabela;
@@ -31,16 +31,15 @@ public class ConsultarEscalaArbitroView extends JFrame {
     //cores e fontes usadas na tela, deixadas como constantes pra reaproveitar
     private static final Color COR_FUNDO     = new Color(245, 245, 250);
     private static final Color COR_HEADER    = Color.BLACK;
-    private static final Color COR_BUSCAR    = new Color(30, 100, 180);
     private static final Color COR_CANCELAR  = new Color(180, 40, 40);
     private static final Color COR_TEXTO_BTN = Color.WHITE;
     private static final Font  FONTE_LABEL   = new Font("Segoe UI", Font.PLAIN, 13);
     private static final Font  FONTE_CAMPO   = new Font("Segoe UI", Font.PLAIN, 13);
     private static final Font  FONTE_TITULO  = new Font("Segoe UI", Font.BOLD, 16);
 
-    //construtor: monta a janela quando a tela é aberta
+    //construtor: monta a janela e já carrega automaticamente a escala do árbitro logado
     public ConsultarEscalaArbitroView() {
-        setTitle("Consultar Escala do Árbitro - Copa do Mundo 2026");
+        setTitle("Minha Escala - Copa do Mundo 2026");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(750, 500);
         setLocationRelativeTo(null);
@@ -60,16 +59,18 @@ public class ConsultarEscalaArbitroView extends JFrame {
         add(criarCorpo(), BorderLayout.CENTER);
         add(criarRodape(), BorderLayout.SOUTH);
 
+        //carrega a escala assim que a tela abre, sem precisar de nenhuma ação do árbitro
+        carregarEscalaDoArbitroLogado();
         setVisible(true); //exibe a janela
     }
 
-    //monta o cabeçalho preto com o título "Escala do Árbitro" e uma imagem do lado direito
+    //monta o cabeçalho preto com o título e uma imagem do lado direito
     private JPanel criarHeader() {
         JPanel header = new JPanel(new BorderLayout());
         header.setBackground(COR_HEADER);
         header.setBorder(new EmptyBorder(10, 20, 10, 20));
 
-        JLabel titulo = new JLabel("Escala do Árbitro");
+        JLabel titulo = new JLabel("Minha Escala de Partidas");
         titulo.setFont(FONTE_TITULO);
         titulo.setForeground(Color.WHITE);
         header.add(titulo, BorderLayout.WEST);
@@ -88,61 +89,21 @@ public class ConsultarEscalaArbitroView extends JFrame {
         return header;
     }
 
-    //monta o corpo da tela: painel de busca em cima, tabela embaixo
+    //monta o corpo da tela: nome do árbitro em cima, tabela de partidas embaixo
     private JPanel criarCorpo() {
         JPanel corpo = new JPanel(new BorderLayout(0, 15));
         corpo.setBackground(COR_FUNDO);
         corpo.setBorder(new EmptyBorder(20, 20, 10, 20));
 
-        corpo.add(criarPainelBusca(), BorderLayout.NORTH);
+        //label que vai mostrar o nome do árbitro logado, preenchido em carregarEscalaDoArbitroLogado()
+        labelNomeArbitro = new JLabel(" ");
+        labelNomeArbitro.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        labelNomeArbitro.setForeground(COR_HEADER);
+
+        corpo.add(labelNomeArbitro, BorderLayout.NORTH);
         corpo.add(criarPainelTabela(), BorderLayout.CENTER);
 
         return corpo;
-    }
-
-    //monta a linha de busca: label "Login do Árbitro", campo de texto, botão buscar e o nome do árbitro encontrado
-    private JPanel criarPainelBusca() {
-        JPanel painel = new JPanel(new GridBagLayout());
-        painel.setBackground(COR_FUNDO);
-
-        GridBagConstraints gc = new GridBagConstraints();
-        gc.insets = new Insets(5, 5, 5, 5);
-        gc.anchor = GridBagConstraints.WEST;
-
-        //label e campo onde o usuário digita o login do árbitro
-        JLabel labelId = new JLabel("Login do Árbitro:");
-        labelId.setFont(FONTE_LABEL);
-        labelId.setForeground(new Color(50, 50, 80));
-
-        txtIdArbitro = new JTextField();
-        txtIdArbitro.setFont(FONTE_CAMPO);
-        txtIdArbitro.setPreferredSize(new Dimension(150, 32));
-        txtIdArbitro.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(180, 180, 210)),
-                new EmptyBorder(4, 8, 4, 8)
-        ));
-
-        //botão que dispara a busca da escala ao clicar
-        JButton btnBuscar = criarBotao("Buscar", COR_BUSCAR);
-        btnBuscar.setPreferredSize(new Dimension(90, 32));
-        btnBuscar.addActionListener(e -> buscarEscala());
-
-        //label que vai mostrar o nome do árbitro encontrado
-        labelNomeArbitro = new JLabel(" ");
-        labelNomeArbitro.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        labelNomeArbitro.setForeground(COR_HEADER);
-
-        //posiciona cada componente na grade (linha 0, colunas 0 a 3)
-        gc.gridx = 0; gc.gridy = 0;
-        painel.add(labelId, gc);
-        gc.gridx = 1;
-        painel.add(txtIdArbitro, gc);
-        gc.gridx = 2;
-        painel.add(btnBuscar, gc);
-        gc.gridx = 3; gc.weightx = 1.0;
-        painel.add(labelNomeArbitro, gc);
-
-        return painel;
     }
 
     //monta a tabela que vai exibir as partidas da escala do árbitro
@@ -177,20 +138,17 @@ public class ConsultarEscalaArbitroView extends JFrame {
         return new JScrollPane(tabela);
     }
 
-    //ação do botão "Buscar": pega o login digitado e mostra a escala do árbitro
-    private void buscarEscala() {
-        String login = txtIdArbitro.getText().trim();
-        //se não digitou nada, avisa e não faz nada
-        if (login.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Informe o login do árbitro.", "Aviso", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
+    //busca o árbitro pelo login da sessão ativa e preenche a tabela com suas partidas
+    //assim o árbitro só vê a própria escala, sem precisar digitar nada
+    private void carregarEscalaDoArbitroLogado() {
         try {
-            //busca o árbitro pelo login
+            //pega o login do usuário que está logado na sessão atual
+            String login = SessaoUsuario.getInstancia().getUsuarioLogado().getLogin();
+
+            //busca o árbitro correspondente a esse login
             Arbitro arbitro = controller.buscarPorLogin(login);
 
-            //mostra o nome do árbitro encontrado e limpa a tabela
+            //mostra o nome do árbitro na tela e limpa a tabela
             labelNomeArbitro.setText("Árbitro: " + arbitro.getNome());
             modeloTabela.setRowCount(0);
 
@@ -199,7 +157,7 @@ public class ConsultarEscalaArbitroView extends JFrame {
 
             //se não tem nenhuma partida, avisa e para por aqui
             if (escala.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Nenhuma partida designada para este árbitro.", "Aviso", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Você não possui partidas designadas.", "Aviso", JOptionPane.INFORMATION_MESSAGE);
                 return;
             }
 
@@ -216,7 +174,7 @@ public class ConsultarEscalaArbitroView extends JFrame {
 
         } catch (IOException e) {
             //se der erro ao ler os arquivos, mostra a mensagem de erro
-            JOptionPane.showMessageDialog(this, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Erro ao carregar escala: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -226,7 +184,7 @@ public class ConsultarEscalaArbitroView extends JFrame {
         rodape.setBackground(COR_FUNDO);
         rodape.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(200, 200, 220)));
 
-        //botão fecha a janela atual
+        //botão fecha a janela atual e volta para onde estava
         JButton btnVoltar = criarBotao("Voltar", COR_CANCELAR);
         btnVoltar.addActionListener(e -> dispose());
 

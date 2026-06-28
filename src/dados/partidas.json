@@ -1,74 +1,26 @@
 [
   {
     "id": 1,
-    "arbitroId": 6,
-    "fase": "GRUPOS",
-    "status": "AGENDADA",
-    "data": "23/03/2026",
-    "selecao1Nome": "mexico",
-    "selecao2Nome": "peru",
-    "estadioNome": "Estádio de Toronto",
-    "golsSelecao1": 0,
-    "golsSelecao2": 0
-  },
-  {
-    "id": 5,
-    "arbitroId": 99,
-    "fase": "GRUPOS",
-    "status": "AGENDADA",
-    "data": "24/06/2026",
-    "selecao1Nome": "Alemanha",
-    "selecao2Nome": "Curação",
-    "estadioNome": "Estádio de Toronto",
-    "golsSelecao1": 0,
-    "golsSelecao2": 0
-  },
-  {
-    "id": 6,
-    "arbitroId": 99,
-    "fase": "GRUPOS",
-    "status": "AGENDADA",
-    "data": "18/06/2026",
-    "selecao1Nome": "Japão",
-    "selecao2Nome": "Colômbia",
-    "estadioNome": "Estádio Guadalajara",
-    "golsSelecao1": 0,
-    "golsSelecao2": 0
-  },
-  {
-    "id": 7,
-    "arbitroId": 1,
-    "fase": "GRUPOS",
-    "status": "AGENDADA",
-    "data": "11/06/2026",
-    "selecao1Nome": "Egito",
-    "selecao2Nome": "Marrocos",
-    "estadioNome": "Estádio Monterrey",
-    "golsSelecao1": 0,
-    "golsSelecao2": 0
-  },
-  {
-    "id": 4,
-    "arbitroId": 7,
+    "arbitroId": 2,
     "fase": "GRUPOS",
     "status": "FINALIZADA",
-    "data": "23/03/2026",
-    "selecao1Nome": "Egito",
-    "selecao2Nome": "Senegal",
-    "estadioNome": "Estadio Monterrey",
-    "golsSelecao1": 0,
-    "golsSelecao2": 0
+    "data": "13/06/2026",
+    "selecao1Nome": "Brasil",
+    "selecao2Nome": "Marrocos",
+    "estadioNome": "Estádio de Boston",
+    "golsSelecao1": 1,
+    "golsSelecao2": 1
   },
   {
     "id": 2,
     "arbitroId": 1,
     "fase": "GRUPOS",
     "status": "FINALIZADA",
-    "data": "23/03/2026",
-    "selecao1Nome": "Brasil",
-    "selecao2Nome": "Argentina",
-    "estadioNome": "Estádio de Toronto",
-    "golsSelecao1": 19,
-    "golsSelecao2": 0
+    "data": "16/06/2026",
+    "selecao1Nome": "França",
+    "selecao2Nome": "Senegal",
+    "estadioNome": "Estadio Guadalajara",
+    "golsSelecao1": 3,
+    "golsSelecao2": 1
   }
 ]

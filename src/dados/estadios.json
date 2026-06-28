@@ -1,14 +1,38 @@
 [
   {
     "id": 1,
-    "nome": "Estádio Monterrey",
+    "nome": "BC Place Vancouver",
     "localizacao": {
-      "cidade": "Guadalupe",
-      "estado": "Nuevo Léon",
-      "pais": "MEXICO",
-      "endereco": "Av. Pablo Livas 2011, Colônia La Pastora"
+      "cidade": "Vancouver",
+      "estado": "British Colombia",
+      "pais": "CANADA",
+      "endereco": "777 Pacific Blvd, Vancouver, BC V6B 4Y8"
     },
-    "capacidade": 53500,
+    "capacidade": 52497,
+    "partidasSediadas": []
+  },
+  {
+    "id": 3,
+    "nome": "Estádio de Boston",
+    "localizacao": {
+      "cidade": "Foxborough",
+      "estado": "Massachusetts",
+      "pais": "ESTADOS_UNIDOS",
+      "endereco": "1 Patriot Pl, Foxborough, MA 02035,"
+    },
+    "capacidade": 64146,
+    "partidasSediadas": []
+  },
+  {
+    "id": 4,
+    "nome": "Estadio Guadalajara",
+    "localizacao": {
+      "cidade": "Zapopan",
+      "estado": "Jalisco",
+      "pais": "MEXICO",
+      "endereco": "Cto. J.V.C. 2800, El Bajío, 45014 Zapopan, Jal"
+    },
+    "capacidade": 45664,
     "partidasSediadas": []
   }
 ]

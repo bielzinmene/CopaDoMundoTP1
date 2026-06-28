@@ -1,34 +1,26 @@
 [
   {
+    "id": 0,
+    "comprador": "",
+    "dataVenda": "2026-06-16T19:37:47.578897200",
+    "partidaId": 0,
+    "quantidadeIngressos": 0,
+    "valorTotal": 0.0
+  },
+  {
     "id": 1,
-    "comprador": "dan teste 1",
-    "dataVenda": "2026-06-08T18:36:42.233460400",
-    "partidaId": 3,
-    "quantidadeIngressos": 1,
-    "valorTotal": 300.0
+    "comprador": "Richarlisson",
+    "dataVenda": "2026-06-16T19:37:47.577894100",
+    "partidaId": 1,
+    "quantidadeIngressos": 3,
+    "valorTotal": 900.0
   },
   {
     "id": 2,
-    "comprador": "menezews teste 2",
-    "dataVenda": "2026-06-08T18:37:14.005695200",
-    "partidaId": 3,
-    "quantidadeIngressos": 3,
-    "valorTotal": 225.0
-  },
-  {
-    "id": 3,
-    "comprador": "erica teste 3",
-    "dataVenda": "2026-06-08T18:38:07.962794100",
-    "partidaId": 6,
-    "quantidadeIngressos": 2,
-    "valorTotal": 600.0
-  },
-  {
-    "id": 4,
-    "comprador": "fernanda teste 4",
-    "dataVenda": "2026-06-09T00:07:49.177809",
-    "partidaId": 1,
-    "quantidadeIngressos": 5,
-    "valorTotal": 750.0
+    "comprador": "Maisa",
+    "dataVenda": "2026-06-16T19:38:03.296484900",
+    "partidaId": 2,
+    "quantidadeIngressos": 1,
+    "valorTotal": 150.0
   }
 ]
