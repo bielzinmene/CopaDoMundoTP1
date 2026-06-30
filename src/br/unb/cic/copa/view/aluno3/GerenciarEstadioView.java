@@ -33,6 +33,9 @@ public class GerenciarEstadioView extends JFrame {
     //controller que faz a ponte com os dados dos estádios
     private final EstadioController controller = new EstadioController();
 
+    //-1 significa "modo cadastro novo"; qualquer outro valor é o id do estádio sendo editado
+    private int estadioEditandoId = -1;
+
     //cores e fontes usadas na tela
     private static final Color COR_FUNDO     = new Color(245, 245, 250);
     private static final Color COR_HEADER    = Color.BLACK;
@@ -76,7 +79,7 @@ public class GerenciarEstadioView extends JFrame {
         header.setBackground(COR_HEADER);
         header.setBorder(new EmptyBorder(10, 20, 10, 20));
 
-        JLabel titulo = new JLabel("Gerenciar Estádios");
+        JLabel titulo = new JLabel("🏟  Gerenciar Estádios");
         titulo.setFont(FONTE_TITULO);
         titulo.setForeground(Color.WHITE);
         header.add(titulo, BorderLayout.WEST);
@@ -192,6 +195,11 @@ public class GerenciarEstadioView extends JFrame {
             }
         });
 
+        //quando o usuário seleciona uma linha, carrega os dados no formulário e entra no modo edição
+        tabela.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) carregarEstadioSelecionado();
+        });
+
         JScrollPane scroll = new JScrollPane(tabela);
         scroll.setPreferredSize(new Dimension(0, 180));
 
@@ -291,7 +299,7 @@ public class GerenciarEstadioView extends JFrame {
         rodape.setBackground(COR_FUNDO);
         rodape.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(200, 200, 220)));
 
-        JButton btnLimpar   = criarBotao("Limpar", COR_BUSCA);
+        JButton btnLimpar   = criarBotao("Limpar Formulário", COR_BUSCA);
         JButton btnCancelar = criarBotao("Cancelar", COR_CANCELAR);
         JButton btnSalvar   = criarBotao("Salvar", COR_SALVAR);
 
@@ -329,6 +337,27 @@ public class GerenciarEstadioView extends JFrame {
             public void mouseExited(java.awt.event.MouseEvent e) { btn.setBackground(cor); }
         });
         return btn;
+    }
+
+    //quando o usuário clica numa linha, busca o estádio pelo id e preenche o formulário com os dados dele
+    private void carregarEstadioSelecionado() {
+        int linha = tabela.getSelectedRow();
+        if (linha >= 0) {
+            try {
+                int id = (int) modeloTabela.getValueAt(linha, 0);
+                Estadio e = controller.buscarPorId(id);
+                txtNome.setText(e.getNome());
+                txtCapacidade.setText(String.valueOf(e.getCapacidade()));
+                txtCidade.setText(e.getLocalizacao().getCidade());
+                txtEstado.setText(e.getLocalizacao().getEstado());
+                comboPais.setSelectedItem(e.getLocalizacao().getPais());
+                txtEndereco.setText(e.getLocalizacao().getEndereco());
+                //guarda o id pra saber que o Salvar deve atualizar e não criar novo
+                estadioEditandoId = id;
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, "Erro ao carregar estádio: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }
 
     //ação do botão "Excluir": remove o estádio selecionado na tabela
@@ -374,10 +403,14 @@ public class GerenciarEstadioView extends JFrame {
                 return;
             }
 
-            // ID gerado automaticamente pelo controller
-            controller.cadastrar(nome, capacidade, cidade, estado, pais, endereco);
-
-            JOptionPane.showMessageDialog(this, "Estádio salvo com sucesso!");
+            //se estadioEditandoId > 0 estamos editando, senão é um cadastro novo
+            if (estadioEditandoId > 0) {
+                controller.atualizar(estadioEditandoId, nome, capacidade, cidade, estado, pais, endereco);
+                JOptionPane.showMessageDialog(this, "Estádio atualizado com sucesso!");
+            } else {
+                controller.cadastrar(nome, capacidade, cidade, estado, pais, endereco);
+                JOptionPane.showMessageDialog(this, "Estádio cadastrado com sucesso!");
+            }
             //limpa o formulário e recarrega a tabela já mostrando o novo estádio
             limparFormulario();
             carregarTabela("");
@@ -394,7 +427,7 @@ public class GerenciarEstadioView extends JFrame {
         }
     }
 
-    //limpa todos os campos do formulário, deixando pronto pra um novo cadastro
+    //limpa todos os campos e volta pro modo de cadastro novo
     private void limparFormulario() {
         txtNome.setText("");
         txtCapacidade.setText("");
@@ -402,5 +435,7 @@ public class GerenciarEstadioView extends JFrame {
         txtEstado.setText("");
         comboPais.setSelectedIndex(0);
         txtEndereco.setText("");
+        estadioEditandoId = -1; //sai do modo edição
+        tabela.clearSelection();
     }
 }
