@@ -75,5 +75,16 @@
     "pais": "Brasil",
     "funcao": "Operador",
     "status": "Ativo"
+  },
+  {
+    "id": 101,
+    "nome": "Erica",
+    "email": "erica@gmail.com",
+    "login": "erica@gmail.com",
+    "senha": "Neres2006",
+    "cpf": "999.999.999-99",
+    "pais": "Brasil",
+    "funcao": "Arbitro",
+    "status": "Ativo"
   }
 ]

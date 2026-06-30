@@ -8,7 +8,7 @@ import java.io.Serializable;
 public class Partida implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
+    // encapsulamento de funções: os objetos só são acessados por getters e por setters
     private int id;
     private int arbitroId;
     private Selecao selecao1;
@@ -21,7 +21,7 @@ public class Partida implements Serializable {
 
     public Partida(Selecao selecao1, Selecao selecao2, String data, Estadio estadio, Fase fase) {
         if (selecao1.getNome().equals(selecao2.getNome())) {
-            throw new IllegalArgumentException("Erro: Uma partida deve ter duas seleções diferentes.");
+            throw new IllegalArgumentException("Erro: Uma partida deve ter duas seleções diferentes."); //tratamento de erro para ser possível ter duas seleções diferentes (ERRO: uma seleção se enfrentar).
         }
         this.selecao1 = selecao1;
         this.selecao2 = selecao2;
@@ -37,7 +37,7 @@ public class Partida implements Serializable {
 
     public void iniciarPartida() {
         if (!(this.status.equals(StatusPartida.AGENDADA))) {
-            System.out.println("Erro: somente partidas agendadas podem ser iniciadas.");
+            System.out.println("Erro: somente partidas agendadas podem ser iniciadas."); //tratamento de erro: agendamento de pártidas
             return;
         }
         this.status = StatusPartida.EM_ANDAMENTO;
@@ -45,7 +45,7 @@ public class Partida implements Serializable {
 
     public void finalizarPartida(Resultado resultado) {
         if (this.status.equals(StatusPartida.FINALIZADA)) {
-            System.out.println("Erro: Partida já finalizada!");
+            System.out.println("Erro: Partida já finalizada!"); // tratamento de erro: tentar agendar uma partida já finalizada
             return;
         }
         if (this.status.equals(StatusPartida.AGENDADA)) {
@@ -53,7 +53,7 @@ public class Partida implements Serializable {
             return;
         }
         if (resultado == null) {
-            System.out.println("Erro: resultado não pode ser nulo.");
+            System.out.println("Erro: resultado não pode ser nulo."); // tratamento de erro: tem que ter vitória, derrota e empate.
             return;
         }
         this.resultado = resultado;
@@ -75,6 +75,7 @@ public class Partida implements Serializable {
         else return null;
     }
 
+    // getters e setters
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
@@ -122,7 +123,7 @@ public class Partida implements Serializable {
 
     public void setEstadio(Estadio estadio) {
         if (!(this.status.equals(StatusPartida.AGENDADA))) {
-            System.out.println("Erro: não é possível alterar o estádio de uma partida " + this.getStatus());
+            System.out.println("Erro: não é possível alterar o estádio de uma partida " + this.getStatus()); //tratamento de erro: mensagem de não poder alterar o estádio da partida
             return;
         }
         this.estadio = estadio;
