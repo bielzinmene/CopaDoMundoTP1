@@ -29,6 +29,18 @@ public class EstadioController {
         estadioRepository.salvar(estadio);
     }
 
+    // Atualiza os dados de um estádio já existente pelo ID
+    public void atualizar(int id, String nome, int capacidade,
+                          String cidade, String estado, PaisSede pais, String endereco)
+            throws CapacidadeInvalidaException, IOException {
+
+        Estadio estadio = estadioRepository.buscarPorId(id);
+        estadio.setNome(nome);
+        estadio.setCapacidade(capacidade);
+        estadio.setLocalizacao(new Localizacao(cidade, estado, pais, endereco));
+        estadioRepository.salvar(estadio);
+    }
+
     // Gera ID único: pega o maior ID existente e soma 1
     private int gerarNovoId() throws IOException {
         List<Estadio> lista = estadioRepository.listarTodos();
