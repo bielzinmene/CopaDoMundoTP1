@@ -29,6 +29,7 @@ import java.time.format.DateTimeParseException;
 import java.util.List;
 
 public class PartidaView extends JFrame {
+// aqui é usado a herança.
 
     private JTextField campoSelecao1;
     private JTextField campoSelecao2;

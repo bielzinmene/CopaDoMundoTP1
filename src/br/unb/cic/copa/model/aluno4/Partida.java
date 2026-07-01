@@ -6,7 +6,7 @@ import br.unb.cic.copa.model.aluno3.Estadio;
 import java.io.Serializable;
 
 public class Partida implements Serializable {
-
+// utilizada a interface aqui para salvar os dados das partidas no Repository
     private static final long serialVersionUID = 1L;
     // encapsulamento de funções: os objetos só são acessados por getters e por setters
     private int id;
@@ -30,7 +30,7 @@ public class Partida implements Serializable {
         this.fase = fase;
         this.status = StatusPartida.AGENDADA;
     }
-
+    // construtor
     public Partida(Selecao selecao1, Selecao selecao2, String data, Estadio estadio) {
         this(selecao1, selecao2, data, estadio, Fase.GRUPOS);
     }
@@ -72,7 +72,7 @@ public class Partida implements Serializable {
         if (status != StatusPartida.FINALIZADA || this.resultado == null) return null;
         if (this.resultado.getGols1() > this.resultado.getGols2()) return selecao1;
         else if (this.resultado.getGols2() > this.resultado.getGols1()) return selecao2;
-        else return null;
+        else return null; //isso é se acabar sendo empate
     }
 
     // getters e setters
