@@ -36,6 +36,28 @@ public class ArbitroController {
 
     }
 
+    // Atualiza os dados de um árbitro já existente pelo ID
+    public void atualizar(int id, String nome, String email, String login,
+                          String senha, String cpf,
+                          String nacionalidade, int experiencia)
+            throws ExperienciaInvalidaException, IOException {
+
+        Arbitro arbitro = arbitroRepository.buscarPorId(id);
+        arbitro.setNome(nome);
+        arbitro.setEmail(email);
+        arbitro.setLogin(login);
+        arbitro.setSenha(senha);
+        arbitro.setCpf(cpf);
+        arbitro.setNacionalidade(nacionalidade);
+        arbitro.setPais(nacionalidade);
+        arbitro.setExperiencia(experiencia);
+
+        arbitroRepository.salvar(arbitro);
+        usuarioRepository.salvar(arbitro);
+
+        br.unb.cic.copa.controller.aluno1.UsuarioController.getInstancia().recarregarUsuarios();
+    }
+
     // Busca árbitro pelo ID
     public Arbitro buscarPorId(int id) throws IOException {
         return arbitroRepository.buscarPorId(id);

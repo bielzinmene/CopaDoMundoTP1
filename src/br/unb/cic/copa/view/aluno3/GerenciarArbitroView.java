@@ -35,6 +35,9 @@ public class GerenciarArbitroView extends JFrame {
     //controller que faz a ponte com os dados dos árbitros
     private final ArbitroController controller = new ArbitroController();
 
+    //-1 significa "modo cadastro novo"; qualquer outro valor é o id do árbitro sendo editado
+    private int arbitroEditandoId = -1;
+
     //cores e fontes usadas na tela
     private static final Color COR_FUNDO     = new Color(245, 245, 250);
     private static final Color COR_HEADER    = Color.BLACK;
@@ -126,11 +129,11 @@ public class GerenciarArbitroView extends JFrame {
         //cria cada campo já com um texto de exemplo (placeholder)
         txtNome          = criarCampoComPlaceholder("Ex: João Silva");
         txtEmail         = criarCampoComPlaceholder("Ex: joao@email.com");
-        txtLogin         = criarCampoComPlaceholder("Ex: joao_silva");
+        txtLogin         = criarCampoComPlaceholder("Ex: joao.silva");
         txtSenha         = criarCampoSenhaComPlaceholder("Mín. 8 caracteres, letra e número");
         ecoSenhaPadrao   = txtSenha.getEchoChar(); //guarda o caractere de ocultação original
         txtCpf           = criarCampoComPlaceholder("000.000.000-00");
-        txtNacionalidade = criarCampoComPlaceholder("Ex: Brasil");
+        txtNacionalidade = criarCampoComPlaceholder("Ex: Brasileiro");
         txtExperiencia   = criarCampoComPlaceholder("Ex: 5");
 
         //adiciona cada campo no formulário, um por linha
@@ -429,10 +432,14 @@ public class GerenciarArbitroView extends JFrame {
                 return;
             }
 
-            // ID gerado automaticamente pelo controller
-            controller.cadastrar(nome, email, login, senha, cpf, nacionalidade, experiencia);
-
-            JOptionPane.showMessageDialog(this, "Árbitro salvo com sucesso!");
+            //se arbitroEditandoId > 0 estamos editando, senão é um cadastro novo
+            if (arbitroEditandoId > 0) {
+                controller.atualizar(arbitroEditandoId, nome, email, login, senha, cpf, nacionalidade, experiencia);
+                JOptionPane.showMessageDialog(this, "Árbitro atualizado com sucesso!");
+            } else {
+                controller.cadastrar(nome, email, login, senha, cpf, nacionalidade, experiencia);
+                JOptionPane.showMessageDialog(this, "Árbitro cadastrado com sucesso!");
+            }
             //limpa o formulário e recarrega a tabela já mostrando o novo árbitro
             limparFormulario();
             carregarTabela("");
@@ -449,7 +456,7 @@ public class GerenciarArbitroView extends JFrame {
         }
     }
 
-    //quando o usuário clica numa linha da tabela, busca o árbitro pelo id e preenche o formulário com os dados dele
+    //quando o usuário clica numa linha da tabela, carrega os dados e entra no modo edição
     private void carregarArbitroSelecionado() {
         int linha = tabela.getSelectedRow();
         if (linha >= 0) {
@@ -463,13 +470,15 @@ public class GerenciarArbitroView extends JFrame {
                 txtCpf.setText(a.getCpf());
                 txtNacionalidade.setText(a.getNacionalidade());
                 txtExperiencia.setText(String.valueOf(a.getExperiencia()));
+                //guarda o id pra saber que o Salvar deve atualizar e não criar novo
+                arbitroEditandoId = id;
             } catch (IOException e) {
                 JOptionPane.showMessageDialog(this, "Erro ao carregar árbitro: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
 
-    //limpa todos os campos do formulário, deixando pronto pra um novo cadastro
+    //limpa todos os campos e volta pro modo de cadastro novo
     private void limparFormulario() {
         txtNome.setText("");
         txtEmail.setText("");
@@ -478,5 +487,7 @@ public class GerenciarArbitroView extends JFrame {
         txtCpf.setText("");
         txtNacionalidade.setText("");
         txtExperiencia.setText("");
+        arbitroEditandoId = -1; //sai do modo edição
+        tabela.clearSelection();
     }
 }
