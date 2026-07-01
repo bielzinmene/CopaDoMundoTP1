@@ -17,7 +17,7 @@ import java.util.List;
 public class PartidaRepository {
 
     private static final String ARQUIVO = "src/dados/partidas.json";
-
+    // como não há necessidade de fazer uma sobrescrita, esse método já é declarado como final
     public PartidaRepository() {
         File file = new File(ARQUIVO);
         file.getParentFile().mkdirs();
@@ -39,7 +39,7 @@ public class PartidaRepository {
         partidas.add(partida);
         salvarArquivo(partidas);
     }
-
+    // pecorre a lista de partidas e compara o ID de cada uma
     public Partida buscarPorId(int id) {
         for (Partida p : listarTodos()) {
             if (p.getId() == id) return p;

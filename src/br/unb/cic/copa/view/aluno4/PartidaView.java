@@ -247,6 +247,7 @@ public class PartidaView extends JFrame {
         JButton btnVoltar = criarBotao("Voltar", COR_CANCELAR);
         JButton btnSalvar   = criarBotao("Salvar", COR_SALVAR);
 
+        // aqui é utilizado a herança para o controle de acesso
         if (!(usuarioLogado instanceof Administrador) && !(usuarioLogado instanceof Organizador)) {
             btnSalvar.setEnabled(false);
             btnSalvar.setToolTipText("Você não tem permissão para criar partidas.");
