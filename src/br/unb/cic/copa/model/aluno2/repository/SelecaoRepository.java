@@ -14,10 +14,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Repositório de Seleções usando Gson para persistência em JSON.
- * Gerencia o arquivo src/dados/selecoes.json
- */
+
 public class SelecaoRepository implements Repositorio<Selecao> {
 
     private final String caminhoArquivo;
@@ -32,8 +29,8 @@ public class SelecaoRepository implements Repositorio<Selecao> {
     // Métodos de persistência principais (salvar e carregar)
     // --------------------------------------------------------------
 
-    /**
-     * Salva a lista completa de seleções no arquivo JSON.
+    /*
+      salva a lista completa no Gson
      */
     public void salvarTodas(List<Selecao> selecoes) throws IOException {
         String json = gson.toJson(selecoes); // converte a lista de seleções para string JSON
@@ -43,19 +40,19 @@ public class SelecaoRepository implements Repositorio<Selecao> {
         Files.write(Paths.get(caminhoArquivo), json.getBytes()); // escreve o JSON no arquivo
     }
 
-    /**
-     * Carrega a lista completa de seleções do arquivo JSON.
-     * Se o arquivo não existir, retorna uma lista vazia.
+    /*
+      Carrega a lista completa de seleções do arquivo JSON.
+      Se o arquivo não existir, retorna uma lista vazia.
      */
     public List<Selecao> carregarTodas() throws IOException {
         File arquivo = new File(caminhoArquivo);
         if (!arquivo.exists()) {
             return new ArrayList<>(); // arquivo não existe, retorna lista vazia
         }
-        String json = new String(Files.readAllBytes(Paths.get(caminhoArquivo))); // lê todo o conteúdo do arquivo
+        String json = new String(Files.readAllBytes(Paths.get(caminhoArquivo))); // lê o arquivo
         Type tipoLista = new TypeToken<ArrayList<Selecao>>() {}.getType(); // define o tipo para desserialização
         List<Selecao> selecoes = gson.fromJson(json, tipoLista); // converte JSON para lista de objetos
-        // Reconstroi a referência bidirecional jogador -> seleção
+        // reconstroi a referência bidirecional jogador -> seleção
         if (selecoes != null) {
             for (Selecao s : selecoes) {
                 for (Jogador j : s.getJogadores()) {
@@ -67,7 +64,7 @@ public class SelecaoRepository implements Repositorio<Selecao> {
     }
 
     // --------------------------------------------------------------
-    // Implementação dos métodos da interface Repositorio<Selecao>
+    // implementação dos métodos da interface Selecao
     // --------------------------------------------------------------
 
     @Override
@@ -98,7 +95,7 @@ public class SelecaoRepository implements Repositorio<Selecao> {
 
     @Override
     public List<Selecao> listarTodos() throws IOException {
-        return carregarTodas(); // delega para o método de carregamento
+        return carregarTodas(); // delega para o carregamento
     }
 
     @Override
