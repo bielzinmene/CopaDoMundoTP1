@@ -56,6 +56,20 @@ public class IngressosController {
             );
         }
 
+        int vendidos = getQuantidadeIngressosPartida(partida.getId());
+
+        int capacidade = partida.getEstadio().getCapacidade();
+
+        if (vendidos + quantidade > capacidade) {
+
+            throw new VendaIngressoException(
+                    "Não há ingressos suficientes disponíveis para esta partida.\n\n"
+                            + "Capacidade do estádio: " + capacidade
+                            + "\nIngressos já vendidos: " + vendidos
+                            + "\nIngressos disponíveis: " + (capacidade - vendidos)
+            );
+        }
+
         Venda venda =
                 new Venda(
                         gerarNovoIdVenda(),

@@ -71,8 +71,9 @@ public class PartidaRepository {
                         "    \"data\": \""          + p.getData()         + "\",\n" +
                         "    \"selecao1Nome\": \""  + sel1Nome            + "\",\n" +
                         "    \"selecao2Nome\": \""  + sel2Nome            + "\",\n" +
-                        "    \"estadioNome\": \""   + estadioNome         + "\",\n" +
-                        "    \"golsSelecao1\": "    + p.getGolsSelecao1() + ",\n" +
+                        "    \"estadioNome\": \"" + estadioNome + "\",\n" +
+                        "    \"estadioCapacidade\": " + p.getEstadio().getCapacidade() + ",\n" +
+                        "    \"golsSelecao1\": " + p.getGolsSelecao1() + ",\n" +
                         "    \"golsSelecao2\": "    + p.getGolsSelecao2() + "\n"  +
                         "  }";
                 writer.write(json);
@@ -98,7 +99,11 @@ public class PartidaRepository {
 
             for (String obj : objetos) {
                 obj = obj.replace("{", "").replace("}", "").trim();
-                int id = 0, arbitroId = 0, gols1 = 0, gols2 = 0;
+                int id = 0;
+                int arbitroId = 0;
+                int gols1 = 0;
+                int gols2 = 0;
+                int estadioCapacidade = 0;
                 String fase = "", status = "", data = "", sel1Nome = "", sel2Nome = "", estadioNome = "";
 
                 for (String linha : obj.split(",\\s*\\r?\\n")) {
@@ -118,6 +123,7 @@ public class PartidaRepository {
                         case "selecao1Nome": sel1Nome  = valor; break;
                         case "selecao2Nome": sel2Nome  = valor; break;
                         case "estadioNome":  estadioNome = valor; break;
+                        case "estadioCapacidade": estadioCapacidade = Integer.parseInt(valor); break;
                         case "golsSelecao1": gols1     = Integer.parseInt(valor); break;
                         case "golsSelecao2": gols2     = Integer.parseInt(valor); break;
                     }
@@ -127,7 +133,7 @@ public class PartidaRepository {
                     Selecao sel1 = new Selecao(sel1Nome, "", "");
                     Selecao sel2 = new Selecao(sel2Nome, "", "");
                     Localizacao loc = new Localizacao("", "", PaisSede.ESTADOS_UNIDOS, "");
-                    Estadio estadio = new Estadio(0, estadioNome, loc, 1);
+                    Estadio estadio = new Estadio(0, estadioNome, loc, estadioCapacidade);
                     Fase faseEnum = Fase.valueOf(fase);
 
                     Partida p = new Partida(sel1, sel2, data, estadio, faseEnum);

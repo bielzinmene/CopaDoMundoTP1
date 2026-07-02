@@ -8,6 +8,7 @@
     "selecao1Nome": "França",
     "selecao2Nome": "Senegal",
     "estadioNome": "Estadio Guadalajara",
+    "estadioCapacidade": 45664,
     "golsSelecao1": 3,
     "golsSelecao2": 1
   },
@@ -20,6 +21,7 @@
     "selecao1Nome": "Brasil",
     "selecao2Nome": "Argentina",
     "estadioNome": "Estádio de Boston",
+    "estadioCapacidade": 64146,
     "golsSelecao1": 3,
     "golsSelecao2": 1
   },
@@ -32,6 +34,7 @@
     "selecao1Nome": "Brasil",
     "selecao2Nome": "Haiti",
     "estadioNome": "Estádio de Boston",
+    "estadioCapacidade": 64146,
     "golsSelecao1": 0,
     "golsSelecao2": 0
   },
@@ -44,6 +47,7 @@
     "selecao1Nome": "Brasil",
     "selecao2Nome": "Marrocos",
     "estadioNome": "BC Place Vancouver",
+    "estadioCapacidade": 52497,
     "golsSelecao1": 1,
     "golsSelecao2": 1
   }

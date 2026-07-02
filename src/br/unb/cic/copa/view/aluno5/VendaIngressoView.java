@@ -17,7 +17,6 @@ import java.util.List;
 
 public class VendaIngressoView extends JFrame {
 
-    private JTextField txtId;
     private JTextField txtComprador;
     private JTextField txtQuantidade;
     private JTextField txtBusca;
@@ -113,10 +112,6 @@ public class VendaIngressoView extends JFrame {
         gc.insets = new Insets(6, 5, 6, 5);
         gc.anchor = GridBagConstraints.WEST;
 
-        txtId = criarCampo();
-        txtId.setEditable(false);
-        txtId.setBackground(new Color(230, 230, 240));
-
         txtComprador = criarCampo();
         txtQuantidade = criarCampo();
 
@@ -128,7 +123,6 @@ public class VendaIngressoView extends JFrame {
         cbCategoria.setFont(FONTE_CAMPO);
         cbCategoria.setPreferredSize(new Dimension(250, 32));
 
-        adicionarLinha(painel, gc, 0, "ID:", txtId);
         adicionarLinha(painel, gc, 1, "Comprador:", txtComprador);
 
         // Partida
@@ -185,16 +179,21 @@ public class VendaIngressoView extends JFrame {
 
         // Tabela
         modeloTabela = new DefaultTableModel(
-                new String[]{"ID", "Comprador", "Qtd Ingressos", "Valor Total"},
+                new String[]{
+                        "ID",
+                        "Comprador",
+                        "Partida",
+                        "Qtd Ingressos",
+                        "Valor Total"
+                },
                 0
-        ) {
-            @Override
-            public boolean isCellEditable(int row, int col) {
-                return false;
-            }
-        };
+        );
+
 
         tabela = new JTable(modeloTabela);
+        tabela.getColumnModel()
+                .getColumn(2)
+                .setPreferredWidth(280);
         tabela.setFont(FONTE_CAMPO);
         tabela.setRowHeight(26);
         tabela.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 12));
@@ -211,12 +210,6 @@ public class VendaIngressoView extends JFrame {
             }
         });
 
-        // Selecionar linha para preencher ID
-        tabela.getSelectionModel().addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting()) {
-                carregarVendaSelecionada();
-            }
-        });
 
         JScrollPane scroll = new JScrollPane(tabela);
         scroll.setPreferredSize(new Dimension(0, 180));
@@ -311,27 +304,47 @@ public class VendaIngressoView extends JFrame {
     }
 
     private void carregarTabela() {
+
         modeloTabela.setRowCount(0);
+
         String filtro = txtBusca.getText().trim().toLowerCase();
+
         for (Venda venda : controller.listarVendas()) {
-            if (filtro.isEmpty() || venda.getComprador().toLowerCase().contains(filtro)) {
-                modeloTabela.addRow(new Object[]{
-                        venda.getId(),
-                        venda.getComprador(),
-                        venda.getQuantidadeIngressos(),
-                        venda.getValorTotal()
-                });
+
+            if (filtro.isEmpty()
+                    || venda.getComprador().toLowerCase().contains(filtro)) {
+
+                Partida partida =
+                        partidaController.buscarPorId(
+                                venda.getPartidaId()
+                        );
+
+                String descricaoPartida = "";
+
+                if (partida != null) {
+
+                    descricaoPartida =
+                            partida.getSelecao1().getNome()
+                                    + " x "
+                                    + partida.getSelecao2().getNome()
+                                    + " - "
+                                    + partida.getData();
+                }
+
+                modeloTabela.addRow(
+                        new Object[]{
+                                venda.getId(),
+                                venda.getComprador(),
+                                descricaoPartida,
+                                venda.getQuantidadeIngressos(),
+                                venda.getValorTotal()
+                        }
+                );
             }
         }
     }
 
-    private void carregarVendaSelecionada() {
-        int linha = tabela.getSelectedRow();
-        if (linha >= 0) {
-            int id = (int) modeloTabela.getValueAt(linha, 0);
-            txtId.setText(String.valueOf(id));
-        }
-    }
+
 
     private void salvarIngresso() {
         try {
@@ -383,12 +396,14 @@ public class VendaIngressoView extends JFrame {
     }
 
     private void limparFormulario() {
-        txtId.setText("");
+
         txtComprador.setText("");
         txtQuantidade.setText("");
+
         if (cbPartida.getItemCount() > 0) {
             cbPartida.setSelectedIndex(0);
         }
+
         cbCategoria.setSelectedIndex(0);
         tabela.clearSelection();
     }
