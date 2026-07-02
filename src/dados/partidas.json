@@ -1,17 +1,5 @@
 [
   {
-    "id": 1,
-    "arbitroId": 2,
-    "fase": "GRUPOS",
-    "status": "FINALIZADA",
-    "data": "13/06/2026",
-    "selecao1Nome": "Brasil",
-    "selecao2Nome": "Marrocos",
-    "estadioNome": "Estádio de Boston",
-    "golsSelecao1": 1,
-    "golsSelecao2": 1
-  },
-  {
     "id": 2,
     "arbitroId": 1,
     "fase": "GRUPOS",
@@ -46,5 +34,17 @@
     "estadioNome": "Estádio de Boston",
     "golsSelecao1": 0,
     "golsSelecao2": 0
+  },
+  {
+    "id": 5,
+    "arbitroId": 1,
+    "fase": "GRUPOS",
+    "status": "FINALIZADA",
+    "data": "11/07/2026",
+    "selecao1Nome": "Brasil",
+    "selecao2Nome": "Marrocos",
+    "estadioNome": "BC Place Vancouver",
+    "golsSelecao1": 1,
+    "golsSelecao2": 1
   }
 ]

@@ -19,13 +19,17 @@ import br.unb.cic.copa.view.aluno1.MenuPrincipalView;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 
 public class PartidaView extends JFrame {
+// aqui é usado a herança.
 
     private JTextField campoSelecao1;
     private JTextField campoSelecao2;
@@ -33,8 +37,10 @@ public class PartidaView extends JFrame {
     private JTextField campoData;
     private JComboBox<String> comboEstadio;
     private JComboBox<String> comboNomeArbitro;
+    private JTextField campoBusca;
     private JTable tabela;
     private DefaultTableModel modeloTabela;
+    private TableRowSorter<DefaultTableModel> sorter;
 
     private final Usuario usuarioLogado = SessaoUsuario.getInstancia().getUsuarioLogado();
 
@@ -169,6 +175,17 @@ public class PartidaView extends JFrame {
         JPanel painel = new JPanel(new BorderLayout(0, 8));
         painel.setBackground(COR_FUNDO);
 
+        JPanel painelBusca = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        painelBusca.setBackground(COR_FUNDO);
+        JLabel lblBusca = new JLabel("Buscar por Seleção:");
+        lblBusca.setFont(FONTE_LABEL);
+        lblBusca.setForeground(Color.BLACK);
+        campoBusca = criarCampoComPlaceholder("Ex: Brasil...");
+        campoBusca.setPreferredSize(new Dimension(300, 32));
+
+        painelBusca.add(lblBusca);
+        painelBusca.add(campoBusca);
+
         modeloTabela = new DefaultTableModel(
                 new String[]{"ID", "Seleção 1", "Seleção 2", "Data", "Fase", "Status", "ID Árbitro"}, 0) {
             public boolean isCellEditable(int row, int col) { return false; }
@@ -181,6 +198,22 @@ public class PartidaView extends JFrame {
         tabela.getTableHeader().setBackground(COR_HEADER);
         tabela.getTableHeader().setForeground(Color.WHITE);
         tabela.setSelectionBackground(new Color(220, 220, 220));
+
+        sorter = new TableRowSorter<>(modeloTabela);
+        tabela.setRowSorter(sorter);
+
+        campoBusca.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                String texto = campoBusca.getText().trim();
+                if (texto.isEmpty()) {
+                    sorter.setRowFilter(null);
+                } else {
+                    // O "?i" faz ignorar maiúsculas/minúsculas. Os índices 1 e 2 são as colunas das seleções.
+                    sorter.setRowFilter(RowFilter.regexFilter("(?i)" + texto, 1, 2));
+                }
+            }
+        });
 
         JScrollPane scroll = new JScrollPane(tabela);
         scroll.setPreferredSize(new Dimension(0, 200));
@@ -198,6 +231,8 @@ public class PartidaView extends JFrame {
         painelExcluir.setBackground(COR_FUNDO);
         painelExcluir.add(btnExcluir);
 
+        // Adicionando a busca, a tabela e o botão excluir na tela
+        painel.add(painelBusca, BorderLayout.NORTH);
         painel.add(scroll, BorderLayout.CENTER);
         painel.add(painelExcluir, BorderLayout.SOUTH);
 
@@ -212,6 +247,7 @@ public class PartidaView extends JFrame {
         JButton btnVoltar = criarBotao("Voltar", COR_CANCELAR);
         JButton btnSalvar   = criarBotao("Salvar", COR_SALVAR);
 
+        // aqui é utilizado a herança para o controle de acesso
         if (!(usuarioLogado instanceof Administrador) && !(usuarioLogado instanceof Organizador)) {
             btnSalvar.setEnabled(false);
             btnSalvar.setToolTipText("Você não tem permissão para criar partidas.");
@@ -326,9 +362,13 @@ public class PartidaView extends JFrame {
             JOptionPane.showMessageDialog(this, "Selecione uma partida na tabela para excluir.", "Aviso", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        int id = (int) modeloTabela.getValueAt(linha, 0);
-        String sel1 = (String) modeloTabela.getValueAt(linha, 1);
-        String sel2 = (String) modeloTabela.getValueAt(linha, 2);
+        // Quando a tabela é filtrada, a linha clicada não é a mesma do modelo original.
+        // O convertRowIndexToModel corrige isso pra gente não excluir a partida errada!
+        int linhaModel = tabela.convertRowIndexToModel(linha);
+        int id = (int) modeloTabela.getValueAt(linhaModel, 0);
+        String sel1 = (String) modeloTabela.getValueAt(linhaModel, 1);
+        String sel2 = (String) modeloTabela.getValueAt(linhaModel, 2);
+
         int confirmacao = JOptionPane.showConfirmDialog(this,
                 "Deseja excluir a partida '" + sel1 + " x " + sel2 + "'?",
                 "Confirmar exclusão", JOptionPane.YES_NO_OPTION);
@@ -359,6 +399,8 @@ public class PartidaView extends JFrame {
         campoSelecao1.setText("");
         campoSelecao2.setText("");
         campoData.setText("");
+        if (campoBusca != null) campoBusca.setText("");
+        if (sorter != null) sorter.setRowFilter(null);
         comboFase.setSelectedIndex(0);
         if (comboEstadio.getItemCount() > 0) comboEstadio.setSelectedIndex(0);
         if (comboNomeArbitro.getItemCount() > 0) comboNomeArbitro.setSelectedIndex(0);

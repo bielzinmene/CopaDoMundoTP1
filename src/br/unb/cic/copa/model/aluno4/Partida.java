@@ -6,7 +6,7 @@ import br.unb.cic.copa.model.aluno3.Estadio;
 import java.io.Serializable;
 
 public class Partida implements Serializable {
-
+// utilizada o Serializable para que os objetos das classe Partida seja salvo num arquivo pelo repositório
     private static final long serialVersionUID = 1L;
     // encapsulamento de funções: os objetos só são acessados por getters e por setters
     private int id;
@@ -19,6 +19,7 @@ public class Partida implements Serializable {
     private StatusPartida status;
     private Resultado resultado;
 
+    // construtor
     public Partida(Selecao selecao1, Selecao selecao2, String data, Estadio estadio, Fase fase) {
         if (selecao1.getNome().equals(selecao2.getNome())) {
             throw new IllegalArgumentException("Erro: Uma partida deve ter duas seleções diferentes."); //tratamento de erro para ser possível ter duas seleções diferentes (ERRO: uma seleção se enfrentar).
@@ -30,7 +31,7 @@ public class Partida implements Serializable {
         this.fase = fase;
         this.status = StatusPartida.AGENDADA;
     }
-
+    // sobrecarga de construtor, aqui informa se a fase não for informada, automaticamente ela vai para fase de grupos
     public Partida(Selecao selecao1, Selecao selecao2, String data, Estadio estadio) {
         this(selecao1, selecao2, data, estadio, Fase.GRUPOS);
     }
@@ -72,7 +73,7 @@ public class Partida implements Serializable {
         if (status != StatusPartida.FINALIZADA || this.resultado == null) return null;
         if (this.resultado.getGols1() > this.resultado.getGols2()) return selecao1;
         else if (this.resultado.getGols2() > this.resultado.getGols1()) return selecao2;
-        else return null;
+        else return null; //isso é se acabar sendo empate
     }
 
     // getters e setters
