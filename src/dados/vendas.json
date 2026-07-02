@@ -38,5 +38,21 @@
     "partidaId": 4,
     "quantidadeIngressos": 4,
     "valorTotal": 600.0
+  },
+  {
+    "id": 7,
+    "comprador": "Esthefany",
+    "dataVenda": "2026-07-02T05:27:40.859327800",
+    "partidaId": 7,
+    "quantidadeIngressos": 4,
+    "valorTotal": 300.0
+  },
+  {
+    "id": 8,
+    "comprador": "Fernanda",
+    "dataVenda": "2026-07-02T05:28:26.306615400",
+    "partidaId": 6,
+    "quantidadeIngressos": 562,
+    "valorTotal": 42150.0
   }
 ]

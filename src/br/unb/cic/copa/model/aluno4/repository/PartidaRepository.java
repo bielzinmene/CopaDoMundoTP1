@@ -61,6 +61,7 @@ public class PartidaRepository {
                 String sel1Nome    = p.getSelecao1() != null ? p.getSelecao1().getNome() : "";
                 String sel2Nome    = p.getSelecao2() != null ? p.getSelecao2().getNome() : "";
                 String estadioNome = p.getEstadio()  != null ? p.getEstadio().getNome()  : "";
+                int capacidadeEstadio = p.getEstadio() != null ? p.getEstadio().getCapacidade() : 0;
                 String fase        = p.getFase()      != null ? p.getFase().name()        : "GRUPOS";
 
                 String json = "  {\n" +
@@ -72,7 +73,7 @@ public class PartidaRepository {
                         "    \"selecao1Nome\": \""  + sel1Nome            + "\",\n" +
                         "    \"selecao2Nome\": \""  + sel2Nome            + "\",\n" +
                         "    \"estadioNome\": \"" + estadioNome + "\",\n" +
-                        "    \"estadioCapacidade\": " + p.getEstadio().getCapacidade() + ",\n" +
+                        "    \"estadioCapacidade\": " + capacidadeEstadio + ",\n" +
                         "    \"golsSelecao1\": " + p.getGolsSelecao1() + ",\n" +
                         "    \"golsSelecao2\": "    + p.getGolsSelecao2() + "\n"  +
                         "  }";

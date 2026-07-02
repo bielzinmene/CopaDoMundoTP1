@@ -50,5 +50,31 @@
     "estadioCapacidade": 52497,
     "golsSelecao1": 1,
     "golsSelecao2": 1
+  },
+  {
+    "id": 6,
+    "arbitroId": 1,
+    "fase": "GRUPOS",
+    "status": "AGENDADA",
+    "data": "17/07/2026",
+    "selecao1Nome": "Brasil",
+    "selecao2Nome": "França",
+    "estadioNome": "Estadio Guadalajara",
+    "estadioCapacidade": 45664,
+    "golsSelecao1": 0,
+    "golsSelecao2": 0
+  },
+  {
+    "id": 7,
+    "arbitroId": 2,
+    "fase": "GRUPOS",
+    "status": "AGENDADA",
+    "data": "13/07/2026",
+    "selecao1Nome": "Marrocos",
+    "selecao2Nome": "França",
+    "estadioNome": "Estadio Guadalajara",
+    "estadioCapacidade": 45664,
+    "golsSelecao1": 0,
+    "golsSelecao2": 0
   }
 ]

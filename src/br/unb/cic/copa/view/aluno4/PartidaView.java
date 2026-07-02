@@ -317,9 +317,17 @@ public class PartidaView extends JFrame {
 
             Selecao sel1 = new Selecao(nomeSel1, "", "");
             Selecao sel2 = new Selecao(nomeSel2, "", "");
-            Localizacao loc = new Localizacao("", "", PaisSede.ESTADOS_UNIDOS, "");
-            Estadio estadio = new Estadio(0, nomeEstadio, loc, 1);
 
+            int capacidade = 0;
+            for (Estadio e : estadioController.listarTodos()) {
+                if (e.getNome().equals(nomeEstadio)) {
+                    capacidade = e.getCapacidade();
+                    break;
+                }
+            }
+
+            Localizacao loc = new Localizacao("", "", PaisSede.ESTADOS_UNIDOS, "");
+            Estadio estadio = new Estadio(0, nomeEstadio, loc, capacidade);
             Partida novaPartida = new Partida(sel1, sel2, data, estadio, fase);
             novaPartida.setId(partidaController.gerarNovoId());
 
