@@ -6,10 +6,129 @@
     "tecnico": "Carlo Ancelotti",
     "jogadores": [
       {
+        "nome": "Alisson",
+        "numeracao": 1,
+        "posicao": "GOLEIRO",
+        "titular": true,
+        "status": "ATIVO"
+      },
+      {
+        "nome": "Éderson",
+        "numeracao": 2,
+        "posicao": "MEIO_CAMPO",
+        "titular": false,
+        "status": "ATIVO"
+      },
+      {
+        "nome": "Gabriel Magalhães",
+        "numeracao": 3,
+        "posicao": "ZAGUEIRO",
+        "titular": true,
+        "status": "ATIVO"
+      },
+      {
+        "nome": "Marquinhos",
+        "numeracao": 4,
+        "posicao": "ZAGUEIRO",
+        "titular": true,
+        "status": "ATIVO"
+      },
+      {
+        "nome": "Casemiro",
+        "numeracao": 5,
+        "posicao": "VOLANTE",
+        "titular": true,
+        "status": "ATIVO"
+      },
+      {
+        "nome": "Alex Sandro",
+        "numeracao": 6,
+        "posicao": "LATERAL",
+        "titular": false,
+        "status": "ATIVO"
+      },
+      {
         "nome": "Vinicius Jr",
         "numeracao": 7,
         "posicao": "ATACANTE",
         "titular": true,
+        "status": "ATIVO"
+      },
+      {
+        "nome": "Bruno Guimarães",
+        "numeracao": 8,
+        "posicao": "MEIO_CAMPO",
+        "titular": true,
+        "status": "ATIVO"
+      },
+      {
+        "nome": "Matheus Cunha",
+        "numeracao": 9,
+        "posicao": "MEIO_CAMPO",
+        "titular": true,
+        "status": "ATIVO"
+      },
+      {
+        "nome": "Neymar Jr",
+        "numeracao": 10,
+        "posicao": "ATACANTE",
+        "titular": false,
+        "status": "ATIVO"
+      },
+      {
+        "nome": "Raphinha",
+        "numeracao": 11,
+        "posicao": "ATACANTE",
+        "titular": false,
+        "status": "ATIVO"
+      },
+      {
+        "nome": "Weverton",
+        "numeracao": 12,
+        "posicao": "GOLEIRO",
+        "titular": false,
+        "status": "ATIVO"
+      },
+      {
+        "nome": "Danilo",
+        "numeracao": 13,
+        "posicao": "LATERAL",
+        "titular": true,
+        "status": "ATIVO"
+      },
+      {
+        "nome": "Bremer",
+        "numeracao": 14,
+        "posicao": "ZAGUEIRO",
+        "titular": false,
+        "status": "ATIVO"
+      },
+      {
+        "nome": "Léo Pereira",
+        "numeracao": 15,
+        "posicao": "ZAGUEIRO",
+        "titular": false,
+        "status": "ATIVO"
+      },
+      {
+        "nome": "Douglas Santos",
+        "numeracao": 16,
+        "posicao": "LATERAL",
+        "titular": true,
+        "status": "ATIVO"
+      },
+      {
+        "nome": "Fabinho",
+        "numeracao": 17,
+        "posicao": "VOLANTE",
+        "titular": false,
+        "status": "ATIVO"
+      },
+      {
+        "nome": "Danilo do Botafogo",
+        "numeracao": 18,
+        "posicao": "MEIO_CAMPO",
+        "titular": false,
         "status": "ATIVO"
       },
       {
@@ -20,9 +139,51 @@
         "status": "ATIVO"
       },
       {
-        "nome": "Alisson",
-        "numeracao": 1,
+        "nome": "Lucas Paquetá",
+        "numeracao": 20,
+        "posicao": "MEIO_CAMPO",
+        "titular": true,
+        "status": "ATIVO"
+      },
+      {
+        "nome": "Luiz Henrique",
+        "numeracao": 21,
+        "posicao": "ATACANTE",
+        "titular": false,
+        "status": "ATIVO"
+      },
+      {
+        "nome": "Gabriel Martinelli",
+        "numeracao": 22,
+        "posicao": "ATACANTE",
+        "titular": false,
+        "status": "ATIVO"
+      },
+      {
+        "nome": "Ederson",
+        "numeracao": 23,
         "posicao": "GOLEIRO",
+        "titular": false,
+        "status": "ATIVO"
+      },
+      {
+        "nome": "Roger Ibáñez",
+        "numeracao": 24,
+        "posicao": "ZAGUEIRO",
+        "titular": false,
+        "status": "ATIVO"
+      },
+      {
+        "nome": "Igor Thiago",
+        "numeracao": 25,
+        "posicao": "MEIO_CAMPO",
+        "titular": false,
+        "status": "ATIVO"
+      },
+      {
+        "nome": "Rayan",
+        "numeracao": 26,
+        "posicao": "ATACANTE",
         "titular": false,
         "status": "ATIVO"
       }
