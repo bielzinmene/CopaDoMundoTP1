@@ -8,8 +8,8 @@ O sistema consiste em uma aplicação Orientada a Objetos em Java destinada ao g
 
 ## 👥 Divisão da Equipe e Responsabilidades
 
-* **Fernanda (Aluno 1):** Administração, Gestão do Fluxo Principal e Controladores (`Controller`/`View`)
-* **Gabriel (Aluno 2):** Gestão de Seleções, Jogadores e Validações de Elenco (`Model`/`Persistence`)
+* **Fernanda (Aluno 1):** Administração, Gestão do Fluxo Principal e Controladores 
+* **Gabriel (Aluno 2):** Gestão de Seleções, Jogadores e Validações de Elenco 
 * **Esthefany (Aluno 3):** Gestão de Estádios, Sede e Arbitragem
 * **Erica (Aluno 4):** Gestão de Partidas, Fases e Resultados
 * **Danilo (Aluno 5):** Gestão de Ingressos, Vendas e Público
